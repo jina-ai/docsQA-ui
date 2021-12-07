@@ -1,10 +1,9 @@
 {
-    "extends": "./base.tsconfig.json",
-    "compilerOptions": {
-      "rootDir": "./",
-      "outDir": "./dist",
-      "tsBuildInfoFile": "./dist/.tsbuildinfo",
-      "composite": true
-    }
+  "extends": "./base.tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "./",
+    "outDir": "./build/",
+    "tsBuildInfoFile": "./build/.tsbuildinfo",
+    "composite": true
   }
-  
+}

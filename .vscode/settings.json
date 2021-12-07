@@ -1,6 +1,8 @@
 {
   "editor.wordWrap": "on",
   "editor.wordWrapColumn": 120,
+  "files.trimTrailingWhitespace": true,
+  "files.trimFinalNewlines": true,
   "[javascript]": {
     "editor.defaultFormatter": "vscode.typescript-language-features"
   },
@@ -19,6 +21,9 @@
   "[yaml]": {
     "editor.defaultFormatter": "redhat.vscode-yaml"
   },
+  "[markdown]": {
+    "files.trimTrailingWhitespace": false
+  },
   "typescript.tsdk": "node_modules/typescript/lib",
   "vetur.format.defaultFormatter.ts": "vscode-typescript",
   "vetur.format.defaultFormatter.js": "vscode-typescript",
@@ -27,5 +32,7 @@
   "typescript.preferences.importModuleSpecifier": "project-relative",
   "typescript.locale": "en",
   "cSpell.enabled": true,
-  "cSpell.words": []
+  "cSpell.words": [
+    "vmin"
+  ]
 }

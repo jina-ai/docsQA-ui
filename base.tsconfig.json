@@ -1,23 +1,23 @@
 {
-    "compilerOptions": {
-      "module": "commonjs",
-      "declaration": true,
-      "target": "es2020",
-      "sourceMap": true,
-      "outDir": "./dist",
-      "resolveJsonModule": true,
-      "lib": [
-        "ES2021",
-        "DOM"
-      ],
-      "removeComments": true,
-      "skipLibCheck": true,
-      "emitDecoratorMetadata": true,
-      "experimentalDecorators": true,
-      "esModuleInterop": true,
-      "strict": true,
-      "noImplicitOverride": true,
-      "importHelpers": true
-    }
+  "compilerOptions": {
+    "module": "esnext",
+    "moduleResolution": "node",
+    "declaration": true,
+    "target": "es2020",
+    "sourceMap": true,
+    "outDir": "./build",
+    "resolveJsonModule": false,
+    "lib": [
+      "ES2021",
+      "DOM"
+    ],
+    "removeComments": true,
+    "skipLibCheck": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "noImplicitOverride": true,
+    "importHelpers": true
   }
-  
+}
