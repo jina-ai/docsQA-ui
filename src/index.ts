@@ -1,3 +1,3 @@
-import { QaBot } from './qa-bot';
+import { QaBot } from './qa-bot/qa-bot';
 
 customElements.define('qa-bot', QaBot);
