@@ -7,5 +7,6 @@
     "esbenp.prettier-vscode",
     "streetsidesoftware.code-spell-checker",
     "runem.lit-plugin",
+    "bierner.lit-html"
   ]
 }

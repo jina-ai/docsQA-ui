@@ -73,7 +73,8 @@ export default {
     summary(),
     // Optional: copy any static assets to build directory
     copy({
-      patterns: ['data/**/*', 'images/**/*'],
+      patterns: ['data/**/*', 'assets/**/*', 'static/**/*', 'public/**/*'],
+      rootDir: './',
     }),
     /** Create and inject a service worker */
     generateSW({
@@ -99,7 +100,7 @@ export default {
       format: 'esm',
       chunkFileNames: '[name]-[hash].js',
       entryFileNames: '[name]-[hash].js',
-      dir: 'build',
+      dir: 'dist',
       plugins: [htmlPlugin.api.addOutput('modern')],
     },
     {
@@ -107,7 +108,7 @@ export default {
       format: 'esm',
       chunkFileNames: 'legacy-[name]-[hash].js',
       entryFileNames: 'legacy-[name]-[hash].js',
-      dir: 'build',
+      dir: 'dist',
       plugins: [
         htmlPlugin.api.addOutput('legacy'),
         // Uses babel to compile JS to ES5 and modules to SystemJS
