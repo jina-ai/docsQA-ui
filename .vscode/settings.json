@@ -33,6 +33,7 @@
   "typescript.locale": "en",
   "cSpell.enabled": true,
   "cSpell.words": [
+    "docbot",
     "vmin"
   ]
 }

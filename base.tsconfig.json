@@ -15,6 +15,7 @@
     "skipLibCheck": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "useDefineForClassFields": false,
     "esModuleInterop": true,
     "strict": true,
     "noImplicitOverride": true,

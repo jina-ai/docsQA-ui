@@ -1,4 +1,4 @@
-import { svg } from 'lit';
+import { svg } from 'lit/static-html.js';
 
 export const discussionIcon = svg`
 <svg aria-hidden="true" class="sd-octicon sd-octicon-comment-discussion" height="1.0em" ersion="1.1"

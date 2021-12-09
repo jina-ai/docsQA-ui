@@ -1,5 +1,8 @@
 import { LitElement, html, css } from 'lit';
 import { property } from 'lit/decorators.js';
+import customScrollbarCSS from '../shared/customized-scrollbar';
+import { resetCSS } from '../shared/reset-css';
+import masterStyle from './style';
 import { discussionIcon, downArrow, paperPlane, thumbDown, thumbUp, tripleDot, upArrow } from './svg-icons';
 
 const logo = new URL('../../assets/open-wc-logo.svg', import.meta.url).href;
@@ -34,16 +37,15 @@ export class QaBot extends LitElement {
         super();
     }
 
-    static override styles = css`
+    static override styles = [
+        resetCSS,
+        customScrollbarCSS,
+        masterStyle,
+        css`
     .jina-doc-bot {
         position: fixed !important;
         bottom: 0;
         width: 16rem;
-        background: var(--color-background-primary);;
-    }
-
-    .jina-doc-bot .sd-summary-title {
-        font-weight: normal !important;
     }
 
     .toc-drawer {
@@ -154,25 +156,6 @@ export class QaBot extends LitElement {
         color: var(--color-code-background);
     }
 
-    @keyframes blink {
-        50% {
-            fill: transparent
-        }
-    }
-
-    .dot {
-        animation: 1s blink infinite;
-        fill: var(--color-background-primary);
-    }
-
-    .dot:nth-child(2) {
-        animation-delay: 250ms
-    }
-
-    .dot:nth-child(3) {
-        animation-delay: 500ms
-    }
-
     .loader {
         color: var(--color-background-primary);
     }
@@ -227,14 +210,15 @@ export class QaBot extends LitElement {
             background: url(./Powered-by-Jina-Large-Basic.svg);
         }
     }
-  `;
+  `
+    ];
 
     override render() {
         const qa = {};
 
         return html`
-    <details class="jina-doc-bot sd-sphinx-override sd-dropdown sd-card" v-bind:class="{ready: ready}">
-        <summary class="sd-summary-title sd-card-header">
+    <div class="jina-doc-bot sd-sphinx-override sd-dropdown sd-card" v-bind:class="{ready: ready}">
+        <div class="sd-summary-title sd-card-header">
             ${discussionIcon}
             &nbsp; Ask our docs!
             <div class="sd-summary-down docutils">
@@ -243,14 +227,12 @@ export class QaBot extends LitElement {
             <div class="sd-summary-up docutils">
                 ${upArrow}
             </div>
-        </summary>
+        </div>
         <div class="sd-summary-content docutils">
             <div class="jina-doc-answer">
                 <div class="jina-doc-answer-hint" v-if="qa_pairs.length===0">
-                    <p class="jina-doc-bot-help-text sd-font-weight-bold" v-if="!ready">Chat loading...<br><br> You can
-                        think of questions while our bot load. Try:</p>
-                    <p class="jina-doc-bot-help-text sd-font-weight-bold hidden-before-ready" v-else>You can ask questions
-                        about our docs. Try:</p>
+                    <p class="jina-doc-bot-help-text sd-font-weight-bold hidden-before-ready">You can ask questions about
+                        our docs. Try:</p>
                     <ul class="example-question simple sd-font-weight-light">
                         <li>
                             <p>Does Jina support Kubernetes?</p>
@@ -315,7 +297,7 @@ export class QaBot extends LitElement {
             <div class="powered-by">
             </div>
         </div>
-    </details>
+    </div>
     `;
     }
 }

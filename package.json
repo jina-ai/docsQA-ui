@@ -30,7 +30,9 @@
   },
   "homepage": "https://github.com/jina-ai/jina-docs-bot-ui#readme",
   "dependencies": {
+    "events": "^3.3.0",
     "lit": "^2.0.2",
+    "lodash": "^4.17.21",
     "reflect-metadata": "^0.1.13",
     "tslib": "^2.3.1"
   },
@@ -40,6 +42,7 @@
     "@open-wc/testing": "^3.0.3",
     "@rollup/plugin-babel": "^5.3.0",
     "@rollup/plugin-node-resolve": "^13.0.6",
+    "@types/lodash": "^4.14.178",
     "@typescript-eslint/eslint-plugin": "^5.5.0",
     "@typescript-eslint/parser": "^5.5.0",
     "@web/dev-server": "^0.1.28",
