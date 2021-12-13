@@ -20,9 +20,17 @@
 </head>
 
 <body>
-  <qa-bot></qa-bot>
+
+  <style> qa-bot:not(:defined) {display: none;} </style>
+  <qa-bot style="right: 25%; width: 16rem;">
+      <h3>You can ask questions about our docs. Try:</h3>
+      <p>Does Jina support Kubernetes?</p>
+      <p>How can I traverse a nested DocumentArray?</p>
+      <p>What are the basic concepts in Jina?</p>
+  </qa-bot>
 
   <script type="module" src="./build/index.js"></script>
+
 </body>
 
 </html>

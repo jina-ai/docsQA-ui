@@ -16,7 +16,6 @@ export const customScrollbarCSS = css`
     }
     ::-webkit-scrollbar-thumb {
         background-color: #8787874c;
-    -webkit-transition: 0.3s;
         transition: 0.3s;
         border-radius: 3px;
     }

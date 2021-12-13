@@ -1,5 +1,5 @@
 import { HTTPService } from './http-service';
-import { get } from 'lodash';
+import get from 'lodash-es/get';
 
 export class JinaDocBotRPC extends HTTPService {
 

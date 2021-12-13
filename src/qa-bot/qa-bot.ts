@@ -1,14 +1,10 @@
-import { LitElement, html, css } from 'lit';
+import { LitElement, html, css, PropertyValues } from 'lit';
 import { property } from 'lit/decorators.js';
 import customScrollbarCSS from '../shared/customized-scrollbar';
 import { resetCSS } from '../shared/reset-css';
+import { JinaQABotController, QAPair } from './controller';
 import masterStyle from './style';
-import { discussionIcon, downArrow, paperPlane, thumbDown, thumbUp, tripleDot, upArrow } from './svg-icons';
-
-const logo = new URL('../../assets/open-wc-logo.svg', import.meta.url).href;
-
-const SEARCH_ENDPOINT = '/search';
-const SLACK_ENDPOINT = '/slack';
+import { discussionIcon, downArrow, paperPlane, poweredByJina, thumbDown, thumbUp, tripleDot, upArrow } from './svg-icons';
 
 export interface QaBotConfig {
 
@@ -33,8 +29,14 @@ export class QaBot extends LitElement {
     @property({ attribute: false })
     config?: QaBotConfig;
 
+    @property({ type: Boolean, reflect: true })
+    open?: boolean;
+
+    qaControl?: JinaQABotController;
+
     constructor() {
         super();
+
     }
 
     static override styles = [
@@ -42,12 +44,6 @@ export class QaBot extends LitElement {
         customScrollbarCSS,
         masterStyle,
         css`
-    .jina-doc-bot {
-        position: fixed !important;
-        bottom: 0;
-        width: 16rem;
-    }
-
     .toc-drawer {
         padding-right: 0;
     }
@@ -65,26 +61,6 @@ export class QaBot extends LitElement {
         background: inherit;
         color: inherit;
         padding: .5rem;
-    }
-
-    .jina-doc-answer-dialog {
-        height: 25vh;
-        overflow-y: scroll;
-        scroll-behavior: smooth;
-    }
-
-    .jina-doc-answer-hint {
-        height: 25vh;
-        padding: 1rem;
-        overflow-y: scroll;
-        scroll-behavior: smooth;
-    }
-
-    .jina-doc-bot-controls {
-        border-color: var(--color-brand-primary) !important;
-        border-radius: .25rem;
-        overflow: hidden;
-        margin: 0 1rem;
     }
 
     #bot-input-btn {
@@ -146,9 +122,6 @@ export class QaBot extends LitElement {
     }
 
     .talktext p {
-        /* remove webkit p margins */
-        -webkit-margin-before: 0;
-        -webkit-margin-after: 0;
         overflow-wrap: anywhere;
     }
 
@@ -213,91 +186,98 @@ export class QaBot extends LitElement {
   `
     ];
 
-    override render() {
-        const qa = {};
+    override update(changedProps: PropertyValues) {
+        if (changedProps.has('server') && this.server) {
+            this.qaControl = new JinaQABotController(this, this.server);
+        }
+        super.update(changedProps);
+    }
 
+    getSingleQAComp(qa: QAPair) {
         return html`
-    <div class="jina-doc-bot sd-sphinx-override sd-dropdown sd-card" v-bind:class="{ready: ready}">
-        <div class="sd-summary-title sd-card-header">
-            ${discussionIcon}
-            &nbsp; Ask our docs!
-            <div class="sd-summary-down docutils">
-                ${downArrow}
-            </div>
-            <div class="sd-summary-up docutils">
-                ${upArrow}
-            </div>
-        </div>
-        <div class="sd-summary-content docutils">
-            <div class="jina-doc-answer">
-                <div class="jina-doc-answer-hint" v-if="qa_pairs.length===0">
-                    <p class="jina-doc-bot-help-text sd-font-weight-bold hidden-before-ready">You can ask questions about
-                        our docs. Try:</p>
-                    <ul class="example-question simple sd-font-weight-light">
-                        <li>
-                            <p>Does Jina support Kubernetes?</p>
-                        </li>
-                        <li>
-                            <p>How can I traverse a nested DocumentArray?</p>
-                        </li>
-                        <li>
-                            <p>What are the basic concepts in Jina?</p>
-                        </li>
-                    </ul>
-                </div>
-                <div class="jina-doc-answer-dialog hidden-before-ready" v-else>
-                    <div v-for="qa in qa_pairs" class="qa-container">
-                        <div v-if="qa.question" class="sd-text-right">
-                            <div class="talk-bubble question-bubble">
-                                <div class="talktext">
-                                    <p>\${qa.question}</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="talk-bubble answer-bubble">
-                            <div class="talktext">
-                                <p v-if="qa.answer">\${qa.answer.text}</p>
-                                <div v-else>
-                                    ${tripleDot}
-                                </div>
-                            </div>
-                            <a v-if="qa.answer && is_conn_broken" class="answer-reference" href="https://slack.jina.ai"
-                                target="_blank">Report</a>
-                            <div v-if="qa.answer && !is_conn_broken && qa.answer.uri"
-                                class="feedback-tooltip sd-d-flex-row">
-                                <a class="answer-reference" :href="root_url + qa.answer.uri">Source</a>
-                                <div class="sd-d-flex-row">
-                                    <div class="thumb-answer thumbup" v-show="qa.rating===null" style="margin: 0 6px"
-                                        v-on:click="submit_rating(qa, true)">
-                                        ${thumbUp}
-                                    </div>
-                                    <div class="thumb-answer thumbdown" v-show="qa.rating===null"
-                                        v-on:click="submit_rating(qa, false)">
-                                        ${thumbDown}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
+            <div class="qa-container">
+                <div class="talk-bubble question-bubble">
+                    <div class="talktext">
+                        <p>${qa.question}</p>
                     </div>
                 </div>
+                <div class="talk-bubble answer-bubble">
+                    <div class="talktext">
+                        ${
+                            qa.answer ?
+                                html`<p>${qa.answer.text}</p>` :
+                                html`<div>${tripleDot}</div>`
+                        }
+                    </div>
+                    ${qa.answer && this.broken ? html`
+                        <a class="answer-reference" href="https://slack.jina.ai" target="_blank">Report</a>
+                    `:'' }
+                    ${qa.answer?.uri ? html`
+                        <div class="feedback-tooltip sd-d-flex-row">
+                            <a class="answer-reference" href="${this.site || '/' + qa.answer.uri}">Source</a>
+                            <div class="sd-d-flex-row">
+                                <div class="thumb-answer thumbup" v-show="qa.rating===null" style="margin: 0 6px"
+                                    v-on:click="submit_rating(qa, true)">
+                                    ${thumbUp}
+                                </div>
+                                <div class="thumb-answer thumbdown" v-show="qa.rating===null" v-on:click="submit_rating(qa, false)">
+                                    ${thumbDown}
+                                </div>
+                            </div>
+                        </div>
+                    ` : ''}
+                </div>
+            </div>
+    `;
+    }
 
+    getAnswerBlock() {
+        if (!(this.qaControl?.qaPairs.length)) {
+            return html`
+            <div class="jina-doc-answer-hint">
+                <slot>
+                    <h3>You can ask questions about our docs. Try:</h3>
+                    <p>Does Jina support Kubernetes?</p>
+                    <p>How can I traverse a nested DocumentArray?</p>
+                    <p>What are the basic concepts in Jina?</p>
+                </slot>
+            </div>
+        `;
+        }
 
+        return html`
+            <div class="jina-doc-answer-dialog hidden-before-ready">
+                ${this.qaControl?.qaPairs.map((qa) => this.getSingleQAComp(qa))}
             </div>
-            <div class="jina-doc-bot-controls sd-d-flex-row sd-border-1">
-                <textarea v-model="cur_question" class="sd-border-0" maxlength="100" rows="3" id="bot-input-question"
-                    style="width: 100%" placeholder="Just a moment, please ..." :placeholder="'Type your question here'"
-                    v-on:keyup.enter="submit_q" disabled :disabled="!ready" :readonly="is_busy" autofocus></textarea>
-                <button
-                    class="sd-sphinx-override sd-btn sd-text-wrap sd-btn-outline-primary sd-rounded-0 hidden-before-ready"
-                    v-on:click="submit_q" v-show="cur_question.length>0 && !is_busy" id="bot-input-btn">
-                    ${paperPlane}
-                </button>
+        `;
+    }
+
+    override render() {
+
+        return html`
+        <div class="jina-doc-bot card">
+            <div class="card__header" @click="${()=> this.open = !this.open}">
+                <span class="card__title"><i class="icon">${discussionIcon}</i>&nbsp; Ask our docs!</span>
+                <i class="icon arrow-down">${downArrow}</i>
+                <i class="icon arrow-up">${upArrow}</i>
             </div>
-            <div class="powered-by">
+            <div class="card__content">
+                <div class="jina-doc-bot__answer-block">
+                    ${this.getAnswerBlock()}
+                </div>
+                <div class="jina-doc-bot__control">
+                    <textarea maxlength="100" rows="3"
+                        placeholder="Type your question here"
+                        autofocus></textarea>
+                    <button
+                        v-show="cur_question.length>0 && !is_busy" id="bot-input-btn">
+                        <i class="icon icon-plane">${paperPlane}</i>
+                    </button>
+                </div>
             </div>
+
+            <div class="powered-by"><i class="icon icon-powered-by-jina">${poweredByJina}</i></div>
         </div>
-    </div>
     `;
     }
 }

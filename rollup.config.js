@@ -1,14 +1,22 @@
 import nodeResolve from '@rollup/plugin-node-resolve';
-import babel from '@rollup/plugin-babel';
+import { getBabelOutputPlugin } from '@rollup/plugin-babel';
+import polyfillsLoader from '@web/rollup-plugin-polyfills-loader';
 import html from '@web/rollup-plugin-html';
 import { copy } from '@web/rollup-plugin-copy';
-import { getBabelOutputPlugin } from '@rollup/plugin-babel';
 import minifyHTML from 'rollup-plugin-minify-html-literals';
 import summary from 'rollup-plugin-summary';
 import { importMetaAssets } from '@web/rollup-plugin-import-meta-assets';
 import { terser } from 'rollup-plugin-terser';
-import { generateSW } from 'rollup-plugin-workbox';
-import path from 'path';
+// import { generateSW } from 'rollup-plugin-workbox';
+// import path from 'path';
+
+// Configure an instance of @web/rollup-plugin-html
+const htmlPlugin = html({
+  // injectServiceWorker: true,
+  // serviceWorkerPath: 'dist/sw.js',
+  rootDir: './',
+  flattenOutput: false,
+});
 
 export default {
   input: 'index.html',
@@ -23,18 +31,14 @@ export default {
 
   plugins: [
     /** Enable using HTML as rollup entrypoint */
-    html({
-      injectServiceWorker: true,
-      serviceWorkerPath: 'dist/sw.js',
-      rootDir: './',
-      flattenOutput: false,
-    }),
+    htmlPlugin,
     /** Resolve bare module imports */
     nodeResolve(),
+    minifyHTML(),
     /** Minify JS */
     terser({
       module: true,
-      warnings: true
+      warnings: true,
     }),
     /** Bundle assets references via import.meta.url */
     importMetaAssets(),
@@ -69,27 +73,29 @@ export default {
         ],
       },
     }),
+
+    /** Create and inject a service worker */
+    // generateSW({
+    //   globIgnores: ['polyfills/*.js', 'nomodule-*.js'],
+    //   navigateFallback: '/index.html',
+    //   // where to output the generated sw
+    //   swDest: path.join('dist', 'sw.js'),
+    //   // directory to match patterns against to be precached
+    //   globDirectory: path.join('dist'),
+    //   // cache any html js and css by default
+    //   globPatterns: ['**/*.{html,js,css,webmanifest}'],
+    //   skipWaiting: true,
+    //   clientsClaim: true,
+    //   runtimeCaching: [{ urlPattern: 'polyfills/*.js', handler: 'CacheFirst' }],
+    // }),
+
     // Print bundle summary
-    summary(),
     // Optional: copy any static assets to build directory
     copy({
       patterns: ['data/**/*', 'assets/**/*', 'static/**/*', 'public/**/*'],
       rootDir: './',
     }),
-    /** Create and inject a service worker */
-    generateSW({
-      globIgnores: ['polyfills/*.js', 'nomodule-*.js'],
-      navigateFallback: '/index.html',
-      // where to output the generated sw
-      swDest: path.join('dist', 'sw.js'),
-      // directory to match patterns against to be precached
-      globDirectory: path.join('dist'),
-      // cache any html js and css by default
-      globPatterns: ['**/*.{html,js,css,webmanifest}'],
-      skipWaiting: true,
-      clientsClaim: true,
-      runtimeCaching: [{ urlPattern: 'polyfills/*.js', handler: 'CacheFirst' }],
-    }),
+    summary(),
   ],
   // Specifies two JS output configurations, modern and legacy, which the HTML plugin will
   // automatically choose between; the legacy build is compiled to ES5
@@ -101,7 +107,9 @@ export default {
       chunkFileNames: '[name]-[hash].js',
       entryFileNames: '[name]-[hash].js',
       dir: 'dist',
-      plugins: [htmlPlugin.api.addOutput('modern')],
+      plugins: [
+        htmlPlugin.api.addOutput('modern')
+      ],
     },
     {
       // Legacy JS bundles (ES5 compilation and SystemJS module output)

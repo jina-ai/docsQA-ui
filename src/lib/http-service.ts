@@ -1,5 +1,6 @@
-import { defaults, defaultsDeep, merge } from 'lodash';
-import { EventEmitter } from 'events';
+import defaultsDeep from 'lodash-es/defaultsDeep';
+import defaults from 'lodash-es/defaults';
+import merge from 'lodash-es/merge';
 
 export function stringifyErrorLike(err: Error | { [k: string]: any; } | string | null | undefined) {
     if (!err) {
@@ -88,7 +89,7 @@ type FetchPatch<To> = {
 export abstract class HTTPService<
     Tc extends HTTPServiceConfig = HTTPServiceConfig,
     To extends HTTPServiceRequestOptions = HTTPServiceRequestOptions
-    > extends EventEmitter {
+    > extends EventTarget {
     config: Tc;
 
     protected baseUrl: string;
@@ -199,21 +200,27 @@ export abstract class HTTPService<
         (deferred.promise as any).cancel = abortCtrl.abort;
         const serial = this.counter++;
         const config = { ...options, url };
-        this.emit('request', config, serial);
+        this.dispatchEvent(new CustomEvent('request', {
+            detail: { config, serial }
+        }));
         fetch(url, options).then(
             async (r) => {
                 Object.defineProperties(r, {
                     serial: { value: serial },
                     config: { value: config },
                 });
-                this.emit('response', r, serial);
+                this.dispatchEvent(new CustomEvent('response', {
+                    detail: { response: r, serial, config },
+                }));
                 try {
                     const parsed = await this.__processResponse(options, r);
                     Object.defineProperties(r, {
                         data: { value: parsed },
                     });
 
-                    this.emit('parsed', parsed, r, serial);
+                    this.dispatchEvent(new CustomEvent('parsed', {
+                        detail: { parsed, response: r, serial, config },
+                    }));
 
                     deferred.resolve(r);
 
@@ -226,7 +233,9 @@ export abstract class HTTPService<
                         status: r.status || err.code || err.errno
                     });
 
-                    this.emit('exception', newErr, r, serial);
+                    this.dispatchEvent(new CustomEvent('exception', {
+                        detail: { err: newErr, response: r, serial, config }
+                    }));
 
                     deferred.reject(newErr);
                 }
@@ -238,7 +247,10 @@ export abstract class HTTPService<
                     status: err.code || err.errno
                 });
 
-                this.emit('exception', newErr, undefined, serial);
+                this.dispatchEvent(new CustomEvent('exception', {
+                    detail: { err: newErr, serial, config },
+                }));
+
                 deferred.reject(newErr);
             }
         );
@@ -368,29 +380,29 @@ export abstract class HTTPService<
 }
 // eslint-disable max-len
 export interface HTTPService {
-    on(name: 'request', listener: (config: HTTPServiceRequestOptions, serial: number) => void): this;
+    addEventListener(name: 'request', listener: (config: HTTPServiceRequestOptions, serial: number) => void, options: AddEventListenerOptions): this;
 
-    on(
+    addEventListener(
         name: 'response',
-        listener: (response: Response & FetchPatch<HTTPServiceRequestOptions>, serial: number) => void
+        listener: (response: Response & FetchPatch<HTTPServiceRequestOptions>, serial: number) => void, options: AddEventListenerOptions
     ): this;
-    on(
+    addEventListener(
         name: 'exception',
         listener: (
             error: HTTPServiceError,
             response: (Response & FetchPatch<HTTPServiceRequestOptions>) | undefined,
             serial: number
-        ) => void
+        ) => void, options: AddEventListenerOptions
     ): this;
-    on(
+    addEventListener(
         name: 'parsed',
         listener: (
             parsed: any,
             response: Response & FetchPatch<HTTPServiceRequestOptions> & { data: any; },
             serial: number
-        ) => void
+        ) => void, options: AddEventListenerOptions
     ): this;
-    on(event: string | symbol, listener: (...args: any[]) => void): this;
+    addEventListener(event: string | symbol, listener: (...args: any[]) => void, options: AddEventListenerOptions): this;
 }
 // eslint-enable max-len
 
