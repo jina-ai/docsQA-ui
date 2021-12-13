@@ -1,5 +1,6 @@
 import { HTTPService } from './http-service';
 import get from 'lodash-es/get';
+import { DocumentArray, Document } from './jina-document-array';
 
 export class JinaDocBotRPC extends HTTPService {
 
@@ -7,12 +8,11 @@ export class JinaDocBotRPC extends HTTPService {
         super(serverUri);
     }
 
-
     async askQuestion(text: string) {
 
-        const result = await this.postJson('/search', { data: [{ text }] });
+        const result = await this.postJson<DocumentArray>('/search', { data: [{ text }] });
 
-        return get(result.data, 'data.docs[0].matches[0]') as { text: string, uri: string; };
+        return get(result.data, 'data.docs[0].matches[0]') as Document;
     }
 
     sendFeedback(options: {
@@ -23,5 +23,7 @@ export class JinaDocBotRPC extends HTTPService {
     }) {
         return this.postJson('/slack', options);
     }
+
+
 
 }

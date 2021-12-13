@@ -1,5 +1,6 @@
 import { LitElement, html, css, PropertyValues } from 'lit';
-import { property } from 'lit/decorators.js';
+import { property, query } from 'lit/decorators.js';
+import { throttle } from '../lib/decorators/throttle';
 import customScrollbarCSS from '../shared/customized-scrollbar';
 import { resetCSS } from '../shared/reset-css';
 import { JinaQABotController, QAPair } from './controller';
@@ -15,7 +16,6 @@ export class QaBot extends LitElement {
 
     ready: boolean = false;
     loading: boolean = false;
-    broken: boolean = false;
 
     @property({ type: String })
     server?: string;
@@ -34,6 +34,9 @@ export class QaBot extends LitElement {
 
     qaControl?: JinaQABotController;
 
+    @query('.jina-doc-bot__control textarea')
+    textarea?: HTMLTextAreaElement;
+
     constructor() {
         super();
 
@@ -44,145 +47,6 @@ export class QaBot extends LitElement {
         customScrollbarCSS,
         masterStyle,
         css`
-    .toc-drawer {
-        padding-right: 0;
-    }
-
-    .example-question {
-        color: var(--color-foreground-muted);
-    }
-
-    .jina-doc-answer {
-        font-size: 0.7em;
-    }
-
-    #bot-input-question {
-        font-size: .7em;
-        background: inherit;
-        color: inherit;
-        padding: .5rem;
-    }
-
-    #bot-input-btn {
-        padding: .5rem .5rem;
-        border: none !important;
-    }
-
-
-    /* CSS talk bubble */
-    .talk-bubble {
-        display: inline-block;
-        position: relative;
-        height: auto;
-        background-color: var(--color-brand-primary);
-        margin-bottom: 20px;
-        border-radius: 5px;
-        max-width: 80%;
-    }
-
-    .qa-container {
-        padding: 1rem;
-    }
-
-    .question-bubble {
-        background-color: var(--color-background-border);
-    }
-
-    .answer-bubble:after {
-        content: ' ';
-        position: absolute;
-        width: 0;
-        height: 0;
-        left: 0;
-        right: auto;
-        top: auto;
-        bottom: -10px;
-        border: 10px solid;
-        border-color: transparent transparent transparent var(--color-brand-primary);
-    }
-
-    .question-bubble:after {
-        content: ' ';
-        position: absolute;
-        width: 0;
-        height: 0;
-        left: auto;
-        right: 0;
-        top: auto;
-        bottom: -10px;
-        border: 10px solid;
-        border-color: var(--color-background-border) var(--color-background-border) transparent transparent;
-    }
-
-
-    /* talk bubble contents */
-    .talktext {
-        padding: 1em;
-        text-align: left;
-    }
-
-    .talktext p {
-        overflow-wrap: anywhere;
-    }
-
-    .answer-bubble {
-        color: var(--color-code-background);
-    }
-
-    .loader {
-        color: var(--color-background-primary);
-    }
-
-    .thumb-answer {
-        color: var(--color-background-border);
-    }
-
-    .thumb-answer:hover {
-        color: var(--color-brand-primary);
-    }
-
-    .feedback-tooltip {
-    bottom: -20px;
-    position: absolute;
-    left: 20px;
-
-    display: flex;
-    justify-content: space-between;
-    width: calc(100% - 20px - 12px)
-    }
-
-    .answer-reference {
-    white-space: nowrap;
-    }
-
-    .answer-reference:after {
-        content: url("data:image/svg+xml;charset=utf-8,%3Csvg width='12' height='12' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke-width='1.5' stroke='%23607D8B' fill='none' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M0 0h24v24H0z' stroke='none'/%3E%3Cpath d='M11 7H6a2 2 0 00-2 2v9a2 2 0 002 2h9a2 2 0 002-2v-5M10 14L20 4M15 4h5v5'/%3E%3C/svg%3E");
-        margin: 0 .25rem;
-        vertical-align: middle;
-        color: var(--color-sidebar-link-text);
-    }
-
-    .powered-by {
-        background: url(./Powered-by-Jina-Large-Basic.svg);
-        background-repeat: no-repeat;
-        background-position: center;
-        background-size: contain;
-        height: 1rem;
-    }
-
-    .hidden-before-ready{
-        display: none;
-    }
-
-    .ready .hidden-before-ready{
-        display: revert;
-    }
-
-    @media (prefers-color-scheme: dark) {
-        .powered-by {
-            background: url(./Powered-by-Jina-Large-Basic.svg);
-        }
-    }
   `
     ];
 
@@ -193,39 +57,101 @@ export class QaBot extends LitElement {
         super.update(changedProps);
     }
 
+    onTextAreaInput(event: KeyboardEvent) {
+        if (event.key !== 'Enter') {
+            return;
+        }
+
+        if (event.shiftKey || event.ctrlKey || event.altKey) {
+            return;
+        }
+        event.preventDefault();
+
+        this.submitQuestion();
+    }
+
+    @throttle()
+    async submitQuestion() {
+        const questionInput = this.textarea?.value;
+        if (!questionInput) {
+            return;
+        }
+        const rPromise = this.qaControl?.askQuestion(questionInput);
+        this.scrollDialogToBottom();
+
+        try {
+
+            await rPromise;
+            this.textarea!.value = '';
+
+        } finally {
+            await this.scrollDialogToBottom();
+        }
+
+        setTimeout(()=> {
+            if (this.open) {
+                this.textarea?.focus();
+            }
+        }, 100);
+    }
+
+    @throttle()
+    scrollDialogToBottom() {
+        return new Promise<void>((resolve, _reject)=> {
+            setTimeout(() => {
+                this.renderRoot?.querySelector('.qa-pair:last-child')?.scrollIntoView({
+                    block: "end",
+                    inline: "end"
+                });
+                resolve();
+            }, 100);
+        })
+    }
+
     getSingleQAComp(qa: QAPair) {
         return html`
-            <div class="qa-container">
-                <div class="talk-bubble question-bubble">
-                    <div class="talktext">
-                        <p>${qa.question}</p>
+            <div class="qa-pair">
+                <div class="qa-row question">
+                    <div class="bubble">
+                        <div class="talktext">
+                            <p>${qa.question}</p>
+                        </div>
                     </div>
                 </div>
-                <div class="talk-bubble answer-bubble">
-                    <div class="talktext">
-                        ${
-                            qa.answer ?
-                                html`<p>${qa.answer.text}</p>` :
-                                html`<div>${tripleDot}</div>`
-                        }
-                    </div>
-                    ${qa.answer && this.broken ? html`
-                        <a class="answer-reference" href="https://slack.jina.ai" target="_blank">Report</a>
-                    `:'' }
-                    ${qa.answer?.uri ? html`
-                        <div class="feedback-tooltip sd-d-flex-row">
-                            <a class="answer-reference" href="${this.site || '/' + qa.answer.uri}">Source</a>
-                            <div class="sd-d-flex-row">
-                                <div class="thumb-answer thumbup" v-show="qa.rating===null" style="margin: 0 6px"
-                                    v-on:click="submit_rating(qa, true)">
-                                    ${thumbUp}
-                                </div>
-                                <div class="thumb-answer thumbdown" v-show="qa.rating===null" v-on:click="submit_rating(qa, false)">
-                                    ${thumbDown}
-                                </div>
-                            </div>
+                <div class="qa-row answer">
+                    <div class="bubble">
+                        <div class="talktext">
+                            ${
+                                qa.answer ?
+                                    html`<p>${qa.answer.text}</p>` :
+                                    qa.error ? '' : html`<div class="loading triple-dot">${tripleDot}</div>`
+                            }
+                            ${qa.error ? html`
+                                <p>${qa.error.toString()}</p>
+                            `:'' }
                         </div>
-                    ` : ''}
+
+
+                        <div class="feedback-tooltip">
+                            ${qa.error ? html`
+                                <a class="answer-reference" href="https://slack.jina.ai" target="_blank">Report</a>
+                            ` : ''}
+                            ${qa.answer?.uri ? html`
+                                <a class="answer-reference" href="${(this.site || '') + qa.answer.uri}">Source</a>
+                            `:''}
+                            ${qa.answer ? html`
+                                <div class="thumbs">
+                                    <div class="thumb thumbup">
+                                        <i class="icon icon-thumb-up">${thumbUp}</i>
+                                    </div>
+                                    <div class="thumb thumbdown">
+                                        <i class="icon icon-thumb-down">${thumbDown}</i>
+                                    </div>
+                                </div>
+                            ` : ''}
+
+                        </div>
+                    </div>
                 </div>
             </div>
     `;
@@ -234,7 +160,7 @@ export class QaBot extends LitElement {
     getAnswerBlock() {
         if (!(this.qaControl?.qaPairs.length)) {
             return html`
-            <div class="jina-doc-answer-hint">
+            <div class="answer-hint">
                 <slot>
                     <h3>You can ask questions about our docs. Try:</h3>
                     <p>Does Jina support Kubernetes?</p>
@@ -246,7 +172,7 @@ export class QaBot extends LitElement {
         }
 
         return html`
-            <div class="jina-doc-answer-dialog hidden-before-ready">
+            <div class="answer-dialog">
                 ${this.qaControl?.qaPairs.map((qa) => this.getSingleQAComp(qa))}
             </div>
         `;
@@ -267,10 +193,11 @@ export class QaBot extends LitElement {
                 </div>
                 <div class="jina-doc-bot__control">
                     <textarea maxlength="100" rows="3"
+                        ?disabled="${!(this.qaControl?.ready)}"
+                        @keypress="${this.onTextAreaInput}"
                         placeholder="Type your question here"
                         autofocus></textarea>
-                    <button
-                        v-show="cur_question.length>0 && !is_busy" id="bot-input-btn">
+                    <button ?disabled="${!(this.qaControl?.ready)}" @click="${this.submitQuestion}">
                         <i class="icon icon-plane">${paperPlane}</i>
                     </button>
                 </div>
