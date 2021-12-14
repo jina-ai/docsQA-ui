@@ -40,7 +40,7 @@ export class QaBot extends LitElement {
 
     qaControl?: JinaQABotController;
 
-    @query('.jina-doc-bot__control textarea')
+    @query('.jina-qabot__control textarea')
     textarea?: HTMLTextAreaElement;
 
     constructor() {
@@ -187,17 +187,17 @@ export class QaBot extends LitElement {
     override render() {
 
         return html`
-        <div class="jina-doc-bot card">
+        <div class="jina-qabot card">
             <div class="card__header" @click="${()=> this.open = !this.open}">
                 <span class="card__title"><i class="icon">${discussionIcon}</i>&nbsp; Ask our docs!</span>
                 <i class="icon arrow-down">${downArrow}</i>
                 <i class="icon arrow-up">${upArrow}</i>
             </div>
             <div class="card__content">
-                <div class="jina-doc-bot__answer-block">
+                <div class="jina-qabot__answer-block">
                     ${this.getAnswerBlock()}
                 </div>
-                <div class="jina-doc-bot__control">
+                <div class="jina-qabot__control">
                     <textarea maxlength="100" rows="3"
                         ?disabled="${!(this.qaControl?.ready)}"
                         @keypress="${this.onTextAreaInput}"

@@ -3,31 +3,31 @@ import { css } from 'lit';
 
 export const masterStyle = css`
     :host {
-        --jina-docbot-color-shadow: #0000000d;
-        --jina-docbot-color-background: #fff;
-        --jina-docbot-color-padding: #f8f9fb;
+        --jina-qabot-color-shadow: #0000000d;
+        --jina-qabot-color-background: #fff;
+        --jina-qabot-color-padding: #f8f9fb;
 
-        --jina-docbot-color-primary: #000;
-        --jina-docbot-color-action: #009191;
-        --jina-docbot-color-action-reverse: #fff;
-        --jina-docbot-color-dimmed: #eeebee;
-        --jina-docbot-color-muted: #646776;
+        --jina-qabot-color-primary: #000;
+        --jina-qabot-color-action: #009191;
+        --jina-qabot-color-action-reverse: #fff;
+        --jina-qabot-color-dimmed: #eeebee;
+        --jina-qabot-color-muted: #646776;
 
-        --jina-docbot-size-text-primary: 0.7rem;
-        --jina-docbot-size-text-title: 1rem;
-        --jina-docbot-size-border-radius-primary: 0.25rem;
+        --jina-qabot-size-text-primary: 0.7rem;
+        --jina-qabot-size-text-title: 1rem;
+        --jina-qabot-size-border-radius-primary: 0.25rem;
     }
 
     :host([theme='dark']) {
-      --jina-docbot-color-shadow: #0000000d;
-      --jina-docbot-color-background: #18181a;
-      --jina-docbot-color-padding: #1e2124;
+      --jina-qabot-color-shadow: #0000000d;
+      --jina-qabot-color-background: #18181a;
+      --jina-qabot-color-padding: #1e2124;
 
-      --jina-docbot-color-primary: #ffffffcc;
-      --jina-docbot-color-action: #fbcb67;
-      --jina-docbot-color-action-reverse: #202020;
-      --jina-docbot-color-dimmed: #303335;
-      --jina-docbot-color-muted: #81868d;
+      --jina-qabot-color-primary: #ffffffcc;
+      --jina-qabot-color-action: #fbcb67;
+      --jina-qabot-color-action-reverse: #202020;
+      --jina-qabot-color-dimmed: #303335;
+      --jina-qabot-color-muted: #81868d;
     }
 
     :host {
@@ -41,23 +41,23 @@ export const masterStyle = css`
         opacity: 0.8;
     }
 
-    .jina-doc-bot {
+    .jina-qabot {
         position: relative;
         width: 100%;
         height: 100%;
         overflow: hidden;
-        font-size: var(--jina-docbot-size-text-primary);
+        font-size: var(--jina-qabot-size-text-primary);
     }
 
     .card {
-        box-shadow: 0 0.1rem 0.25rem var(--jina-docbot-color-shadow), 0 0 0.0625rem rgba(0, 0, 0, 0.1);
+        box-shadow: 0 0.1rem 0.25rem var(--jina-qabot-color-shadow), 0 0 0.0625rem rgba(0, 0, 0, 0.1);
         box-sizing: border-box;
         background-clip: border-box;
-        background-color: var(--jina-docbot-color-background);
-        border: 1px solid var(--jina-docbot-color-padding);
-        border-radius: var(--jina-docbot-size-border-radius-primary) var(--jina-docbot-size-border-radius-primary) 0 0;
-        color: var(--jina-docbot-color-primary);
-        fill: var(--jina-docbot-color-primary);
+        background-color: var(--jina-qabot-color-background);
+        border: 1px solid var(--jina-qabot-color-padding);
+        border-radius: var(--jina-qabot-size-border-radius-primary) var(--jina-qabot-size-border-radius-primary) 0 0;
+        color: var(--jina-qabot-color-primary);
+        fill: var(--jina-qabot-color-primary);
         display: flex;
         flex-direction: column;
         min-width: 0;
@@ -67,16 +67,16 @@ export const masterStyle = css`
     }
 
     .card .card__header {
-        height: calc(var(--jina-docbot-size-text-title) + 2.5rem);
+        height: calc(var(--jina-qabot-size-text-title) + 2.5rem);
         padding: 1rem;
         line-height: 1.15rem;
-        font-size: var(--jina-docbot-size-text-title);
+        font-size: var(--jina-qabot-size-text-title);
         cursor: pointer;
         user-select: none;
 
-        background-color: var(--jina-docbot-color-padding);
+        background-color: var(--jina-qabot-color-padding);
 
-        border-bottom: 1px solid var(--jina-docbot-color-padding);
+        border-bottom: 1px solid var(--jina-qabot-color-padding);
 
         display: flex;
         font-weight: normal;
@@ -85,7 +85,7 @@ export const masterStyle = css`
     }
 
     .card .card__header:first-child {
-        border-radius: calc(var(--jina-docbot-size-border-radius-primary) - 1px) calc(var(--jina-docbot-size-border-radius-primary) - 1px) 0 0;
+        border-radius: calc(var(--jina-qabot-size-border-radius-primary) - 1px) calc(var(--jina-qabot-size-border-radius-primary) - 1px) 0 0;
     }
 
     .card .card__title {
@@ -110,7 +110,7 @@ export const masterStyle = css`
     }
 
     .card .card__content {
-        height: calc(100% - (var(--jina-docbot-size-text-title) + 2.5rem));
+        height: calc(100% - (var(--jina-qabot-size-text-title) + 2.5rem));
         overflow: scroll;
         overflow: overlay;
         scroll-behavior: smooth;
@@ -120,10 +120,10 @@ export const masterStyle = css`
     }
 
     :host(:not([open])) .card {
-        transform: translateY(calc(100% - (var(--jina-docbot-size-text-title) + 2.5rem)));
+        transform: translateY(calc(100% - (var(--jina-qabot-size-text-title) + 2.5rem)));
     }
 
-    .jina-doc-bot__answer-block {
+    .jina-qabot__answer-block {
         display: flex;
         flex-grow: 1;
         flex-shrink: 1;
@@ -133,17 +133,17 @@ export const masterStyle = css`
         padding: 1rem 0.5rem 0 1rem;
     }
 
-    .jina-doc-bot__control {
+    .jina-qabot__control {
         margin: 0 1rem 1rem 1rem;
         display: flex;
         position: relative;
     }
 
-    .jina-doc-bot__control button {
+    .jina-qabot__control button {
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: 0 calc(var(--jina-docbot-size-border-radius-primary) - 1px) calc(var(--jina-docbot-size-border-radius-primary) - 1px) 0;
+        border-radius: 0 calc(var(--jina-qabot-size-border-radius-primary) - 1px) calc(var(--jina-qabot-size-border-radius-primary) - 1px) 0;
         position: absolute;
         padding: 0.5rem;
         border: none;
@@ -153,31 +153,31 @@ export const masterStyle = css`
         cursor: pointer;
 
         font-size: 1rem;
-        color: var(--jina-docbot-color-action);
-        fill: var(--jina-docbot-color-action);
-        background-color: var(--jina-docbot-color-action-reverse);
+        color: var(--jina-qabot-color-action);
+        fill: var(--jina-qabot-color-action);
+        background-color: var(--jina-qabot-color-action-reverse);
 
         transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
     }
 
-    .jina-doc-bot__control button:not(:disabled):hover {
-        color: var(--jina-docbot-color-action-reverse);
-        fill: var(--jina-docbot-color-action-reverse);
-        background-color: var(--jina-docbot-color-action);
+    .jina-qabot__control button:not(:disabled):hover {
+        color: var(--jina-qabot-color-action-reverse);
+        fill: var(--jina-qabot-color-action-reverse);
+        background-color: var(--jina-qabot-color-action);
 
-        box-shadow: 0 0 0.15rem var(--jina-docbot-color-action);
+        box-shadow: 0 0 0.15rem var(--jina-qabot-color-action);
     }
 
-    .jina-doc-bot__control *:disabled {
+    .jina-qabot__control *:disabled {
         cursor: wait;
     }
 
-    .jina-doc-bot__control textarea {
+    .jina-qabot__control textarea {
         width: 100%;
         padding: 0.5rem calc(1.5rem + 0.5rem) 0.5rem 0.5rem;
-        border: 1px solid var(--jina-docbot-color-action);
-        border-radius: var(--jina-docbot-size-border-radius-primary);
-        font-size: var(--jina-docbot-size-text-primary);
+        border: 1px solid var(--jina-qabot-color-action);
+        border-radius: var(--jina-qabot-size-border-radius-primary);
+        font-size: var(--jina-qabot-size-text-primary);
         resize: none;
 
         overflow-y: scroll;
@@ -185,22 +185,22 @@ export const masterStyle = css`
         transition: box-shadow 0.2s ease-in-out;
     }
 
-    .jina-doc-bot__control textarea:focus {
-        box-shadow: 0 0 0.15rem var(--jina-docbot-color-action);
+    .jina-qabot__control textarea:focus {
+        box-shadow: 0 0 0.15rem var(--jina-qabot-color-action);
     }
 
-    .jina-doc-bot__control textarea:disabled {
-        color: var(--jina-docbot-color-muted);
+    .jina-qabot__control textarea:disabled {
+        color: var(--jina-qabot-color-muted);
     }
 
-    .jina-doc-bot .powered-by {
+    .jina-qabot .powered-by {
         position: absolute;
         bottom: 0;
         display: flex;
         width: 100%;
         justify-content: center;
     }
-    .jina-doc-bot .powered-by .icon {
+    .jina-qabot .powered-by .icon {
         width: auto;
         height: 1rem;
     }
@@ -213,14 +213,14 @@ export const masterStyle = css`
         ::slotted(h2), ::slotted(h3), ::slotted(h4),
         ::slotted(h5), ::slotted(h6) {
         margin-bottom: 0.75rem;
-        font-size: var(--jina-docbot-size-text-primary);
+        font-size: var(--jina-qabot-size-text-primary);
         font-weight: bold;
-        color: var(--jina-docbot-color-primary);
+        color: var(--jina-qabot-color-primary);
     }
     .answer-hint p, ::slotted(p) {
         position: relative;
-        font-size: var(--jina-docbot-size-text-primary);
-        color: var(--jina-docbot-color-muted);
+        font-size: var(--jina-qabot-size-text-primary);
+        color: var(--jina-qabot-color-muted);
         padding-left: 1rem;
     }
 
@@ -228,14 +228,14 @@ export const masterStyle = css`
         content: '•';
         position: absolute;
         left: 0;
-        font-size: var(--jina-docbot-size-text-primary);
-        color: var(--jina-docbot-color-muted);
+        font-size: var(--jina-qabot-size-text-primary);
+        color: var(--jina-qabot-color-muted);
     }
 
     .answer-hint ul, ol, ::slotted(ul), ::slotted(ol) {
-        font-size: var(--jina-docbot-size-text-primary);
+        font-size: var(--jina-qabot-size-text-primary);
         padding-left: 1.2rem;
-        color: var(--jina-docbot-color-muted);
+        color: var(--jina-qabot-color-muted);
     }
 
     .answer-dialog {
@@ -254,8 +254,8 @@ export const masterStyle = css`
         display: inline-block;
         position: relative;
         height: auto;
-        background-color: var(--jina-docbot-color-action);
-        color: var(--jina-docbot-color-action-reverse);
+        background-color: var(--jina-qabot-color-action);
+        color: var(--jina-qabot-color-action-reverse);
         margin-bottom: 20px;
         border-radius: 5px;
         max-width: 80%;
@@ -271,7 +271,7 @@ export const masterStyle = css`
         top: auto;
         bottom: -10px;
         border: 10px solid;
-        border-color: transparent transparent transparent var(--jina-docbot-color-action);
+        border-color: transparent transparent transparent var(--jina-qabot-color-action);
     }
 
     .qa-pair .qa-row.question {
@@ -288,14 +288,14 @@ export const masterStyle = css`
     }
 
     .qa-pair .question .bubble {
-        color: var(--jina-docbot-color-primary);
-        background-color: var(--jina-docbot-color-dimmed);
+        color: var(--jina-qabot-color-primary);
+        background-color: var(--jina-qabot-color-dimmed);
     }
 
     .qa-pair .question .bubble:after {
         left: auto;
         right: 0;
-        border-color: var(--jina-docbot-color-dimmed) var(--jina-docbot-color-dimmed) transparent transparent;
+        border-color: var(--jina-qabot-color-dimmed) var(--jina-qabot-color-dimmed) transparent transparent;
     }
 
     .qa-pair .bubble .feedback-tooltip {
@@ -308,7 +308,7 @@ export const masterStyle = css`
         justify-content: space-between;
         align-items: center;
         width: calc(100% - 1.25rem - 0.75rem);
-        color: var(--jina-docbot-color-action);
+        color: var(--jina-qabot-color-action);
     }
 
 
@@ -332,8 +332,8 @@ export const masterStyle = css`
 
     .qa-pair .answer .bubble .loading {
         cursor: wait;
-        color: var(--jina-docbot-color-action-reverse);
-        fill: var(--jina-docbot-color-action-reverse);
+        color: var(--jina-qabot-color-action-reverse);
+        fill: var(--jina-qabot-color-action-reverse);
     }
 
     .feedback-tooltip .thumbs {
@@ -344,8 +344,8 @@ export const masterStyle = css`
     }
 
     .feedback-tooltip .thumbs .thumb {
-        color: var(--jina-docbot-color-dimmed);
-        fill: var(--jina-docbot-color-dimmed);
+        color: var(--jina-qabot-color-dimmed);
+        fill: var(--jina-qabot-color-dimmed);
 
         cursor: pointer;
     }
@@ -355,8 +355,8 @@ export const masterStyle = css`
     }
 
     .feedback-tooltip .thumbs .thumb:hover {
-        color: var(--jina-docbot-color-action);
-        fill: var(--jina-docbot-color-action);
+        color: var(--jina-qabot-color-action);
+        fill: var(--jina-qabot-color-action);
     }
 
     .answer-reference {
