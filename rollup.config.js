@@ -100,6 +100,10 @@ export default {
         {
           src: 'jina-qa-bot-auto-polyfill.js',
           dest: 'dist/'
+        },
+        {
+          src: 'src/**/*.html',
+          dest: ['build/', 'dist/']
         }
       ]
     }),

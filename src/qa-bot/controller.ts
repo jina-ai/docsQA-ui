@@ -1,12 +1,14 @@
 import { ReactiveController, ReactiveControllerHost } from 'lit';
+import { serialOperation } from '../lib/decorators/serial-op';
 import { JinaDocBotRPC } from '../lib/jina-docbot-rpc';
 import { Document as JinaDocument } from '../lib/jina-document-array';
 
 
 export interface QAPair {
-    question: string;
+    question?: string;
     answer?: Partial<JinaDocument>;
     error?: Error | string;
+    feedback?: boolean | null;
 }
 
 export class JinaQABotController implements ReactiveController {
@@ -36,6 +38,7 @@ export class JinaQABotController implements ReactiveController {
         this.active = false;
     }
 
+    @serialOperation()
     async askQuestion(text: string) {
         const qaPair: QAPair = {
             question: text,
@@ -49,12 +52,53 @@ export class JinaQABotController implements ReactiveController {
             const r = await this.rpc.askQuestion(text);
             qaPair.answer = r;
 
-            return r;
+            return qaPair;
         } catch (e: any) {
             qaPair.error = e;
 
             throw e;
         } finally {
+            this.ready = true;
+            this.host.requestUpdate();
+        }
+    }
+
+    @serialOperation()
+    async sendFeedback(qaPair: QAPair, feedback: 'up' | 'down' | 'none') {
+
+        const thumbUpMap = {
+            'up': true,
+            'down': false,
+            'none': null
+        };
+        const thumbUpVal = thumbUpMap[feedback];
+
+        try {
+            this.ready = false;
+            this.host.requestUpdate();
+
+            const r = await this.rpc.sendFeedback({
+                question: qaPair.question,
+                answer: qaPair.answer?.text,
+                answer_uri: qaPair.answer?.uri,
+                thumbup: thumbUpVal
+            });
+
+            if (feedback !== 'none') {
+                this.qaPairs.push({
+                    answer: {
+                        "text": "Thanks for your feedback! We will improve 🙇‍♂️",
+                        "uri": ""
+                    }
+                });
+            }
+
+            return r;
+        } catch (e: any) {
+
+            throw e;
+        } finally {
+            qaPair.feedback = thumbUpVal;
             this.ready = true;
             this.host.requestUpdate();
         }

@@ -18,7 +18,7 @@ export const masterStyle = css`
         --jina-qabot-size-border-radius-primary: 0.25rem;
     }
 
-    :host([theme='dark']) {
+    :host([theme='dark']){
       --jina-qabot-color-shadow: #0000000d;
       --jina-qabot-color-background: #18181a;
       --jina-qabot-color-padding: #1e2124;
@@ -28,6 +28,20 @@ export const masterStyle = css`
       --jina-qabot-color-action-reverse: #202020;
       --jina-qabot-color-dimmed: #303335;
       --jina-qabot-color-muted: #81868d;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        :host([theme='auto']){
+            --jina-qabot-color-shadow: #0000000d;
+            --jina-qabot-color-background: #18181a;
+            --jina-qabot-color-padding: #1e2124;
+
+            --jina-qabot-color-primary: #ffffffcc;
+            --jina-qabot-color-action: #fbcb67;
+            --jina-qabot-color-action-reverse: #202020;
+            --jina-qabot-color-dimmed: #303335;
+            --jina-qabot-color-muted: #81868d;
+        }
     }
 
     :host {
@@ -47,6 +61,10 @@ export const masterStyle = css`
         height: 100%;
         overflow: hidden;
         font-size: var(--jina-qabot-size-text-primary);
+    }
+
+    .jina-qabot[busy] {
+        cursor: wait;
     }
 
     .card {
@@ -278,6 +296,10 @@ export const masterStyle = css`
         text-align: right;
     }
 
+    .qa-pair:not(:first-child) {
+        margin-top: 1rem;
+    }
+
     .qa-pair .talktext {
         padding: 1em;
         text-align: left;
@@ -354,7 +376,7 @@ export const masterStyle = css`
         margin-left: 0.25rem;
     }
 
-    .feedback-tooltip .thumbs .thumb:hover {
+    .feedback-tooltip .thumbs .thumb:hover, .feedback-tooltip .thumbs .thumb[active] {
         color: var(--jina-qabot-color-action);
         fill: var(--jina-qabot-color-action);
     }

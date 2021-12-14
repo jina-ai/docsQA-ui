@@ -1,6 +1,7 @@
 import defaultsDeep from 'lodash-es/defaultsDeep';
 import defaults from 'lodash-es/defaults';
 import merge from 'lodash-es/merge';
+import { Defer } from './defer';
 
 export function stringifyErrorLike(err: Error | { [k: string]: any; } | string | null | undefined) {
     if (!err) {
@@ -16,22 +17,6 @@ export function stringifyErrorLike(err: Error | { [k: string]: any; } | string |
     }
 
     return JSON.stringify(err, null, 2);
-}
-
-export interface Deferred<T> {
-    promise: Promise<T>;
-    resolve: (data?: T | Promise<T> | void) => void;
-    reject: (err?: any | void) => void;
-}
-export function Defer<T = any>(): Deferred<T> {
-    const self: any = {};
-    self.promise = new Promise<T>((resolve, reject) => {
-        self.resolve = resolve;
-        self.reject = reject;
-    });
-    Object.freeze(self);
-
-    return self;
 }
 
 export type PromiseWithCancel<T> = Promise<T> & { cancel: () => void; };

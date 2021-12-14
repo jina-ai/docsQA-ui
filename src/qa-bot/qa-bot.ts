@@ -1,5 +1,5 @@
 import { LitElement, html, css, PropertyValues } from 'lit';
-import { property, query } from 'lit/decorators.js';
+import { property, query, state } from 'lit/decorators.js';
 import { throttle } from '../lib/decorators/throttle';
 import customScrollbarCSS from '../shared/customized-scrollbar';
 import { resetCSS } from '../shared/reset-css';
@@ -8,10 +8,8 @@ import masterStyle from './style';
 import { discussionIcon, downArrow, paperPlane, poweredByJina, thumbDown, thumbUp, tripleDot, upArrow } from './svg-icons';
 
 export class QaBot extends LitElement {
-    @property({ type: String }) override title = 'My app';
-
-    ready: boolean = false;
-    loading: boolean = false;
+    @property({ type: String, reflect: true})
+    label = 'Ask our docs!';
 
     @property({ type: String })
     server?: string;
@@ -23,7 +21,7 @@ export class QaBot extends LitElement {
     target?: string = '_self';
 
     @property({ type: String, reflect: true })
-    theme?: string = 'light';
+    theme?: string = 'auto';
 
     // @property({ type: Boolean })
     // manual?: boolean;
@@ -71,16 +69,19 @@ export class QaBot extends LitElement {
 
     @throttle()
     async submitQuestion() {
+        if (!this.qaControl) {
+            return;
+        }
         const questionInput = this.textarea?.value;
         if (!questionInput) {
             return;
         }
-        const rPromise = this.qaControl?.askQuestion(questionInput);
+        const rPromise = this.qaControl.askQuestion(questionInput);
         this.scrollDialogToBottom();
 
         try {
-
-            await rPromise;
+            const qaPair = await rPromise;
+            await this.qaControl.sendFeedback(qaPair, 'none');
             this.textarea!.value = '';
 
         } finally {
@@ -92,6 +93,19 @@ export class QaBot extends LitElement {
                 this.textarea?.focus();
             }
         }, 100);
+    }
+
+    @throttle()
+    async submitFeedback(qaPair: QAPair, feedback: 'up' | 'down' | 'none' = 'none') {
+        if (!this.qaControl) {
+            return;
+        }
+
+        const r = await this.qaControl?.sendFeedback(qaPair, feedback);
+
+        await this.scrollDialogToBottom();
+
+        return r;
     }
 
     @throttle()
@@ -110,13 +124,15 @@ export class QaBot extends LitElement {
     getSingleQAComp(qa: QAPair) {
         return html`
             <div class="qa-pair">
-                <div class="qa-row question">
-                    <div class="bubble">
-                        <div class="talktext">
-                            <p>${qa.question}</p>
+                ${qa.question ? html`
+                    <div class="qa-row question">
+                        <div class="bubble">
+                            <div class="talktext">
+                                <p>${qa.question}</p>
+                            </div>
                         </div>
                     </div>
-                </div>
+                ` : ''}
                 <div class="qa-row answer">
                     <div class="bubble">
                         <div class="talktext">
@@ -138,12 +154,12 @@ export class QaBot extends LitElement {
                             ${qa.answer?.uri ? html`
                                 <a class="answer-reference" href="${(this.site || '') + qa.answer.uri}" target="${this.target as any}">Source</a>
                             `:''}
-                            ${qa.answer ? html`
+                            ${(qa.question && qa.answer) ? html`
                                 <div class="thumbs">
-                                    <div class="thumb thumbup">
+                                    <div class="thumb thumbup" ?active="${qa.feedback === true}" @click="${()=> this.submitFeedback(qa, 'up')}">
                                         <i class="icon icon-thumb-up">${thumbUp}</i>
                                     </div>
-                                    <div class="thumb thumbdown">
+                                    <div class="thumb thumbdown" ?active="${qa.feedback === false}" @click="${()=> this.submitFeedback(qa, 'down')}">
                                         <i class="icon icon-thumb-down">${thumbDown}</i>
                                     </div>
                                 </div>
@@ -180,9 +196,9 @@ export class QaBot extends LitElement {
     override render() {
 
         return html`
-        <div class="jina-qabot card">
+        <div class="jina-qabot card" ?busy="${!(this.qaControl?.ready)}">
             <div class="card__header" @click="${()=> this.open = !this.open}">
-                <span class="card__title"><i class="icon">${discussionIcon}</i>&nbsp; Ask our docs!</span>
+                <span class="card__title"><i class="icon">${discussionIcon}</i>&nbsp; ${this.label}</span>
                 <i class="icon arrow-down">${downArrow}</i>
                 <i class="icon arrow-up">${upArrow}</i>
             </div>
