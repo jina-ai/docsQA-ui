@@ -4,9 +4,8 @@ import { css } from 'lit';
 export const masterStyle = css`
     :host {
         --jina-docbot-color-shadow: #0000000d;
-        --jina-docbot-color-background-primary: #fff;
-        --jina-docbot-color-border-primary: #f8f9fb;
-
+        --jina-docbot-color-background: #fff;
+        --jina-docbot-color-padding: #f8f9fb;
 
         --jina-docbot-color-primary: #000;
         --jina-docbot-color-action: #009191;
@@ -14,15 +13,21 @@ export const masterStyle = css`
         --jina-docbot-color-dimmed: #eeebee;
         --jina-docbot-color-muted: #646776;
 
-        --jina-docbot-color-background-header: #f8f9fb;
-        --jina-docbot-color-border-header: #f8f9fb;
-        --jina-docbot-color-border-action: #009191;
-
-
-
         --jina-docbot-size-text-primary: 0.7rem;
         --jina-docbot-size-text-title: 1rem;
         --jina-docbot-size-border-radius-primary: 0.25rem;
+    }
+
+    :host([theme='dark']) {
+      --jina-docbot-color-shadow: #0000000d;
+      --jina-docbot-color-background: #18181a;
+      --jina-docbot-color-padding: #1e2124;
+
+      --jina-docbot-color-primary: #ffffffcc;
+      --jina-docbot-color-action: #fbcb67;
+      --jina-docbot-color-action-reverse: #202020;
+      --jina-docbot-color-dimmed: #303335;
+      --jina-docbot-color-muted: #81868d;
     }
 
     :host {
@@ -48,10 +53,11 @@ export const masterStyle = css`
         box-shadow: 0 0.1rem 0.25rem var(--jina-docbot-color-shadow), 0 0 0.0625rem rgba(0, 0, 0, 0.1);
         box-sizing: border-box;
         background-clip: border-box;
-        background-color: var(--jina-docbot-color-background-primary);
-        border: 1px solid var(--jina-docbot-color-border-primary);
+        background-color: var(--jina-docbot-color-background);
+        border: 1px solid var(--jina-docbot-color-padding);
         border-radius: var(--jina-docbot-size-border-radius-primary) var(--jina-docbot-size-border-radius-primary) 0 0;
         color: var(--jina-docbot-color-primary);
+        fill: var(--jina-docbot-color-primary);
         display: flex;
         flex-direction: column;
         min-width: 0;
@@ -68,9 +74,9 @@ export const masterStyle = css`
         cursor: pointer;
         user-select: none;
 
-        background-color: var(--jina-docbot-color-background-header);
+        background-color: var(--jina-docbot-color-padding);
 
-        border-bottom: 1px solid var(--jina-docbot-color-border-header);
+        border-bottom: 1px solid var(--jina-docbot-color-padding);
 
         display: flex;
         font-weight: normal;
@@ -105,7 +111,7 @@ export const masterStyle = css`
 
     .card .card__content {
         height: calc(100% - (var(--jina-docbot-size-text-title) + 2.5rem));
-
+        overflow: scroll;
         overflow: overlay;
         scroll-behavior: smooth;
         display: flex;
@@ -121,8 +127,7 @@ export const masterStyle = css`
         display: flex;
         flex-grow: 1;
         flex-shrink: 1;
-        overflow: overlay;
-
+        overflow: scroll;
         overflow: overlay;
         scroll-behavior: smooth;
         padding: 1rem 0.5rem 0 1rem;
@@ -160,7 +165,7 @@ export const masterStyle = css`
         fill: var(--jina-docbot-color-action-reverse);
         background-color: var(--jina-docbot-color-action);
 
-        box-shadow: 0 0 0.15rem var(--jina-docbot-color-border-action);
+        box-shadow: 0 0 0.15rem var(--jina-docbot-color-action);
     }
 
     .jina-doc-bot__control *:disabled {
@@ -170,16 +175,18 @@ export const masterStyle = css`
     .jina-doc-bot__control textarea {
         width: 100%;
         padding: 0.5rem calc(1.5rem + 0.5rem) 0.5rem 0.5rem;
-        border: 1px solid var(--jina-docbot-color-border-action);
+        border: 1px solid var(--jina-docbot-color-action);
         border-radius: var(--jina-docbot-size-border-radius-primary);
         font-size: var(--jina-docbot-size-text-primary);
         resize: none;
+
         overflow-y: scroll;
+        overflow-y: overlay;
         transition: box-shadow 0.2s ease-in-out;
     }
 
     .jina-doc-bot__control textarea:focus {
-        box-shadow: 0 0 0.15rem var(--jina-docbot-color-border-action);
+        box-shadow: 0 0 0.15rem var(--jina-docbot-color-action);
     }
 
     .jina-doc-bot__control textarea:disabled {
@@ -196,6 +203,10 @@ export const masterStyle = css`
     .jina-doc-bot .powered-by .icon {
         width: auto;
         height: 1rem;
+    }
+
+    .answer-hint {
+        padding-right: 0.5rem;
     }
 
     .answer-hint h1,h2,h3,h4,h5,h6, ::slotted(h1),

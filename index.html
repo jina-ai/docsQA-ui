@@ -21,12 +21,17 @@
 
 <body>
 
-  <style> qa-bot:not(:defined) {display: none;} </style>
-  <qa-bot server="https://docsbot.jina.ai" style="right: 25%; width: 16rem;">
-      <h3>You can ask questions about our docs. Try:</h3>
-      <p>Does Jina support Kubernetes?</p>
-      <p>How can I traverse a nested DocumentArray?</p>
-      <p>What are the basic concepts in Jina?</p>
+  <style>
+    qa-bot:not(:defined) {
+      display: none;
+    }
+  </style>
+  <qa-bot server="https://docsbot.jina.ai" site="https://docs.jina.ai" theme="dark" target="_blank"
+    style="right: 25%; width: 16.5rem;">
+    <h3>You can ask questions about our docs. Try:</h3>
+    <p>Does Jina support Kubernetes?</p>
+    <p>How can I traverse a nested DocumentArray?</p>
+    <p>What are the basic concepts in Jina?</p>
   </qa-bot>
 
   <script type="module" src="./build/index.js"></script>

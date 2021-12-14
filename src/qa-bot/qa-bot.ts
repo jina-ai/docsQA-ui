@@ -23,6 +23,12 @@ export class QaBot extends LitElement {
     @property({ type: String })
     site?: string;
 
+    @property({ type: String, reflect: true })
+    target?: string = '_self';
+
+    @property({ type: String, reflect: true })
+    theme?: string = 'light';
+
     @property({ type: Boolean })
     manual?: boolean;
 
@@ -137,7 +143,7 @@ export class QaBot extends LitElement {
                                 <a class="answer-reference" href="https://slack.jina.ai" target="_blank">Report</a>
                             ` : ''}
                             ${qa.answer?.uri ? html`
-                                <a class="answer-reference" href="${(this.site || '') + qa.answer.uri}">Source</a>
+                                <a class="answer-reference" href="${(this.site || '') + qa.answer.uri}" target="${this.target as any}">Source</a>
                             `:''}
                             ${qa.answer ? html`
                                 <div class="thumbs">
