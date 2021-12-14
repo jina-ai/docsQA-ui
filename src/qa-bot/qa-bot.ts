@@ -7,10 +7,6 @@ import { JinaQABotController, QAPair } from './controller';
 import masterStyle from './style';
 import { discussionIcon, downArrow, paperPlane, poweredByJina, thumbDown, thumbUp, tripleDot, upArrow } from './svg-icons';
 
-export interface QaBotConfig {
-
-}
-
 export class QaBot extends LitElement {
     @property({ type: String }) override title = 'My app';
 
@@ -29,11 +25,8 @@ export class QaBot extends LitElement {
     @property({ type: String, reflect: true })
     theme?: string = 'light';
 
-    @property({ type: Boolean })
-    manual?: boolean;
-
-    @property({ attribute: false })
-    config?: QaBotConfig;
+    // @property({ type: Boolean })
+    // manual?: boolean;
 
     @property({ type: Boolean, reflect: true })
     open?: boolean;
@@ -201,9 +194,9 @@ export class QaBot extends LitElement {
                     <textarea maxlength="100" rows="3"
                         ?disabled="${!(this.qaControl?.ready)}"
                         @keypress="${this.onTextAreaInput}"
-                        placeholder="Type your question here"
+                        placeholder="${this.server ? 'Type your question here...' : 'Waiting for server configuration...'}"
                         autofocus></textarea>
-                    <button ?disabled="${!(this.qaControl?.ready)}" @click="${this.submitQuestion}">
+                    <button title="Submit" ?disabled="${!(this.qaControl?.ready)}" @click="${this.submitQuestion}">
                         <i class="icon icon-plane">${paperPlane}</i>
                     </button>
                 </div>

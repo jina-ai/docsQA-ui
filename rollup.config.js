@@ -1,12 +1,13 @@
 import nodeResolve from '@rollup/plugin-node-resolve';
-import { getBabelOutputPlugin } from '@rollup/plugin-babel';
-import polyfillsLoader from '@web/rollup-plugin-polyfills-loader';
 import html from '@web/rollup-plugin-html';
-import { copy } from '@web/rollup-plugin-copy';
+import { copy as simpleCopy } from '@web/rollup-plugin-copy';
+import copy from 'rollup-plugin-copy';
 import minifyHTML from 'rollup-plugin-minify-html-literals';
 import summary from 'rollup-plugin-summary';
 import { importMetaAssets } from '@web/rollup-plugin-import-meta-assets';
 import { terser } from 'rollup-plugin-terser';
+import polyfillsLoader from '@web/rollup-plugin-polyfills-loader';
+import { getBabelOutputPlugin } from '@rollup/plugin-babel';
 // import { generateSW } from 'rollup-plugin-workbox';
 // import path from 'path';
 
@@ -20,13 +21,6 @@ const htmlPlugin = html({
 
 export default {
   input: 'index.html',
-  output: {
-    entryFileNames: '[hash].js',
-    chunkFileNames: '[hash].js',
-    assetFileNames: '[hash][extname]',
-    format: 'es',
-    dir: 'dist',
-  },
   preserveEntrySignatures: false,
 
   plugins: [
@@ -56,7 +50,7 @@ export default {
       },
       // List of polyfills to inject (each has individual feature detection)
       polyfills: {
-        hash: true,
+        hash: false,
         coreJs: true,
         regeneratorRuntime: true,
         fetch: true,
@@ -91,9 +85,23 @@ export default {
 
     // Print bundle summary
     // Optional: copy any static assets to build directory
-    copy({
+    simpleCopy({
       patterns: ['data/**/*', 'assets/**/*', 'static/**/*', 'public/**/*'],
       rootDir: './',
+    }),
+    copy({
+      copyOnce: true,
+      flatten: false,
+      targets: [
+        {
+          src: 'build/**/*.d.ts',
+          dest: 'dist/typings/'
+        },
+        {
+          src: 'jina-qa-bot-auto-polyfill.js',
+          dest: 'dist/'
+        }
+      ]
     }),
     summary(),
   ],
@@ -104,8 +112,8 @@ export default {
     {
       // Modern JS bundles (no JS compilation, ES module output)
       format: 'esm',
-      chunkFileNames: '[name]-[hash].js',
-      entryFileNames: '[name]-[hash].js',
+      chunkFileNames: '[name].js',
+      entryFileNames: '[name].js',
       dir: 'dist',
       plugins: [
         htmlPlugin.api.addOutput('modern')
@@ -114,8 +122,8 @@ export default {
     {
       // Legacy JS bundles (ES5 compilation and SystemJS module output)
       format: 'esm',
-      chunkFileNames: 'legacy-[name]-[hash].js',
-      entryFileNames: 'legacy-[name]-[hash].js',
+      chunkFileNames: 'legacy-[name].js',
+      entryFileNames: 'legacy-[name].js',
       dir: 'dist',
       plugins: [
         htmlPlugin.api.addOutput('legacy'),
