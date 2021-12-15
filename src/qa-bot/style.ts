@@ -16,6 +16,8 @@ export const masterStyle = css`
         --jina-qabot-size-text-primary: 0.7rem;
         --jina-qabot-size-text-title: 1rem;
         --jina-qabot-size-border-radius-primary: 0.25rem;
+
+        --jina-docbot-card-header-height: calc(var(--jina-qabot-size-text-title) + 2.5rem);
     }
 
     :host([theme='dark']){
@@ -46,9 +48,19 @@ export const masterStyle = css`
 
     :host {
         width: 16rem;
+        height: 100%;
         position: fixed;
+        transition: transform 0.15s ease-in-out, max-height 0.15s ease-in-out;
         bottom: 0;
-        height: 25rem;
+        max-height: 25rem;
+    }
+
+    :host(:not([animate-by='position']):not([open])) {
+        max-height: var(--jina-docbot-card-header-height);
+    }
+
+    :host([animate-by='position']:not([open])) {
+        transform: translateY(calc(100% - var(--jina-docbot-card-header-height)));
     }
 
     button:active {
@@ -81,11 +93,10 @@ export const masterStyle = css`
         min-width: 0;
         position: relative;
         word-wrap: break-word;
-        transition: transform 0.15s ease-in-out;
     }
 
     .card .card__header {
-        height: calc(var(--jina-qabot-size-text-title) + 2.5rem);
+        height: var(--jina-docbot-card-header-height);
         padding: 1rem;
         line-height: 1.15rem;
         font-size: var(--jina-qabot-size-text-title);
@@ -128,7 +139,7 @@ export const masterStyle = css`
     }
 
     .card .card__content {
-        height: calc(100% - (var(--jina-qabot-size-text-title) + 2.5rem));
+        height: calc(100% - var(--jina-docbot-card-header-height));
         overflow: scroll;
         overflow: overlay;
         scroll-behavior: smooth;
@@ -137,14 +148,11 @@ export const masterStyle = css`
         justify-content: space-between;
     }
 
-    :host(:not([open])) .card {
-        transform: translateY(calc(100% - (var(--jina-qabot-size-text-title) + 2.5rem)));
-    }
-
     .jina-qabot__answer-block {
         display: flex;
         flex-grow: 1;
         flex-shrink: 1;
+        min-height: 3rem;
         overflow: scroll;
         overflow: overlay;
         scroll-behavior: smooth;
@@ -213,14 +221,15 @@ export const masterStyle = css`
 
     .jina-qabot .powered-by {
         position: absolute;
-        bottom: 0;
         display: flex;
         width: 100%;
+        height: 1rem;
+        bottom: -1rem;
         justify-content: center;
     }
     .jina-qabot .powered-by .icon {
         width: auto;
-        height: 1rem;
+        height: 100%;
     }
 
     .answer-hint {
@@ -254,6 +263,10 @@ export const masterStyle = css`
         font-size: var(--jina-qabot-size-text-primary);
         padding-left: 1.2rem;
         color: var(--jina-qabot-color-muted);
+    }
+
+    .answer-hint >*:last-child, ::slotted(*:last-child) {
+        padding-bottom: 1rem;
     }
 
     .answer-dialog {

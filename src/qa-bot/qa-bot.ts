@@ -23,6 +23,9 @@ export class QaBot extends LitElement {
     @property({ type: String, reflect: true })
     theme?: string = 'auto';
 
+    @property({attribute: 'animate-by', type: String, reflect: true })
+    animateBy?: 'position' | 'height' = 'height';
+
     // @property({ type: Boolean })
     // manual?: boolean;
 
@@ -77,11 +80,14 @@ export class QaBot extends LitElement {
             return;
         }
         const rPromise = this.qaControl.askQuestion(questionInput);
-        this.scrollDialogToBottom();
+
+        setTimeout(() => {
+            this.scrollDialogToBottom();
+        }, 0);
 
         try {
             const qaPair = await rPromise;
-            await this.qaControl.sendFeedback(qaPair, 'none');
+            this.qaControl.sendFeedback(qaPair, 'none').catch(()=> 'swallow');
             this.textarea!.value = '';
 
         } finally {
@@ -109,16 +115,12 @@ export class QaBot extends LitElement {
     }
 
     @throttle()
-    scrollDialogToBottom() {
-        return new Promise<void>((resolve, _reject)=> {
-            setTimeout(() => {
-                this.renderRoot?.querySelector('.qa-pair:last-child')?.scrollIntoView({
-                    block: "end",
-                    inline: "end"
-                });
-                resolve();
-            }, 100);
-        })
+    async scrollDialogToBottom() {
+        await this.updateComplete;
+        this.renderRoot?.querySelector('.qa-pair:last-child')?.scrollIntoView({
+            block: "end",
+            inline: "end"
+        });
     }
 
     getSingleQAComp(qa: QAPair) {
@@ -215,10 +217,11 @@ export class QaBot extends LitElement {
                     <button title="Submit" ?disabled="${!(this.qaControl?.ready)}" @click="${this.submitQuestion}">
                         <i class="icon icon-plane">${paperPlane}</i>
                     </button>
+                    <div class="powered-by"><i class="icon icon-powered-by-jina">${poweredByJina}</i></div>
                 </div>
             </div>
 
-            <div class="powered-by"><i class="icon icon-powered-by-jina">${poweredByJina}</i></div>
+
         </div>
     `;
     }
