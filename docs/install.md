@@ -1,16 +1,16 @@
 ---
 layout: page.11ty.cjs
-title: <my-element> ⌲ Install
+title: jina-qa-bot ⌲ Install
 ---
 
 # Install
 
-`<my-element>` is distributed on npm, so you can install it locally or use it via npm CDNs like unpkg.com.
+`<jina-qa-bot>` is distributed on npm, so you can install it locally or use it via npm CDNs like unpkg.com.
 
 ## Local Installation
 
 ```bash
-npm i my-element
+npm i jina-qa-bot
 ```
 
 ## CDN
@@ -22,11 +22,11 @@ For this element to work from unpkg.com specifically, you need to include the `?
 ### HTML
 
 ```html
-<script type="module" src="https://unpkg.com/my-element?module"></script>
+<script type="module" src="https://unpkg.com/jina-qa-bot?module"></script>
 ```
 
 ### JavaScript
 
 ```html
-import {MyElement} from 'https://unpkg.com/my-element?module';
+import {MyElement} from 'https://unpkg.com/jina-qa-bot?module';
 ```

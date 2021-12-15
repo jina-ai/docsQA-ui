@@ -135,10 +135,6 @@ export const masterStyle = css`
         display: none;
     }
 
-    ::slotted(*) {
-        margin: 0;
-    }
-
     .card .card__content {
         height: calc(100% - var(--jina-docbot-card-header-height));
         overflow: hidden;
@@ -246,6 +242,7 @@ export const masterStyle = css`
     .answer-hint h1,h2,h3,h4,h5,h6, ::slotted(h1),
         ::slotted(h2), ::slotted(h3), ::slotted(h4),
         ::slotted(h5), ::slotted(h6) {
+        margin: 0;
         margin-bottom: 0.75rem;
         font-size: var(--jina-qabot-size-text-primary);
         font-weight: bold;
@@ -253,6 +250,7 @@ export const masterStyle = css`
     }
 
     .answer-hint p,li,::slotted(p),::slotted(li) {
+        margin: 0;
         font-size: var(--jina-qabot-size-text-primary);
         color: var(--jina-qabot-color-muted);
         display: list-item;

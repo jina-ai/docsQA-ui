@@ -104,3 +104,5 @@ build
 # TernJS port file
 .tern-port
 custom-elements.json
+
+docs/_build

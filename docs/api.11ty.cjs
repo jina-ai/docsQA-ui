@@ -6,7 +6,7 @@ module.exports = class Docs {
   data() {
     return {
       layout: 'page.11ty.cjs',
-      title: '<my-element> ⌲ Docs',
+      title: '<jina-qa-bot> ⌲ Docs',
     };
   }
 
@@ -37,7 +37,7 @@ module.exports = class Docs {
          'Properties',
          ['name', 'attribute', 'description', 'type.text', 'default'],
          element.members.filter((m) => m.kind === 'field')
-       )}  
+       )}
        ${renderTable(
          'Methods',
          ['name', 'parameters', 'description', 'return.type.text'],
@@ -52,12 +52,12 @@ module.exports = class Docs {
              ),
            }))
        )}
-       ${renderTable('Events', ['name', 'description'], element.events)}    
+       ${renderTable('Events', ['name', 'description'], element.events)}
        ${renderTable(
          'Slots',
          [['name', '(default)'], 'description'],
          element.slots
-       )}  
+       )}
        ${renderTable(
          'CSS Shadow Parts',
          ['name', 'description'],

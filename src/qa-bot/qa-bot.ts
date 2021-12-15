@@ -45,9 +45,7 @@ export class QaBot extends LitElement {
     static override styles = [
         resetCSS,
         customScrollbarCSS,
-        masterStyle,
-        css`
-  `
+        masterStyle
     ];
 
     override update(changedProps: PropertyValues) {
@@ -117,9 +115,11 @@ export class QaBot extends LitElement {
     @throttle()
     async scrollDialogToBottom() {
         await this.updateComplete;
-        this.renderRoot?.querySelector('.qa-pair:last-child')?.scrollIntoView({
-            block: "end",
-            inline: "end"
+        const elem = this.renderRoot?.querySelector('.jina-qabot__answer-block');
+        elem?.scroll({
+            top: elem.scrollHeight,
+            left: 0,
+            behavior: 'smooth'
         });
     }
 

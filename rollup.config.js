@@ -20,7 +20,7 @@ const htmlPlugin = html({
 });
 
 export default {
-  input: 'index.html',
+  input: 'build/index.html',
   preserveEntrySignatures: false,
 
   plugins: [
@@ -28,7 +28,21 @@ export default {
     htmlPlugin,
     /** Resolve bare module imports */
     nodeResolve(),
-    minifyHTML(),
+    minifyHTML({
+      options: {
+        minifyOptions: {
+          minifyCSS: {
+            level: {
+              1: {
+                all: false,
+                removeWhitespace: true,
+                replaceMultipleZeros: true,
+              }
+            }
+          }
+        }
+      }
+    }),
     /** Minify JS */
     terser({
       module: true,
