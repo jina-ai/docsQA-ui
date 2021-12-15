@@ -49,10 +49,11 @@ export const masterStyle = css`
     :host {
         width: 16rem;
         height: 100%;
-        position: fixed;
         transition: transform 0.15s ease-in-out, max-height 0.15s ease-in-out;
-        bottom: 0;
         max-height: 25rem;
+        position: absolute;
+        bottom: 0;
+        right: 3rem;
     }
 
     :host(:not([animate-by='position']):not([open])) {
@@ -140,7 +141,7 @@ export const masterStyle = css`
 
     .card .card__content {
         height: calc(100% - var(--jina-docbot-card-header-height));
-        overflow: scroll;
+        overflow: hidden;
         overflow: overlay;
         scroll-behavior: smooth;
         display: flex;
@@ -153,7 +154,8 @@ export const masterStyle = css`
         flex-grow: 1;
         flex-shrink: 1;
         min-height: 3rem;
-        overflow: scroll;
+        overflow-y: scroll;
+        scrollbar-width: thin;
         overflow: overlay;
         scroll-behavior: smooth;
         padding: 1rem 0.5rem 0 1rem;
@@ -163,6 +165,7 @@ export const masterStyle = css`
         margin: 0 1rem 1rem 1rem;
         display: flex;
         position: relative;
+        line-height: 1.15rem;
     }
 
     .jina-qabot__control button {
@@ -208,6 +211,7 @@ export const masterStyle = css`
 
         overflow-y: scroll;
         overflow-y: overlay;
+        scrollbar-width: none;
         transition: box-shadow 0.2s ease-in-out;
     }
 
@@ -233,7 +237,10 @@ export const masterStyle = css`
     }
 
     .answer-hint {
+        width: 100%;
         padding-right: 0.5rem;
+        line-height: 1.15rem;
+        display: block;
     }
 
     .answer-hint h1,h2,h3,h4,h5,h6, ::slotted(h1),
@@ -244,25 +251,28 @@ export const masterStyle = css`
         font-weight: bold;
         color: var(--jina-qabot-color-primary);
     }
-    .answer-hint p, ::slotted(p) {
-        position: relative;
+
+    .answer-hint p,li,::slotted(p),::slotted(li) {
         font-size: var(--jina-qabot-size-text-primary);
         color: var(--jina-qabot-color-muted);
+        display: list-item;
+        list-style-position: inside;
         padding-left: 1rem;
+        text-indent: -0.9rem;
+        list-style-type: "•   ";
     }
 
-    .answer-hint p::before, ::slotted(p)::before {
-        content: '•';
-        position: absolute;
-        left: 0;
-        font-size: var(--jina-qabot-size-text-primary);
-        color: var(--jina-qabot-color-muted);
+    .answer-hint p::marker,li::marker,::slotted(p)::marker,::slotted(li)::marker {
+        content: '• ';
+        font-weight: 1;
+        white-space: pre-wrap;
+        font-family: monospace;
     }
 
     .answer-hint ul, ol, ::slotted(ul), ::slotted(ol) {
         font-size: var(--jina-qabot-size-text-primary);
-        padding-left: 1.2rem;
         color: var(--jina-qabot-color-muted);
+        padding: 0;
     }
 
     .answer-hint >*:last-child, ::slotted(*:last-child) {
