@@ -2,6 +2,8 @@
  * This page generates its content from the custom-element.json file as read by
  * the _data/api.11tydata.js script.
  */
+
+const filteredPrivacy = new Set(['public', 'protected']);
 module.exports = class Docs {
   data() {
     return {
@@ -36,13 +38,13 @@ module.exports = class Docs {
        ${renderTable(
          'Properties',
          ['name', 'attribute', 'description', 'type.text', 'default'],
-         element.members.filter((m) => m.kind === 'field')
+         element.members.filter((m) => m.kind === 'field' && !filteredPrivacy.has(m.privacy))
        )}
        ${renderTable(
          'Methods',
          ['name', 'parameters', 'description', 'return.type.text'],
          element.members
-           .filter((m) => m.kind === 'method' && m.privacy !== 'private')
+           .filter((m) => m.kind === 'method' && !filteredPrivacy.has(m.privacy))
            .map((m) => ({
              ...m,
              parameters: renderTable(

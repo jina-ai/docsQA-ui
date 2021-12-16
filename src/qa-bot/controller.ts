@@ -106,6 +106,7 @@ export class JinaQABotController implements ReactiveController {
 
     clear() {
         this.qaPairs.length = 0;
+        this.host.requestUpdate();
     }
 
 }

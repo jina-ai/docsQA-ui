@@ -62,7 +62,7 @@ export const paperPlane = svg`
 </svg>`;
 
 export const poweredByJina = svg`
-<svg class="svg color-manglable" height="100%" width="auto" viewBox="0 0 325 91" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg class="svg color-manglable" height="100%" viewBox="0 0 325 91" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <title>Powered-by-Jina-Large-Basic</title>
     <g id="page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <g id="Powered-by-Jina-Large-Basic" fill="#898989" fill-rule="nonzero">

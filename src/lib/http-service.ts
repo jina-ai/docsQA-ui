@@ -99,8 +99,8 @@ export abstract class HTTPService<
             baseHeaders: {},
         });
 
-        this.baseUrl = baseUrl;
-        this.baseURL = new URL(baseUrl);
+        this.baseURL = new URL(baseUrl, window ? `${window.location.protocol}//${window?.location.host}` : undefined);
+        this.baseUrl = this.baseURL.toString();
 
         this.baseOptions = defaultsDeep(config.requestOptions, {
             maxRedirects: 0,

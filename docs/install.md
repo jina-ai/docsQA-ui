@@ -10,7 +10,7 @@ title: jina-qa-bot ⌲ Install
 ## Local Installation
 
 ```bash
-npm i jina-qa-bot
+npm i @jina-ai/jina-qa-bot
 ```
 
 ## CDN
@@ -22,11 +22,11 @@ For this element to work from unpkg.com specifically, you need to include the `?
 ### HTML
 
 ```html
-<script type="module" src="https://unpkg.com/jina-qa-bot?module"></script>
+<script type="module" src="https://unpkg.com/@jina-ai/jina-qa-bot"></script>
 ```
 
 ### JavaScript
 
-```html
-import {MyElement} from 'https://unpkg.com/jina-qa-bot?module';
+```javascript
+import JinaQABot from '@jina-ai/jina-qa-bot';
 ```

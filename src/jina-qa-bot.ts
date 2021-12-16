@@ -8,4 +8,6 @@ declare global {
     }
 }
 
+export const JinaQABot = QaBot;
+
 export default QaBot;

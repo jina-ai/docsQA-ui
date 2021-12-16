@@ -57,7 +57,7 @@ export const masterStyle = css`
     }
 
     :host(:not([animate-by='position']):not([open])) {
-        max-height: var(--jina-docbot-card-header-height);
+        max-height: var(--jina-docbot-card-header-height) !important;
     }
 
     :host([animate-by='position']:not([open])) {

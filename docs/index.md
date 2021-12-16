@@ -5,11 +5,11 @@ title: <jina-qa-bot> ⌲ Home
 
 # &lt;jina-qa-bot>
 
-`<jina-qa-bot>` is an awesome element. It's a great introduction to building web components with LitElement, with nice documentation site as well.
+`<jina-qa-bot>` is the UI part of jina-doc-bot. It's a web component built with [LitElement](https://lit.dev).
 
 ## As easy as HTML
 
-<section class="columns" style="height: 30rem;">
+<section class="columns">
   <div>
 
 `<jina-qa-bot>` is just an HTML element. You can it anywhere you can use HTML!
@@ -19,17 +19,10 @@ title: <jina-qa-bot> ⌲ Home
 ```
 
   </div>
-  <div style="width: 100%; height: 100%; background: black; position: relative;">
+<div class="bot-container">
+    <jina-qa-bot></jina-qa-bot>
+</div>
 
-<jina-qa-bot server="https://docsbot.jina.ai" site="https://docs.jina.ai" target="_blank" style="">
-    <h3>You can ask questions about Jina. Try:</h3>
-    <p>What is Jina?</p>
-    <p>Does Jina support Kubernetes?</p>
-    <p>How can I traverse a nested DocumentArray?</p>
-    <p>What are the basic concepts in Jina?</p>
-</jina-qa-bot>
-
-  </div>
 </section>
 
 ## Configure with attributes
@@ -40,12 +33,27 @@ title: <jina-qa-bot> ⌲ Home
 `<jina-qa-bot>` can be configured with attributed in plain HTML.
 
 ```html
-<jina-qa-bot name="HTML"></jina-qa-bot>
+<jina-qa-bot 
+    label="Try custom title ✨"
+    server="https://docsbot.jina.ai" 
+    open
+    site="https://docs.jina.ai" 
+    target="_blank">
+    <h3>You can tryout QA-bot easily:</h3>
+    <p>What is QA-bot?</p>
+    <p>Does QA-bot support Vue/React/Angular?</p>
+    <p>What are the basic concepts in QA-bot?</p>
+</jina-qa-bot>
 ```
 
   </div>
-  <div>
-
+  <div class="bot-container">
+        <jina-qa-bot label="Try custom title ✨" server="https://docsbot.jina.ai" site="https://docs.jina.ai" target="_blank" open>
+           <h3>You can tryout QA-bot easily:</h3>
+            <p>What is QA-bot?</p>
+            <p>Does QA-bot support Vue/React/Angular?</p>
+            <p>What are the basic concepts in QA-bot?</p> 
+        </jina-qa-bot>
   </div>
 </section>
 
@@ -56,24 +64,70 @@ title: <jina-qa-bot> ⌲ Home
 
 `<jina-qa-bot>` can be used with declarative rendering libraries like Angular, React, Vue, and lit-html
 
+For example, the following Vue code:
+```html
+<div id="demo-vue">
+    <div class="bot-container">
+        <jina-qa-bot 
+            :open="Number.isInteger(Math.floor(timer / 3) / 2)"
+            :theme="Number.isInteger(Math.floor(timer / 5) / 2) ? 'light':'dark'"
+            :label="`+${timer}s`" 
+            :server="server"
+        ></jina-qa-bot>
+    </div>
+</div>
+```
+
 ```js
-import {html, render} from 'lit-html';
-
-const name = 'lit-html';
-
-render(
-  html`
-    <h2>This is a &lt;jina-qa-bot&gt;</h2>
-    <jina-qa-bot .name=${name}></jina-qa-bot>
-  `,
-  document.body
-);
+const app = Vue.createApp({ 
+    data() {
+        return { 
+            server: '/', 
+            timer: 0 
+        };
+    },
+    created() {
+        setInterval(()=> {
+            this.timer += 1;
+        }, 1000);
+    }
+});
+app.config.compilerOptions.isCustomElement = (tag)=> {
+    return tag === 'jina-qa-bot';
+};
+app.mount('#demo-vue');
 ```
 
   </div>
   <div>
-
-<h2>This is a &lt;jina-qa-bot&gt;</h2>
+Renders to:
+<div id="demo-vue">
+    <div class="bot-container" v-bind:class="Number.isInteger(Math.floor(timer / 5) / 2) ? 'light' : 'dark'">
+        <jina-qa-bot 
+            :open="Number.isInteger(Math.floor(timer / 3) / 2)" 
+            :label="` +${timer}s`" 
+            :server="server"
+            :theme="Number.isInteger(Math.floor(timer / 5) / 2) ? 'light':'dark'"
+        ></jina-qa-bot>
+    </div>
+</div>
+<script src="https://unpkg.com/vue@next"></script>
+<script type="text/javascript">
+    const app = Vue.createApp({ 
+        data() {
+            return { server: 'baidu.com', timer: 0 };
+        },
+        created() {
+            setInterval(()=> {
+                this.timer += 1;
+            }, 1000);
+        }
+    });
+    app.config.compilerOptions.isCustomElement = (tag)=> {
+        return tag === 'jina-qa-bot';
+    }
+    app.mount('#demo-vue');
+</script>
 
   </div>
 </section>

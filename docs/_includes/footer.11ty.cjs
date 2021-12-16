@@ -2,8 +2,7 @@ module.exports = function (data) {
   return `
 <footer>
   <p>
-    Made with
-    <a href="https://github.com/lit/lit-element-starter-ts">lit-starter-ts</a>
+    © Jina AI 2020-${new Date().getFullYear()}. All rights reserved.
   </p>
 </footer>`;
 };

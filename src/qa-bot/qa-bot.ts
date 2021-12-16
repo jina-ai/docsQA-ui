@@ -7,6 +7,20 @@ import { JinaQABotController, QAPair } from './controller';
 import masterStyle from './style';
 import { discussionIcon, downArrow, paperPlane, poweredByJina, thumbDown, thumbUp, tripleDot, upArrow } from './svg-icons';
 
+
+/**
+ * QABot custom element
+ * @summary WebComponent for Jina-docs-bot
+ * @slot - The intro headline and example questions user might define
+ *
+ * @attr label - Customize title text in the header part
+ * @attr server - REQUIRED, specify the server url bot talks to.
+ * @attr site - Specify site base location the links refer to, if not relative to current location.
+ * @attr target - Specify <a target=""> of reference links.
+ * @attr open - Set the chat-bot expanded or collapsed.
+ * @attr theme - Choose between preset themes, auto, `light`, or `dark`.
+ * @attr animate-by - Choose slide-up/slide-down animation between `height` or `position`
+ */
 export class QaBot extends LitElement {
     @property({ type: String, reflect: true})
     label = 'Ask our docs!';
@@ -21,7 +35,7 @@ export class QaBot extends LitElement {
     target?: string = '_self';
 
     @property({ type: String, reflect: true })
-    theme?: string = 'auto';
+    theme?: 'auto' | 'dark' | 'light' | string = 'auto';
 
     @property({attribute: 'animate-by', type: String, reflect: true })
     animateBy?: 'position' | 'height' = 'height';
@@ -32,10 +46,10 @@ export class QaBot extends LitElement {
     @property({ type: Boolean, reflect: true })
     open?: boolean;
 
-    qaControl?: JinaQABotController;
+    protected qaControl?: JinaQABotController;
 
     @query('.jina-qabot__control textarea')
-    textarea?: HTMLTextAreaElement;
+    protected textarea?: HTMLTextAreaElement;
 
     constructor() {
         super();
@@ -55,7 +69,7 @@ export class QaBot extends LitElement {
         super.update(changedProps);
     }
 
-    onTextAreaInput(event: KeyboardEvent) {
+    protected onTextAreaInput(event: KeyboardEvent) {
         if (event.key !== 'Enter') {
             return;
         }
@@ -77,6 +91,14 @@ export class QaBot extends LitElement {
         if (!questionInput) {
             return;
         }
+
+        if (questionInput.startsWith(':clear')) {
+            this.qaControl.clear();
+            this.textarea!.value = '';
+
+            return;
+        }
+
         const rPromise = this.qaControl.askQuestion(questionInput);
 
         setTimeout(() => {
@@ -100,7 +122,7 @@ export class QaBot extends LitElement {
     }
 
     @throttle()
-    async submitFeedback(qaPair: QAPair, feedback: 'up' | 'down' | 'none' = 'none') {
+    protected async submitFeedback(qaPair: QAPair, feedback: 'up' | 'down' | 'none' = 'none') {
         if (!this.qaControl) {
             return;
         }
@@ -123,7 +145,14 @@ export class QaBot extends LitElement {
         });
     }
 
-    getSingleQAComp(qa: QAPair) {
+    toggleOpen() {
+        this.open = !this.open;
+        if (this.open) {
+            this.textarea?.focus();
+        }
+    }
+
+    protected getSingleQAComp(qa: QAPair) {
         return html`
             <div class="qa-pair">
                 ${qa.question ? html`
@@ -174,7 +203,7 @@ export class QaBot extends LitElement {
     `;
     }
 
-    getAnswerBlock() {
+    protected getAnswerBlock() {
         if (!(this.qaControl?.qaPairs.length)) {
             return html`
             <div class="answer-hint">
@@ -199,8 +228,8 @@ export class QaBot extends LitElement {
     override render() {
 
         return html`
-        <div class="jina-qabot card" ?busy="${!(this.qaControl?.ready)}">
-            <div class="card__header" @click="${()=> this.open = !this.open}">
+        <div class="jina-qabot card" ?busy="${!(this.qaControl?.ready)}" >
+            <div class="card__header" @click="${this.toggleOpen}">
                 <span class="card__title"><i class="icon">${discussionIcon}</i>&nbsp; ${this.label}</span>
                 <i class="icon arrow-down">${downArrow}</i>
                 <i class="icon arrow-up">${upArrow}</i>
@@ -213,16 +242,13 @@ export class QaBot extends LitElement {
                     <textarea maxlength="100" rows="3"
                         ?disabled="${!(this.qaControl?.ready)}"
                         @keypress="${this.onTextAreaInput}"
-                        placeholder="${this.server ? 'Type your question here...' : 'Waiting for server configuration...'}"
-                        autofocus></textarea>
+                        placeholder="${this.server ? 'Type your question here...' : 'Waiting for server configuration...'}"></textarea>
                     <button title="Submit" ?disabled="${!(this.qaControl?.ready)}" @click="${this.submitQuestion}">
                         <i class="icon icon-plane">${paperPlane}</i>
                     </button>
                     <div class="powered-by"><i class="icon icon-powered-by-jina">${poweredByJina}</i></div>
                 </div>
             </div>
-
-
         </div>
     `;
     }
