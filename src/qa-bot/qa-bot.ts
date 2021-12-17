@@ -10,7 +10,7 @@ import { discussionIcon, downArrow, paperPlane, poweredByJina, thumbDown, thumbU
 
 /**
  * QABot custom element
- * @summary WebComponent for Jina-docs-bot
+ * @summary WebComponent for DocsQA
  * @slot - The intro headline and example questions user might define
  *
  * @attr label - Customize title text in the header part
@@ -48,7 +48,7 @@ export class QaBot extends LitElement {
 
     protected qaControl?: JinaQABotController;
 
-    @query('.jina-qabot__control textarea')
+    @query('.qabot__control textarea')
     protected textarea?: HTMLTextAreaElement;
 
     constructor() {
@@ -137,7 +137,7 @@ export class QaBot extends LitElement {
     @throttle()
     async scrollDialogToBottom() {
         await this.updateComplete;
-        const elem = this.renderRoot?.querySelector('.jina-qabot__answer-block');
+        const elem = this.renderRoot?.querySelector('.qabot__answer-block');
         elem?.scroll({
             top: elem.scrollHeight,
             left: 0,
@@ -228,7 +228,7 @@ export class QaBot extends LitElement {
     override render() {
 
         return html`
-        <div class="jina-qabot card" ?busy="${!(this.qaControl?.ready)}" >
+        <div class="qabot card" ?busy="${!(this.qaControl?.ready)}" >
             <div class="card__header" @click="${this.toggleOpen}">
                 <span class="card__title">
                     <i class="icon">${discussionIcon}</i>
@@ -238,10 +238,10 @@ export class QaBot extends LitElement {
                 <i class="icon arrow-up">${upArrow}</i>
             </div>
             <div class="card__content">
-                <div class="jina-qabot__answer-block">
+                <div class="qabot__answer-block">
                     ${this.getAnswerBlock()}
                 </div>
-                <div class="jina-qabot__control">
+                <div class="qabot__control">
                     <textarea maxlength="100" rows="3"
                         ?disabled="${!(this.qaControl?.ready)}"
                         @keypress="${this.onTextAreaInput}"

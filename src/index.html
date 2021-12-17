@@ -12,11 +12,11 @@
 <body>
 
   <style>
-    jina-qa-bot:not(:defined) {
+    qa-bot:not(:defined) {
       display: none;
     }
   </style>
-  <jina-qa-bot server="https://docsbot.jina.ai" site="https://docs.jina.ai" target="_blank" style="">
+  <qa-bot server="https://docsbot.jina.ai" site="https://docs.jina.ai" target="_blank">
 
     <dt>You can ask questions about Jina. Try:</dt>
     <dd>What is Jina?</dd>
@@ -24,9 +24,9 @@
     <dd>How can I traverse a nested DocumentArray?</dd>
     <dd>What are the basic concepts in Jina?</dd>
 
-  </jina-qa-bot>
+  </qa-bot>
 
-  <script type="module" src="./jina-qa-bot.js"></script>
+  <script type="module" src="./qabot.js"></script>
 
 </body>
 

@@ -7,11 +7,11 @@ import '../index.js';
 describe('QaBot', () => {
   let element: QaBot;
   beforeEach(async () => {
-    element = await fixture(html`<jina-qa-bot></jina-qa-bot>`);
+    element = await fixture(html`<qa-bot></qa-bot>`);
   });
 
   it('renders its container', () => {
-    const container = element.shadowRoot!.querySelector('.jina-qabot')!;
+    const container = element.shadowRoot!.querySelector('.qabot')!;
     expect(container).to.exist;
   });
 

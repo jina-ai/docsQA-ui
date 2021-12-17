@@ -56,9 +56,9 @@
 
         function loadFiles() {
             if (!Array.prototype.flat) {
-                System.import('./legacy-jina-qa-bot.js');
+                System.import('./legacy-qabot.js');
             } else {
-                loadScript('./jina-qa-bot.js', 'module', []);
+                loadScript('./qabot.js', 'module', []);
             }
         }
 

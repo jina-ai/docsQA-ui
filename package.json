@@ -1,10 +1,10 @@
 {
-  "name": "@jina-ai/jina-qa-bot",
+  "name": "qabot",
   "version": "0.1.1",
-  "description": "WebComponent <jina-qa-bot> for Jina docs bot",
-  "main": "dist/jina-qa-bot.js",
-  "module": "dist/jina-qa-bot.js",
-  "types": "dist/typings/jina-qa-bot.d.ts",
+  "description": "WebComponent <qa-bot> for Jina DocsQA",
+  "main": "dist/qabot.js",
+  "module": "dist/qabot.js",
+  "types": "dist/typings/qabot.d.ts",
   "type": "module",
   "scripts": {
     "lint": "eslint 'src/**/*.ts'",
@@ -38,13 +38,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/jina-ai/jina-docs-bot-ui.git"
+    "url": "docsQA-ui"
   },
   "keywords": [
     "Jina AI",
     "Jina",
-    "docqa",
-    "jina-qa-bot",
+    "DocsQA",
+    "qabot",
+    "qa-bot",
     "ODQA",
     "web-components",
     "lit-element",
@@ -56,9 +57,9 @@
   ],
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/jina-ai/jina-docs-bot-ui/issues"
+    "url": "https://github.com/jina-ai/docsQA-ui/issues"
   },
-  "homepage": "https://github.com/jina-ai/jina-docs-bot-ui#readme",
+  "homepage": "https://jina.ai/docsQA-ui",
   "files": [
     "dist",
     "package.json",

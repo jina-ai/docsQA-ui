@@ -1,16 +1,16 @@
 ---
 layout: page.11ty.cjs
-title: jina-qa-bot ⌲ Install
+title: qabot ⌲ Install
 ---
 
 # Install
 
-`<jina-qa-bot>` is distributed on npm, so you can install it locally or use it via npm CDNs like jsdelivr.
+`<qa-bot>` is distributed on npm, so you can install it locally or use it via npm CDNs like jsdelivr.
 
 ## Local Installation
 
 ```bash
-npm i @jina-ai/jina-qa-bot
+npm i qabot
 ```
 
 ## CDN
@@ -20,11 +20,11 @@ npm CDNs like [jsdelivr](https://www.jsdelivr.com/) can directly serve files tha
 ### HTML
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/npm/@jina-ai/jina-qa-bot"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/qabot"></script>
 ```
 
 ### JavaScript
 
 ```javascript
-import JinaQABot from '@jina-ai/jina-qa-bot';
+import QABot from 'qabot';
 ```

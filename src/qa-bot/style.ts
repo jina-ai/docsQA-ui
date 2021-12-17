@@ -3,46 +3,46 @@ import { css } from 'lit';
 
 export const masterStyle = css`
     :host {
-        --jina-qabot-color-shadow: #0000000d;
-        --jina-qabot-color-background: #fff;
-        --jina-qabot-color-padding: #f8f9fb;
+        --qabot-color-shadow: #0000000d;
+        --qabot-color-background: #fff;
+        --qabot-color-padding: #f8f9fb;
 
-        --jina-qabot-color-primary: #000;
-        --jina-qabot-color-action: #009191;
-        --jina-qabot-color-action-contrast: #fff;
-        --jina-qabot-color-dimmed: #eeebee;
-        --jina-qabot-color-muted: #646776;
+        --qabot-color-primary: #000;
+        --qabot-color-action: #009191;
+        --qabot-color-action-contrast: #fff;
+        --qabot-color-dimmed: #eeebee;
+        --qabot-color-muted: #646776;
 
-        --jina-qabot-size-text-primary: 0.7rem;
-        --jina-qabot-size-text-title: 1rem;
-        --jina-qabot-size-border-radius-primary: 0.25rem;
+        --qabot-size-text-primary: 0.7rem;
+        --qabot-size-text-title: 1rem;
+        --qabot-size-border-radius-primary: 0.25rem;
 
-        --jina-docbot-card-header-height: calc(var(--jina-qabot-size-text-title) + 2.5rem);
+        --qabot-card-header-height: calc(var(--qabot-size-text-title) + 2.5rem);
     }
 
     :host([theme='dark']){
-      --jina-qabot-color-shadow: #0000000d;
-      --jina-qabot-color-background: #18181a;
-      --jina-qabot-color-padding: #1e2124;
+      --qabot-color-shadow: #0000000d;
+      --qabot-color-background: #18181a;
+      --qabot-color-padding: #1e2124;
 
-      --jina-qabot-color-primary: #ffffffcc;
-      --jina-qabot-color-action: #fbcb67;
-      --jina-qabot-color-action-contrast: #202020;
-      --jina-qabot-color-dimmed: #303335;
-      --jina-qabot-color-muted: #81868d;
+      --qabot-color-primary: #ffffffcc;
+      --qabot-color-action: #fbcb67;
+      --qabot-color-action-contrast: #202020;
+      --qabot-color-dimmed: #303335;
+      --qabot-color-muted: #81868d;
     }
 
     @media (prefers-color-scheme: dark) {
         :host([theme='auto']){
-            --jina-qabot-color-shadow: #0000000d;
-            --jina-qabot-color-background: #18181a;
-            --jina-qabot-color-padding: #1e2124;
+            --qabot-color-shadow: #0000000d;
+            --qabot-color-background: #18181a;
+            --qabot-color-padding: #1e2124;
 
-            --jina-qabot-color-primary: #ffffffcc;
-            --jina-qabot-color-action: #fbcb67;
-            --jina-qabot-color-action-contrast: #202020;
-            --jina-qabot-color-dimmed: #303335;
-            --jina-qabot-color-muted: #81868d;
+            --qabot-color-primary: #ffffffcc;
+            --qabot-color-action: #fbcb67;
+            --qabot-color-action-contrast: #202020;
+            --qabot-color-dimmed: #303335;
+            --qabot-color-muted: #81868d;
         }
     }
 
@@ -56,38 +56,38 @@ export const masterStyle = css`
     }
 
     :host(:not([animate-by='position']):not([open])) {
-        max-height: var(--jina-docbot-card-header-height) !important;
+        max-height: var(--qabot-card-header-height) !important;
     }
 
     :host([animate-by='position']:not([open])) {
-        transform: translateY(calc(100% - var(--jina-docbot-card-header-height)));
+        transform: translateY(calc(100% - var(--qabot-card-header-height)));
     }
 
     button:active {
         opacity: 0.8;
     }
 
-    .jina-qabot {
+    .qabot {
         position: relative;
         width: 100%;
         height: 100%;
         overflow: hidden;
-        font-size: var(--jina-qabot-size-text-primary);
+        font-size: var(--qabot-size-text-primary);
     }
 
-    .jina-qabot[busy] {
+    .qabot[busy] {
         cursor: wait;
     }
 
     .card {
-        box-shadow: 0 0.1rem 0.25rem var(--jina-qabot-color-shadow), 0 0 0.0625rem rgba(0, 0, 0, 0.1);
+        box-shadow: 0 0.1rem 0.25rem var(--qabot-color-shadow), 0 0 0.0625rem rgba(0, 0, 0, 0.1);
         box-sizing: border-box;
         background-clip: border-box;
-        background-color: var(--jina-qabot-color-background);
-        border: 1px solid var(--jina-qabot-color-padding);
-        border-radius: var(--jina-qabot-size-border-radius-primary) var(--jina-qabot-size-border-radius-primary) 0 0;
-        color: var(--jina-qabot-color-primary);
-        fill: var(--jina-qabot-color-primary);
+        background-color: var(--qabot-color-background);
+        border: 1px solid var(--qabot-color-padding);
+        border-radius: var(--qabot-size-border-radius-primary) var(--qabot-size-border-radius-primary) 0 0;
+        color: var(--qabot-color-primary);
+        fill: var(--qabot-color-primary);
         display: flex;
         flex-direction: column;
         min-width: 0;
@@ -96,16 +96,16 @@ export const masterStyle = css`
     }
 
     .card .card__header {
-        height: var(--jina-docbot-card-header-height);
+        height: var(--qabot-card-header-height);
         padding: 1rem;
         line-height: 1.15rem;
-        font-size: var(--jina-qabot-size-text-title);
+        font-size: var(--qabot-size-text-title);
         cursor: pointer;
         user-select: none;
 
-        background-color: var(--jina-qabot-color-padding);
+        background-color: var(--qabot-color-padding);
 
-        border-bottom: 1px solid var(--jina-qabot-color-padding);
+        border-bottom: 1px solid var(--qabot-color-padding);
 
         display: flex;
         font-weight: normal;
@@ -114,7 +114,7 @@ export const masterStyle = css`
     }
 
     .card .card__header:first-child {
-        border-radius: calc(var(--jina-qabot-size-border-radius-primary) - 1px) calc(var(--jina-qabot-size-border-radius-primary) - 1px) 0 0;
+        border-radius: calc(var(--qabot-size-border-radius-primary) - 1px) calc(var(--qabot-size-border-radius-primary) - 1px) 0 0;
     }
 
     .card .card__title {
@@ -136,7 +136,7 @@ export const masterStyle = css`
     }
 
     .card .card__content {
-        height: calc(100% - var(--jina-docbot-card-header-height));
+        height: calc(100% - var(--qabot-card-header-height));
         overflow: hidden;
         overflow: overlay;
         scroll-behavior: smooth;
@@ -145,7 +145,7 @@ export const masterStyle = css`
         justify-content: space-between;
     }
 
-    .jina-qabot__answer-block {
+    .qabot__answer-block {
         display: flex;
         flex-grow: 1;
         flex-shrink: 1;
@@ -157,18 +157,18 @@ export const masterStyle = css`
         padding: 1rem 0.5rem 0 1rem;
     }
 
-    .jina-qabot__control {
+    .qabot__control {
         margin: 0 1rem 1rem 1rem;
         display: flex;
         position: relative;
         line-height: 1.15rem;
     }
 
-    .jina-qabot__control button {
+    .qabot__control button {
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: 0 calc(var(--jina-qabot-size-border-radius-primary) - 1px) calc(var(--jina-qabot-size-border-radius-primary) - 1px) 0;
+        border-radius: 0 calc(var(--qabot-size-border-radius-primary) - 1px) calc(var(--qabot-size-border-radius-primary) - 1px) 0;
         position: absolute;
         padding: 0.5rem;
         border: none;
@@ -178,31 +178,31 @@ export const masterStyle = css`
         cursor: pointer;
 
         font-size: 1rem;
-        color: var(--jina-qabot-color-action);
-        fill: var(--jina-qabot-color-action);
-        background-color: var(--jina-qabot-color-action-contrast);
+        color: var(--qabot-color-action);
+        fill: var(--qabot-color-action);
+        background-color: var(--qabot-color-action-contrast);
 
         transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
     }
 
-    .jina-qabot__control button:not(:disabled):hover {
-        color: var(--jina-qabot-color-action-contrast);
-        fill: var(--jina-qabot-color-action-contrast);
-        background-color: var(--jina-qabot-color-action);
+    .qabot__control button:not(:disabled):hover {
+        color: var(--qabot-color-action-contrast);
+        fill: var(--qabot-color-action-contrast);
+        background-color: var(--qabot-color-action);
 
-        box-shadow: 0 0 0.15rem var(--jina-qabot-color-action);
+        box-shadow: 0 0 0.15rem var(--qabot-color-action);
     }
 
-    .jina-qabot__control *:disabled {
+    .qabot__control *:disabled {
         cursor: wait;
     }
 
-    .jina-qabot__control textarea {
+    .qabot__control textarea {
         width: 100%;
         padding: 0.5rem calc(1.5rem + 0.5rem) 0.5rem 0.5rem;
-        border: 1px solid var(--jina-qabot-color-action);
-        border-radius: var(--jina-qabot-size-border-radius-primary);
-        font-size: var(--jina-qabot-size-text-primary);
+        border: 1px solid var(--qabot-color-action);
+        border-radius: var(--qabot-size-border-radius-primary);
+        font-size: var(--qabot-size-text-primary);
         resize: none;
 
         overflow-y: scroll;
@@ -211,15 +211,15 @@ export const masterStyle = css`
         transition: box-shadow 0.2s ease-in-out;
     }
 
-    .jina-qabot__control textarea:focus {
-        box-shadow: 0 0 0.15rem var(--jina-qabot-color-action);
+    .qabot__control textarea:focus {
+        box-shadow: 0 0 0.15rem var(--qabot-color-action);
     }
 
-    .jina-qabot__control textarea:disabled {
-        color: var(--jina-qabot-color-muted);
+    .qabot__control textarea:disabled {
+        color: var(--qabot-color-muted);
     }
 
-    .jina-qabot .powered-by {
+    .qabot .powered-by {
         position: absolute;
         display: flex;
         width: 100%;
@@ -227,7 +227,7 @@ export const masterStyle = css`
         bottom: -1rem;
         justify-content: center;
     }
-    .jina-qabot .powered-by .icon {
+    .qabot .powered-by .icon {
         width: auto;
         height: 100%;
     }
@@ -244,15 +244,15 @@ export const masterStyle = css`
         ::slotted(h5),::slotted(h6),::slotted(dt) {
         margin: 0;
         margin-bottom: 0.75rem;
-        font-size: var(--jina-qabot-size-text-primary);
+        font-size: var(--qabot-size-text-primary);
         font-weight: bold;
-        color: var(--jina-qabot-color-primary);
+        color: var(--qabot-color-primary);
     }
 
     .answer-hint p,li,dd,::slotted(p),::slotted(li),::slotted(dd) {
         margin: 0;
-        font-size: var(--jina-qabot-size-text-primary);
-        color: var(--jina-qabot-color-muted);
+        font-size: var(--qabot-size-text-primary);
+        color: var(--qabot-color-muted);
         display: list-item;
         list-style-position: inside;
         padding-left: 1rem;
@@ -269,8 +269,8 @@ export const masterStyle = css`
     }
 
     .answer-hint ul, ol, ::slotted(ul), ::slotted(ol) {
-        font-size: var(--jina-qabot-size-text-primary);
-        color: var(--jina-qabot-color-muted);
+        font-size: var(--qabot-size-text-primary);
+        color: var(--qabot-color-muted);
         padding: 0;
     }
 
@@ -294,8 +294,8 @@ export const masterStyle = css`
         display: inline-block;
         position: relative;
         height: auto;
-        background-color: var(--jina-qabot-color-action);
-        color: var(--jina-qabot-color-action-contrast);
+        background-color: var(--qabot-color-action);
+        color: var(--qabot-color-action-contrast);
         margin-bottom: 20px;
         border-radius: 5px;
         max-width: 80%;
@@ -311,7 +311,7 @@ export const masterStyle = css`
         top: auto;
         bottom: -10px;
         border: 10px solid;
-        border-color: transparent transparent transparent var(--jina-qabot-color-action);
+        border-color: transparent transparent transparent var(--qabot-color-action);
     }
 
     .qa-pair .qa-row.question {
@@ -332,14 +332,14 @@ export const masterStyle = css`
     }
 
     .qa-pair .question .bubble {
-        color: var(--jina-qabot-color-primary);
-        background-color: var(--jina-qabot-color-dimmed);
+        color: var(--qabot-color-primary);
+        background-color: var(--qabot-color-dimmed);
     }
 
     .qa-pair .question .bubble:after {
         left: auto;
         right: 0;
-        border-color: var(--jina-qabot-color-dimmed) var(--jina-qabot-color-dimmed) transparent transparent;
+        border-color: var(--qabot-color-dimmed) var(--qabot-color-dimmed) transparent transparent;
     }
 
     .qa-pair .bubble .feedback-tooltip {
@@ -352,7 +352,7 @@ export const masterStyle = css`
         justify-content: space-between;
         align-items: center;
         width: calc(100% - 1.25rem - 0.75rem);
-        color: var(--jina-qabot-color-action);
+        color: var(--qabot-color-action);
     }
 
 
@@ -376,8 +376,8 @@ export const masterStyle = css`
 
     .qa-pair .answer .bubble .loading {
         cursor: wait;
-        color: var(--jina-qabot-color-action-contrast);
-        fill: var(--jina-qabot-color-action-contrast);
+        color: var(--qabot-color-action-contrast);
+        fill: var(--qabot-color-action-contrast);
     }
 
     .feedback-tooltip .thumbs {
@@ -388,8 +388,8 @@ export const masterStyle = css`
     }
 
     .feedback-tooltip .thumbs .thumb {
-        color: var(--jina-qabot-color-dimmed);
-        fill: var(--jina-qabot-color-dimmed);
+        color: var(--qabot-color-dimmed);
+        fill: var(--qabot-color-dimmed);
 
         cursor: pointer;
     }
@@ -399,8 +399,8 @@ export const masterStyle = css`
     }
 
     .feedback-tooltip .thumbs .thumb:hover, .feedback-tooltip .thumbs .thumb[active] {
-        color: var(--jina-qabot-color-action);
-        fill: var(--jina-qabot-color-action);
+        color: var(--qabot-color-action);
+        fill: var(--qabot-color-action);
     }
 
     .answer-reference {
