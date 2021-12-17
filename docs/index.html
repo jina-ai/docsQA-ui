@@ -1,0 +1,112 @@
+
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><jina-qa-bot> ⌲ Home</title>
+    <link rel="stylesheet" href="docs.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600|Roboto+Mono">
+    <link href="prism-okaidia.css" rel="stylesheet" />
+    <script src="/node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+    <script src="/node_modules/lit/polyfill-support.js"></script>
+    <script type="module" src="dist/jina-qa-bot.js"></script>
+  </head>
+  <body>
+    
+<header>
+  <h1>Jina QA Bot UI</h1>
+  <h2>&lt;jina-qa-bot&gt;&lt;/jina-qa-bot&gt;</h2>
+</header>
+    
+<nav>
+  <a href="">Home</a>
+  <a href="documentation/">Documentation</a>
+  <a href="api/">API</a>
+  <a href="install/">Install</a>
+</nav>
+    <div id="main-wrapper">
+      <main>
+        <h1>&lt;jina-qa-bot&gt;</h1>
+<p><code>&lt;jina-qa-bot&gt;</code> is the UI part of jina-doc-bot. It's a web component built with <a href="https://lit.dev">LitElement</a>.</p>
+<h2>As easy as HTML</h2>
+<section class="columns">
+  <div>
+<p><code>&lt;jina-qa-bot&gt;</code> is just an HTML element. You can it anywhere you can use HTML!</p>
+<pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>jina-qa-bot</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>jina-qa-bot</span><span class="token punctuation">></span></span></code></pre>
+  </div>
+<div class="bot-container">
+    <jina-qa-bot></jina-qa-bot>
+</div>
+</section>
+<h2>Configure with attributes</h2>
+<section class="columns">
+  <div>
+<p><code>&lt;jina-qa-bot&gt;</code> can be configured with attributed in plain HTML.</p>
+<pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>jina-qa-bot</span> <br>    <span class="token attr-name">label</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Try custom title ✨<span class="token punctuation">"</span></span><br>    <span class="token attr-name">server</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>https://docsbot.jina.ai<span class="token punctuation">"</span></span> <br>    <span class="token attr-name">open</span><br>    <span class="token attr-name">site</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>https://docs.jina.ai<span class="token punctuation">"</span></span> <br>    <span class="token attr-name">target</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>_blank<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><br>    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dt</span><span class="token punctuation">></span></span>You can tryout QA-bot easily:<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dt</span><span class="token punctuation">></span></span><br>    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dd</span><span class="token punctuation">></span></span>What is QA-bot?<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dd</span><span class="token punctuation">></span></span><br>    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dd</span><span class="token punctuation">></span></span>Does QA-bot support Vue/React/Angular?<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dd</span><span class="token punctuation">></span></span><br>    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dd</span><span class="token punctuation">></span></span>What are the basic concepts in QA-bot?<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dd</span><span class="token punctuation">></span></span><br><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>jina-qa-bot</span><span class="token punctuation">></span></span></code></pre>
+  </div>
+  <div class="bot-container">
+        <jina-qa-bot label="Try custom title ✨" server="https://docsbot.jina.ai" site="https://docs.jina.ai" target="_blank" open>
+            <dt>You can tryout QA-bot easily:</dt>
+            <dd>What is QA-bot?</dd>
+            <dd>Does QA-bot support Vue/React/Angular?</dd>
+            <dd>What are the basic concepts in QA-bot?</dd>
+        </jina-qa-bot>
+  </div>
+</section>
+<h2>Declarative rendering</h2>
+<section class="columns">
+  <div>
+<p><code>&lt;jina-qa-bot&gt;</code> can be used with declarative rendering libraries like Angular, React, Vue, and lit-html</p>
+<p>For example, the following Vue code:</p>
+<pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>demo-vue<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><br>    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>bot-container<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><br>        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>jina-qa-bot</span> <br>            <span class="token attr-name">:open</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Number.isInteger(Math.floor(timer / 3) / 2)<span class="token punctuation">"</span></span><br>            <span class="token attr-name">:theme</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Number.isInteger(Math.floor(timer / 5) / 2) ? <span class="token punctuation">'</span>light<span class="token punctuation">'</span>:<span class="token punctuation">'</span>dark<span class="token punctuation">'</span><span class="token punctuation">"</span></span><br>            <span class="token attr-name">:label</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>`+${timer}s`<span class="token punctuation">"</span></span> <br>            <span class="token attr-name">:server</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>server<span class="token punctuation">"</span></span><br>        <span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>jina-qa-bot</span><span class="token punctuation">></span></span><br>    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><br><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span></code></pre>
+<pre class="language-js"><code class="language-js"><span class="token keyword">const</span> app <span class="token operator">=</span> Vue<span class="token punctuation">.</span><span class="token function">createApp</span><span class="token punctuation">(</span><span class="token punctuation">{</span> <br>    <span class="token function">data</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><br>        <span class="token keyword">return</span> <span class="token punctuation">{</span> <br>            server<span class="token operator">:</span> <span class="token string">'/'</span><span class="token punctuation">,</span> <br>            timer<span class="token operator">:</span> <span class="token number">0</span> <br>        <span class="token punctuation">}</span><span class="token punctuation">;</span><br>    <span class="token punctuation">}</span><span class="token punctuation">,</span><br>    <span class="token function">created</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><br>        <span class="token function">setInterval</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">=></span> <span class="token punctuation">{</span><br>            <span class="token keyword">this</span><span class="token punctuation">.</span>timer <span class="token operator">+=</span> <span class="token number">1</span><span class="token punctuation">;</span><br>        <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token number">1000</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>    <span class="token punctuation">}</span><br><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span><br>app<span class="token punctuation">.</span>config<span class="token punctuation">.</span>compilerOptions<span class="token punctuation">.</span><span class="token function-variable function">isCustomElement</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">tag</span><span class="token punctuation">)</span><span class="token operator">=></span> <span class="token punctuation">{</span><br>    <span class="token keyword">return</span> tag <span class="token operator">===</span> <span class="token string">'jina-qa-bot'</span><span class="token punctuation">;</span><br><span class="token punctuation">}</span><span class="token punctuation">;</span><br>app<span class="token punctuation">.</span><span class="token function">mount</span><span class="token punctuation">(</span><span class="token string">'#demo-vue'</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+  </div>
+  <div>
+Renders to:
+<div id="demo-vue">
+    <div class="bot-container" v-bind:class="Number.isInteger(Math.floor(timer / 5) / 2) ? 'light' : 'dark'">
+        <jina-qa-bot 
+            :open="Number.isInteger(Math.floor(timer / 3) / 2)" 
+            :label="` +${timer}s`" 
+            :server="server"
+            :theme="Number.isInteger(Math.floor(timer / 5) / 2) ? 'light':'dark'"
+        ></jina-qa-bot>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue@next"></script>
+<script type="text/javascript">
+    const app = Vue.createApp({ 
+        data() {
+            return { server: 'baidu.com', timer: 0 };
+        },
+        created() {
+            setInterval(()=> {
+                this.timer += 1;
+            }, 1000);
+        }
+    });
+    app.config.compilerOptions.isCustomElement = (tag)=> {
+        return tag === 'jina-qa-bot';
+    }
+    app.mount('#demo-vue');
+</script>
+  </div>
+</section>
+<style>
+    jina-qa-bot {
+        right: 2rem;
+    }
+</style>
+
+      </main>
+    </div>
+    
+<footer>
+  <p>
+    © Jina AI 2020-2021. All rights reserved.
+  </p>
+</footer>
+  </body>
+</html>

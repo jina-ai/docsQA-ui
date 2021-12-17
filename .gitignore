@@ -105,6 +105,4 @@ typings/
 .tern-port
 custom-elements.json
 
-/docs
-
 .DS_Store

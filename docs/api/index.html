@@ -1,0 +1,160 @@
+
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><jina-qa-bot> ⌲ Docs</title>
+    <link rel="stylesheet" href="../docs.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600|Roboto+Mono">
+    <link href="../prism-okaidia.css" rel="stylesheet" />
+    <script src="/node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+    <script src="/node_modules/lit/polyfill-support.js"></script>
+    <script type="module" src="../dist/jina-qa-bot.js"></script>
+  </head>
+  <body>
+    
+<header>
+  <h1>Jina QA Bot UI</h1>
+  <h2>&lt;jina-qa-bot&gt;&lt;/jina-qa-bot&gt;</h2>
+</header>
+    
+<nav>
+  <a href="../">Home</a>
+  <a href="../documentation/">Documentation</a>
+  <a href="">API</a>
+  <a href="../install/">Install</a>
+</nav>
+    <div id="main-wrapper">
+      <main>
+        
+     <h1>API</h1>
+     
+       <h2>&lt;jina-qa-bot></h2>
+       <div>
+         QABot custom element
+       </div>
+       
+   <h3>Attributes</h3>
+   <table>
+     <tr>
+       <th>Name</th><th>Description</th><th>Type</th><th>Default</th>
+     </tr>
+     
+       <tr>
+         <td>label</td><td>Customize title text in the header part</td><td>string</td><td>'Ask our docs!'</td>
+       </tr>
+     
+       <tr>
+         <td>server</td><td>REQUIRED, specify the server url bot talks to.</td><td>string | undefined</td><td></td>
+       </tr>
+     
+       <tr>
+         <td>site</td><td>Specify site base location the links refer to, if not relative to current location.</td><td>string | undefined</td><td></td>
+       </tr>
+     
+       <tr>
+         <td>target</td><td>Specify <a target=""> of reference links.</td><td>string | undefined</td><td>'_self'</td>
+       </tr>
+     
+       <tr>
+         <td>open</td><td>Set the chat-bot expanded or collapsed.</td><td>boolean | undefined</td><td></td>
+       </tr>
+     
+       <tr>
+         <td>theme</td><td>Choose between preset themes, auto, `light`, or `dark`.</td><td>'auto' | 'dark' | 'light' | string | undefined</td><td>'auto'</td>
+       </tr>
+     
+       <tr>
+         <td>animate-by</td><td>Choose slide-up/slide-down animation between `height` or `position`</td><td>'position' | 'height' | undefined</td><td>'height'</td>
+       </tr>
+     
+   </table>
+ 
+       
+   <h3>Properties</h3>
+   <table>
+     <tr>
+       <th>Name</th><th>Attribute</th><th>Description</th><th>Type</th><th>Default</th>
+     </tr>
+     
+       <tr>
+         <td>label</td><td>label</td><td></td><td>string</td><td>'Ask our docs!'</td>
+       </tr>
+     
+       <tr>
+         <td>server</td><td>server</td><td></td><td>string | undefined</td><td></td>
+       </tr>
+     
+       <tr>
+         <td>site</td><td>site</td><td></td><td>string | undefined</td><td></td>
+       </tr>
+     
+       <tr>
+         <td>target</td><td>target</td><td></td><td>string | undefined</td><td>'_self'</td>
+       </tr>
+     
+       <tr>
+         <td>theme</td><td>theme</td><td></td><td>'auto' | 'dark' | 'light' | string | undefined</td><td>'auto'</td>
+       </tr>
+     
+       <tr>
+         <td>animateBy</td><td>animate-by</td><td></td><td>'position' | 'height' | undefined</td><td>'height'</td>
+       </tr>
+     
+       <tr>
+         <td>open</td><td>open</td><td></td><td>boolean | undefined</td><td></td>
+       </tr>
+     
+   </table>
+ 
+       
+   <h3>Methods</h3>
+   <table>
+     <tr>
+       <th>Name</th><th>Parameters</th><th>Description</th><th>Return</th>
+     </tr>
+     
+       <tr>
+         <td>submitQuestion</td><td></td><td></td><td></td>
+       </tr>
+     
+       <tr>
+         <td>scrollDialogToBottom</td><td></td><td></td><td></td>
+       </tr>
+     
+       <tr>
+         <td>toggleOpen</td><td></td><td></td><td></td>
+       </tr>
+     
+   </table>
+ 
+       
+       
+   <h3>Slots</h3>
+   <table>
+     <tr>
+       <th>Name</th><th>Description</th>
+     </tr>
+     
+       <tr>
+         <td>(default)</td><td>The intro headline and example questions user might define</td>
+       </tr>
+     
+   </table>
+ 
+       
+       
+       
+   
+      </main>
+    </div>
+    
+<footer>
+  <p>
+    © Jina AI 2020-2021. All rights reserved.
+  </p>
+</footer>
+  </body>
+</html>
