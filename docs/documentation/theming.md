@@ -46,7 +46,6 @@ To do so, override the following CSS variables:
     jina-qa-bot {
         position: fixed; 
         left: 2rem; 
-        right: unset; 
     }
     jina-qa-bot:not(:defined) { display: none; }
 </style>

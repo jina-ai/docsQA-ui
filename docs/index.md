@@ -131,3 +131,9 @@ Renders to:
 
   </div>
 </section>
+
+<style>
+    jina-qa-bot {
+        right: 2rem;
+    }
+</style>

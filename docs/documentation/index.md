@@ -26,7 +26,6 @@ You are free to add any sizing/positioning css to the element.
     style="
         position: fixed; 
         left: 2rem; 
-        right: unset; 
         width: 18rem; 
         max-height: 50vh;
         "
@@ -63,7 +62,6 @@ Or you can put the `<script>` tag before any `<jina-doc-bot>`, or in the `head` 
     style="
         position: fixed; 
         left: 2rem; 
-        right: unset; 
         width: 18rem; 
         max-height: 50vh;
         "

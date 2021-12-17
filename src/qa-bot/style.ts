@@ -53,7 +53,6 @@ export const masterStyle = css`
         max-height: 25rem;
         position: absolute;
         bottom: 0;
-        right: 3rem;
     }
 
     :host(:not([animate-by='position']):not([open])) {

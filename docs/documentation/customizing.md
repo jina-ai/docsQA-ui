@@ -79,7 +79,6 @@ Note that although `<jina-doc-bot>` comes with some simple styling for slotted e
     jina-qa-bot {
         position: fixed; 
         left: 2rem; 
-        right: unset; 
         width: 18rem; 
         max-height: 20rem;
     }
@@ -114,7 +113,6 @@ If you intend to have `<jina-doc-bot>` fixed at the bottom of the page, you can 
     jina-qa-bot {
         position: fixed; 
         left: 2rem; 
-        right: unset; 
         width: 18rem; 
         max-height: 20rem;
     }
