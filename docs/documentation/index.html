@@ -5,19 +5,19 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><jina-qa-bot> ⌲ Getting started</title>
+    <title><qa-bot> ⌲ Getting started</title>
     <link rel="stylesheet" href="../docs.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600|Roboto+Mono">
     <link href="../prism-okaidia.css" rel="stylesheet" />
     <script src="/node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
     <script src="/node_modules/lit/polyfill-support.js"></script>
-    <script type="module" src="../dist/jina-qa-bot.js"></script>
+    <script type="module" src="../dist/qabot.js"></script>
   </head>
   <body>
     
 <header>
-  <h1>Jina QA Bot UI</h1>
-  <h2>&lt;jina-qa-bot&gt;&lt;/jina-qa-bot&gt;</h2>
+  <h1>DocsQA UI</h1>
+  <h2>&lt;qa-bot&gt;&lt;/qa-bot&gt;</h2>
 </header>
     
 <nav>
@@ -49,27 +49,27 @@
         </ul>
       </nav>
       <div>
-        <h2>Importing the jina-qa-bot</h2>
+        <h2>Importing the qabot</h2>
 <p>After adding the <code>&lt;script&gt;</code> into your web page,
 all you need to do is fill in the <code>server</code> address.
 Then you are good to go.</p>
-<pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>jina-qa-bot</span><br>    <span class="token attr-name">server</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>https://docsbot.jina.ai<span class="token punctuation">"</span></span>    <br><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>jina-qa-bot</span><span class="token punctuation">></span></span><br><br><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>https://cdn.jsdelivr.net/npm/@jina-ai/jina-qa-bot<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span></code></pre>
+<pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>qa-bot</span><br>    <span class="token attr-name">server</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>https://docsbot.jina.ai<span class="token punctuation">"</span></span>    <br><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>qa-bot</span><span class="token punctuation">></span></span><br><br><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>https://cdn.jsdelivr.net/npm/qabot<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span></code></pre>
 <h2>Setting size and position</h2>
-<p><code>&lt;jina-doc-bot&gt;</code> is an native <code>customElement</code> in modern browsers.
+<p><code>&lt;doc-bot&gt;</code> is a native <code>customElement</code> in modern browsers.
 You are free to add any sizing/positioning css to the element.</p>
-<pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>jina-qa-bot</span><br>    <span class="token attr-name">server</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>https://docsbot.jina.ai<span class="token punctuation">"</span></span>    <br>    <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><br>        position: fixed; <br>        left: 2rem; <br>        width: 18rem; <br>        max-height: 50vh;<br>        <span class="token punctuation">"</span></span></span><br><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>jina-qa-bot</span><span class="token punctuation">></span></span></code></pre>
-<p>Note: You might want to specify <code>max-height</code> instead of <code>height</code> CSS property because <code>&lt;jina-doc-bot&gt;</code> comes with a built-in <code>max-height</code>.</p>
+<pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>qa-bot</span><br>    <span class="token attr-name">server</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>https://docsbot.jina.ai<span class="token punctuation">"</span></span>    <br>    <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><br>        position: fixed; <br>        left: 2rem; <br>        width: 18rem; <br>        max-height: 50vh;<br>        <span class="token punctuation">"</span></span></span><br><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>qa-bot</span><span class="token punctuation">></span></span></code></pre>
+<p>Note: You might want to specify <code>max-height</code> instead of <code>height</code> CSS property because <code>&lt;doc-bot&gt;</code> comes with a built-in <code>max-height</code>.</p>
 <h2>Resolving CSS glitches when the page first load</h2>
 <p>You could get some glitches when the page is first loaded.
-This is because <code>&lt;jina-doc-bot&gt;</code> is not yet defined when the page first load.</p>
-<p>To resolve this issue, you can add a css snippet to make the browser not rendering <code>&lt;jina-doc-bot&gt;</code> until it's ready.</p>
-<pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>style</span><span class="token punctuation">></span></span><span class="token style"><span class="token language-css"><br>    <span class="token selector">jina-qa-bot:not(:defined)</span> <span class="token punctuation">{</span> <span class="token property">display</span><span class="token punctuation">:</span> none<span class="token punctuation">;</span> <span class="token punctuation">}</span><br></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>style</span><span class="token punctuation">></span></span></code></pre>
-<p>Or you can put the <code>&lt;script&gt;</code> tag before any <code>&lt;jina-doc-bot&gt;</code>, or in the <code>head</code> section of your html to force load <code>&lt;jina-doc-bot&gt;</code> before the element first rendered.</p>
-<pre class="language-html"><code class="language-html">...<br>    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>https://cdn.jsdelivr.net/npm/@jina-ai/jina-qa-bot<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span><br><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>head</span><span class="token punctuation">></span></span></code></pre>
+This is because <code>&lt;doc-bot&gt;</code> is not yet defined when the page first load.</p>
+<p>To resolve this issue, you can add a css snippet to make the browser not rendering <code>&lt;doc-bot&gt;</code> until it's ready.</p>
+<pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>style</span><span class="token punctuation">></span></span><span class="token style"><span class="token language-css"><br>    <span class="token selector">qa-bot:not(:defined)</span> <span class="token punctuation">{</span> <span class="token property">display</span><span class="token punctuation">:</span> none<span class="token punctuation">;</span> <span class="token punctuation">}</span><br></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>style</span><span class="token punctuation">></span></span></code></pre>
+<p>Or you can put the <code>&lt;script&gt;</code> tag before any <code>&lt;doc-bot&gt;</code>, or in the <code>head</code> section of your html to force load <code>&lt;doc-bot&gt;</code> before the element first rendered.</p>
+<pre class="language-html"><code class="language-html">...<br>    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>https://cdn.jsdelivr.net/npm/qabot<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span><br><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>head</span><span class="token punctuation">></span></span></code></pre>
 <style>
-    jina-qa-bot:not(:defined) { display: none; }
+    qa-bot:not(:defined) { display: none; }
 </style>
-<p><jina-qa-bot
+<p><qa-bot
     server="https://docsbot.jina.ai"    
     style="
         position: fixed; 
@@ -77,7 +77,7 @@ This is because <code>&lt;jina-doc-bot&gt;</code> is not yet defined when the pa
         width: 18rem; 
         max-height: 50vh;
         "
-    animate-by="position"></jina-qa-bot></p>
+    animate-by="position"></qa-bot></p>
 
       </div>
     </section>

@@ -5,17 +5,17 @@
   <base href="/">
   <title>qa-bot</title>
 
-<link rel="preload" href="./jina-qa-bot.js" as="script" crossorigin="anonymous">
+<link rel="preload" href="./qabot.js" as="script" crossorigin="anonymous">
 </head>
 
 <body>
 
   <style>
-    jina-qa-bot:not(:defined) {
+    qa-bot:not(:defined) {
       display: none;
     }
   </style>
-  <jina-qa-bot server="https://docsbot.jina.ai" site="https://docs.jina.ai" target="_blank" style="">
+  <qa-bot server="https://docsbot.jina.ai" site="https://docs.jina.ai" target="_blank">
 
     <dt>You can ask questions about Jina. Try:</dt>
     <dd>What is Jina?</dd>
@@ -23,7 +23,7 @@
     <dd>How can I traverse a nested DocumentArray?</dd>
     <dd>What are the basic concepts in Jina?</dd>
 
-  </jina-qa-bot>
+  </qa-bot>
 
   
 
@@ -88,9 +88,9 @@
 
     function loadFiles() {
       if (!Array.prototype.flat) {
-        System.import('./legacy-jina-qa-bot.js');
+        System.import('./legacy-qabot.js');
       } else {
-        loadScript('./jina-qa-bot.js', 'module', []);
+        loadScript('./qabot.js', 'module', []);
       }
     }
 

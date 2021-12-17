@@ -5,19 +5,19 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><jina-qa-bot> ⌲ Theming</title>
+    <title><qa-bot> ⌲ Theming</title>
     <link rel="stylesheet" href="../../docs.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600|Roboto+Mono">
     <link href="../../prism-okaidia.css" rel="stylesheet" />
     <script src="/node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
     <script src="/node_modules/lit/polyfill-support.js"></script>
-    <script type="module" src="../../dist/jina-qa-bot.js"></script>
+    <script type="module" src="../../dist/qabot.js"></script>
   </head>
   <body>
     
 <header>
-  <h1>Jina QA Bot UI</h1>
-  <h2>&lt;jina-qa-bot&gt;&lt;/jina-qa-bot&gt;</h2>
+  <h1>DocsQA UI</h1>
+  <h2>&lt;qa-bot&gt;&lt;/qa-bot&gt;</h2>
 </header>
     
 <nav>
@@ -50,21 +50,21 @@
       </nav>
       <div>
         <h2>Choose between built-in light/dark themes</h2>
-<p><code>&lt;jina-doc-bot&gt;</code> have two built-in themes: <code>light</code> and <code>dark</code>.</p>
+<p><code>&lt;doc-bot&gt;</code> have two built-in themes: <code>light</code> and <code>dark</code>.</p>
 <p>By default it will follow the system light/dark preference. This is equivalent to setting <code>theme=&quot;auto&quot;</code>.</p>
 <p>You can specify <code>theme=&quot;light&quot;</code> or <code>theme=&quot;dark&quot;</code> to intentionally set the theme.</p>
-<pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>jina-qa-bot</span><br>    <span class="token attr-name">server</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>https://docsbot.jina.ai<span class="token punctuation">"</span></span><br>    <span class="token attr-name">theme</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>light<span class="token punctuation">"</span></span><br><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>jina-qa-bot</span><span class="token punctuation">></span></span></code></pre>
+<pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>qa-bot</span><br>    <span class="token attr-name">server</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>https://docsbot.jina.ai<span class="token punctuation">"</span></span><br>    <span class="token attr-name">theme</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>light<span class="token punctuation">"</span></span><br><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>qa-bot</span><span class="token punctuation">></span></span></code></pre>
 <h2>Make your own theme by setting CSS variables</h2>
 <p>You can create your own theme by overriding the CSS variables.</p>
 <p>To do so, override the following CSS variables:</p>
-<pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>style</span><span class="token punctuation">></span></span><span class="token style"><span class="token language-css"><br>    <span class="token selector">jina-qa-bot[theme="custom"]</span> <span class="token punctuation">{</span><br>        <span class="token property">--jina-qabot-color-shadow</span><span class="token punctuation">:</span> #0000000d<span class="token punctuation">;</span><br>        <span class="token property">--jina-qabot-color-background</span><span class="token punctuation">:</span> #fff<span class="token punctuation">;</span><br>        <span class="token property">--jina-qabot-color-padding</span><span class="token punctuation">:</span> #f8f9fb<span class="token punctuation">;</span><br>        <span class="token property">--jina-qabot-color-primary</span><span class="token punctuation">:</span> #000<span class="token punctuation">;</span><br>        <span class="token property">--jina-qabot-color-action</span><span class="token punctuation">:</span> #009191<span class="token punctuation">;</span><br>        <span class="token property">--jina-qabot-color-action-contrast</span><span class="token punctuation">:</span> #fff<span class="token punctuation">;</span><br>        <span class="token property">--jina-qabot-color-dimmed</span><span class="token punctuation">:</span> #eeebee<span class="token punctuation">;</span><br>        <span class="token property">--jina-qabot-color-muted</span><span class="token punctuation">:</span> #646776<span class="token punctuation">;</span><br>    <span class="token punctuation">}</span><br></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>style</span><span class="token punctuation">></span></span></code></pre>
-<p><jina-qa-bot server="https://docsbot.jina.ai" theme="light" site="https://docs.jina.ai"></jina-qa-bot></p>
+<pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>style</span><span class="token punctuation">></span></span><span class="token style"><span class="token language-css"><br>    <span class="token selector">qabot[theme="custom"]</span> <span class="token punctuation">{</span><br>        <span class="token property">--qabot-color-shadow</span><span class="token punctuation">:</span> #0000000d<span class="token punctuation">;</span><br>        <span class="token property">--qabot-color-background</span><span class="token punctuation">:</span> #fff<span class="token punctuation">;</span><br>        <span class="token property">--qabot-color-padding</span><span class="token punctuation">:</span> #f8f9fb<span class="token punctuation">;</span><br>        <span class="token property">--qabot-color-primary</span><span class="token punctuation">:</span> #000<span class="token punctuation">;</span><br>        <span class="token property">--qabot-color-action</span><span class="token punctuation">:</span> #009191<span class="token punctuation">;</span><br>        <span class="token property">--qabot-color-action-contrast</span><span class="token punctuation">:</span> #fff<span class="token punctuation">;</span><br>        <span class="token property">--qabot-color-dimmed</span><span class="token punctuation">:</span> #eeebee<span class="token punctuation">;</span><br>        <span class="token property">--qabot-color-muted</span><span class="token punctuation">:</span> #646776<span class="token punctuation">;</span><br>    <span class="token punctuation">}</span><br></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>style</span><span class="token punctuation">></span></span></code></pre>
+<p><qa-bot server="https://docsbot.jina.ai" theme="light" site="https://docs.jina.ai"></qa-bot></p>
 <style>
-    jina-qa-bot {
+    qa-bot {
         position: fixed; 
         left: 2rem; 
     }
-    jina-qa-bot:not(:defined) { display: none; }
+    qa-bot:not(:defined) { display: none; }
 </style>
 
       </div>
