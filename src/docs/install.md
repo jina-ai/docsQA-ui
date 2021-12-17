@@ -1,6 +1,6 @@
 ---
 layout: page.11ty.cjs
-title: qabot ⌲ Install
+title: <qa-bot> ⌲ Install
 ---
 
 # Install
