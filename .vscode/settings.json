@@ -1,0 +1,40 @@
+{
+  "editor.wordWrap": "on",
+  "editor.wordWrapColumn": 120,
+  "files.trimTrailingWhitespace": true,
+  "files.trimFinalNewlines": true,
+  "[javascript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "[vue]": {
+    "editor.defaultFormatter": "octref.vetur"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml"
+  },
+  "[markdown]": {
+    "files.trimTrailingWhitespace": false
+  },
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "vetur.format.defaultFormatter.ts": "vscode-typescript",
+  "vetur.format.defaultFormatter.js": "vscode-typescript",
+  "typescript.preferences.quoteStyle": "single",
+  "typescript.format.semicolons": "insert",
+  "typescript.preferences.importModuleSpecifier": "project-relative",
+  "typescript.locale": "en",
+  "cSpell.enabled": true,
+  "cSpell.words": [
+    "qabot",
+    "docbot",
+    "vmin"
+  ]
+}
