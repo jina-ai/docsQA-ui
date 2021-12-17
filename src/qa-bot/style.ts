@@ -120,6 +120,7 @@ export const masterStyle = css`
     .card .card__title {
         display: flex;
         align-items: center;
+        column-gap: 0.75rem;
     }
 
     .card .icon {

@@ -230,7 +230,10 @@ export class QaBot extends LitElement {
         return html`
         <div class="jina-qabot card" ?busy="${!(this.qaControl?.ready)}" >
             <div class="card__header" @click="${this.toggleOpen}">
-                <span class="card__title"><i class="icon">${discussionIcon}</i>&nbsp; ${this.label}</span>
+                <span class="card__title">
+                    <i class="icon">${discussionIcon}</i>
+                    <span class="text">${this.label}</span>
+                </span>
                 <i class="icon arrow-down">${downArrow}</i>
                 <i class="icon arrow-up">${upArrow}</i>
             </div>
