@@ -1,6 +1,6 @@
 {
   "name": "@jina-ai/jina-qa-bot",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "WebComponent <jina-qa-bot> for Jina docs bot",
   "main": "dist/jina-qa-bot.js",
   "module": "dist/jina-qa-bot.js",
