@@ -80,8 +80,8 @@ typings/
 
 # Nuxt.js build / generate output
 .nuxt
-dist
-build
+/dist
+/build
 
 # Gatsby files
 .cache/
@@ -105,6 +105,6 @@ build
 .tern-port
 custom-elements.json
 
-docs/_build
+/docs/_build
 
 .DS_Store

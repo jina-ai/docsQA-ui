@@ -27,6 +27,7 @@
     "copy": "copy-and-watch 'src/**/*.html' build/",
     "copy:prod": "copy-and-watch 'src/**/*.html' dist/",
     "copy:prod:watch": "copy-and-watch --watch 'src/**/*.html' dist/",
+    "copy:gh-pages": "copy-and-watch 'docs/_build/**/*' gh-pages/",
     "docs": "npm run docs:clean && npm run analyze && npm run docs:gen && npm run build && npm run docs:assets",
     "docs:watch": "npm run docs && npm run docs:gen:watch",
     "docs:clean": "rimraf docs/_build",
@@ -34,7 +35,8 @@
     "docs:gen:watch": "eleventy --config=.eleventy.cjs --watch",
     "docs:assets": "copy-and-watch node_modules/prismjs/themes/prism-okaidia.css docs/_build && copy-and-watch 'dist/**/*' docs/_build/dist/",
     "docs:serve": "wds --root-dir=docs/_build --watch",
-    "docs:dev": "npm run docs && concurrently -k -r \"npm run docs:gen:watch\" \"npm run docs:serve\""
+    "docs:dev": "npm run docs && concurrently -k -r \"npm run docs:gen:watch\" \"npm run docs:serve\"",
+    "gh-pages": "npm run docs && npm copy:gh-pages"
   },
   "repository": {
     "type": "git",
