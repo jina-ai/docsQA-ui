@@ -238,9 +238,9 @@ export const masterStyle = css`
         display: block;
     }
 
-    .answer-hint h1,h2,h3,h4,h5,h6, ::slotted(h1),
-        ::slotted(h2), ::slotted(h3), ::slotted(h4),
-        ::slotted(h5), ::slotted(h6) {
+    .answer-hint h1,h2,h3,h4,h5,h6,dt,::slotted(h1),
+        ::slotted(h2),::slotted(h3),::slotted(h4),
+        ::slotted(h5),::slotted(h6),::slotted(dt) {
         margin: 0;
         margin-bottom: 0.75rem;
         font-size: var(--jina-qabot-size-text-primary);
@@ -248,7 +248,7 @@ export const masterStyle = css`
         color: var(--jina-qabot-color-primary);
     }
 
-    .answer-hint p,li,::slotted(p),::slotted(li) {
+    .answer-hint p,li,dd,::slotted(p),::slotted(li),::slotted(dd) {
         margin: 0;
         font-size: var(--jina-qabot-size-text-primary);
         color: var(--jina-qabot-color-muted);
@@ -259,7 +259,8 @@ export const masterStyle = css`
         list-style-type: "•   ";
     }
 
-    .answer-hint p::marker,li::marker,::slotted(p)::marker,::slotted(li)::marker {
+    .answer-hint p::marker,li::marker,dd::marker,
+        ::slotted(p)::marker,::slotted(li)::marker,::slotted(dd)::marker {
         content: '• ';
         font-weight: 1;
         white-space: pre-wrap;

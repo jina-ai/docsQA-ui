@@ -39,20 +39,20 @@ title: <jina-qa-bot> ⌲ Home
     open
     site="https://docs.jina.ai" 
     target="_blank">
-    <h3>You can tryout QA-bot easily:</h3>
-    <p>What is QA-bot?</p>
-    <p>Does QA-bot support Vue/React/Angular?</p>
-    <p>What are the basic concepts in QA-bot?</p>
+    <dt>You can tryout QA-bot easily:</dt>
+    <dd>What is QA-bot?</dd>
+    <dd>Does QA-bot support Vue/React/Angular?</dd>
+    <dd>What are the basic concepts in QA-bot?</dd>
 </jina-qa-bot>
 ```
 
   </div>
   <div class="bot-container">
         <jina-qa-bot label="Try custom title ✨" server="https://docsbot.jina.ai" site="https://docs.jina.ai" target="_blank" open>
-           <h3>You can tryout QA-bot easily:</h3>
-            <p>What is QA-bot?</p>
-            <p>Does QA-bot support Vue/React/Angular?</p>
-            <p>What are the basic concepts in QA-bot?</p> 
+            <dt>You can tryout QA-bot easily:</dt>
+            <dd>What is QA-bot?</dd>
+            <dd>Does QA-bot support Vue/React/Angular?</dd>
+            <dd>What are the basic concepts in QA-bot?</dd>
         </jina-qa-bot>
   </div>
 </section>

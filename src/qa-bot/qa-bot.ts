@@ -208,11 +208,11 @@ export class QaBot extends LitElement {
             return html`
             <div class="answer-hint">
                 <slot>
-                    <h3>You can ask questions about Jina. Try:</h3>
-                    <p>What is Jina?</p>
-                    <p>Does Jina support Kubernetes?</p>
-                    <p>How can I traverse a nested DocumentArray?</p>
-                    <p>What are the basic concepts in Jina?</p>
+                    <dt>You can ask questions about Jina. Try:</dt>
+                    <dd>What is Jina?</dd>
+                    <dd>Does Jina support Kubernetes?</dd>
+                    <dd>How can I traverse a nested DocumentArray?</dd>
+                    <dd>What are the basic concepts in Jina?</dd>
                 </slot>
             </div>
         `;

@@ -56,23 +56,23 @@ These were intended to be customized by the users to fit their own needs.
     server="https://docsbot.jina.ai"    
     style="position: fixed; width: 26em; max-height: 20rem;"
 >
-    <h3>You can tryout QA-bot easily:</h3>
-    <p>What is QA-bot?</p>
-    <p>Does QA-bot support Vue/React/Angular?</p>
-    <p>What are the basic concepts in QA-bot?</p>
+    <dt>You can tryout QA-bot easily:</dt>
+    <dd>What is QA-bot?</dd>
+    <dd>Does QA-bot support Vue/React/Angular?</dd>
+    <dd>What are the basic concepts in QA-bot?</dd>
 </jina-qa-bot>
 ```
 Note that although `<jina-doc-bot>` comes with some simple styling for slotted elements, It's up to the users to style them as expected.
 
 ```html
 <jina-qa-bot server="https://docsbot.jina.ai">
-    <h3>You can tryout QA-bot easily:</h3>
-    <p>What is QA-bot?</p>
-    <p>Does QA-bot support Vue/React/Angular?</p>
-    <p>What are the basic concepts in QA-bot?</p>
+    <dt>You can tryout QA-bot easily:</dt>
+    <dd>What is QA-bot?</dd>
+    <dd>Does QA-bot support Vue/React/Angular?</dd>
+    <dd>What are the basic concepts in QA-bot?</dd>
 </jina-qa-bot>
 <style>
-    jina-qa-bot h3 {
+    jina-qa-bot dt {
         font-size: 1.25rem;
         color: cyan;
     }
@@ -99,14 +99,14 @@ If you intend to have `<jina-doc-bot>` fixed at the bottom of the page, you can 
 ```
 
 <jina-qa-bot server="https://docsbot.jina.ai" label="Ask me about Jina ✨" site="https://docs.jina.ai" open animate-by="position">
-    <h3>You can tryout QA-bot easily:</h3>
-    <p>What is QA-bot?</p>
-    <p>Does QA-bot support Vue/React/Angular?</p>
-    <p>What are the basic concepts in QA-bot?</p>
+    <dt>You can tryout QA-bot easily:</dt>
+    <dd>What is QA-bot?</dd>
+    <dd>Does QA-bot support Vue/React/Angular?</dd>
+    <dd>What are the basic concepts in QA-bot?</dd>
 </jina-qa-bot>
 
 <style>
-    jina-qa-bot h3 {
+    jina-qa-bot dt {
         font-size: 1.25rem;
         color: cyan;
     }
