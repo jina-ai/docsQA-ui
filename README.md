@@ -30,3 +30,7 @@
 ## Install
 
 `<jina-qa-bot>` is distributed on npm, so you can install it locally or use it via npm CDNs like jsdelivr.
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/@jina-ai/jina-qa-bot"></script>
+```
