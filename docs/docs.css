@@ -2,6 +2,11 @@
   box-sizing: border-box;
 }
 
+a {
+    color: inherit;
+    cursor: pointer;
+}
+
 body {
   margin: 0;
   color: #333;
@@ -147,14 +152,14 @@ section.columns > div {
   flex: 1;
 }
 
-section.documents {
+section.documentation {
   display: grid;
   grid-template-columns: 240px minmax(400px, 784px);
   grid-gap: 48px;
   justify-content: center;
 }
 
-section.documents h2:first-of-type {
+section.documentation h2:first-of-type {
   margin-top: 0;
 }
 

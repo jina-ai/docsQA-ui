@@ -9,7 +9,7 @@ export const masterStyle = css`
 
         --jina-qabot-color-primary: #000;
         --jina-qabot-color-action: #009191;
-        --jina-qabot-color-action-reverse: #fff;
+        --jina-qabot-color-action-contrast: #fff;
         --jina-qabot-color-dimmed: #eeebee;
         --jina-qabot-color-muted: #646776;
 
@@ -27,7 +27,7 @@ export const masterStyle = css`
 
       --jina-qabot-color-primary: #ffffffcc;
       --jina-qabot-color-action: #fbcb67;
-      --jina-qabot-color-action-reverse: #202020;
+      --jina-qabot-color-action-contrast: #202020;
       --jina-qabot-color-dimmed: #303335;
       --jina-qabot-color-muted: #81868d;
     }
@@ -40,7 +40,7 @@ export const masterStyle = css`
 
             --jina-qabot-color-primary: #ffffffcc;
             --jina-qabot-color-action: #fbcb67;
-            --jina-qabot-color-action-reverse: #202020;
+            --jina-qabot-color-action-contrast: #202020;
             --jina-qabot-color-dimmed: #303335;
             --jina-qabot-color-muted: #81868d;
         }
@@ -180,14 +180,14 @@ export const masterStyle = css`
         font-size: 1rem;
         color: var(--jina-qabot-color-action);
         fill: var(--jina-qabot-color-action);
-        background-color: var(--jina-qabot-color-action-reverse);
+        background-color: var(--jina-qabot-color-action-contrast);
 
         transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
     }
 
     .jina-qabot__control button:not(:disabled):hover {
-        color: var(--jina-qabot-color-action-reverse);
-        fill: var(--jina-qabot-color-action-reverse);
+        color: var(--jina-qabot-color-action-contrast);
+        fill: var(--jina-qabot-color-action-contrast);
         background-color: var(--jina-qabot-color-action);
 
         box-shadow: 0 0 0.15rem var(--jina-qabot-color-action);
@@ -294,7 +294,7 @@ export const masterStyle = css`
         position: relative;
         height: auto;
         background-color: var(--jina-qabot-color-action);
-        color: var(--jina-qabot-color-action-reverse);
+        color: var(--jina-qabot-color-action-contrast);
         margin-bottom: 20px;
         border-radius: 5px;
         max-width: 80%;
@@ -375,8 +375,8 @@ export const masterStyle = css`
 
     .qa-pair .answer .bubble .loading {
         cursor: wait;
-        color: var(--jina-qabot-color-action-reverse);
-        fill: var(--jina-qabot-color-action-reverse);
+        color: var(--jina-qabot-color-action-contrast);
+        fill: var(--jina-qabot-color-action-contrast);
     }
 
     .feedback-tooltip .thumbs {

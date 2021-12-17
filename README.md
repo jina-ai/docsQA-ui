@@ -1,30 +1,32 @@
-<p align="center">
-  <img width="200" src="https://open-wc.org/hero.png"></img>
-</p>
+# &lt;jina-qa-bot&gt;
 
-## Open-wc Starter App
+`<jina-qa-bot>` is the UI part of jina-doc-bot. It's a web component built with [LitElement](https://lit.dev).
 
-[![Built with open-wc recommendations](https://img.shields.io/badge/built%20with-open--wc-blue.svg)](https://github.com/open-wc)
-
-## Quickstart
-
-To get started:
-
-```sh
-npm init @open-wc
-# requires node 10 & npm 6 or higher
+`<jina-qa-bot>` is just an HTML element. You can it anywhere you can use HTML!
+```html
+<jina-qa-bot></jina-qa-bot>
 ```
 
-## Scripts
+## Configure with attributes
 
-- `start` runs your app for development, reloading on file changes
-- `start:build` runs your app after it has been built using the build command
-- `build` builds your app and outputs it in your `dist` directory
-- `test` runs your test suite with Web Test Runner
-- `lint` runs the linter for your project
+<section class="columns">
+  <div>
 
-## Tooling configs
+`<jina-qa-bot>` can be configured with attributed in plain HTML.
 
-For most of the tools, the configuration is in the `package.json` to reduce the amount of files in your project.
+```html
+<jina-qa-bot 
+    label="Try custom title ✨"
+    server="https://docsbot.jina.ai" 
+    open
+    site="https://docs.jina.ai" 
+    target="_blank">
+    <h3>You can tryout QA-bot easily:</h3>
+    <p>What is QA-bot?</p>
+    <p>Does QA-bot support Vue/React/Angular?</p>
+    <p>What are the basic concepts in QA-bot?</p>
+</jina-qa-bot>
+```
+## Install
 
-If you customize the configuration a lot, you can consider moving them to individual files.
+`<jina-qa-bot>` is distributed on npm, so you can install it locally or use it via npm CDNs like jsdelivr.

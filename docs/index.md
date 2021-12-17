@@ -3,7 +3,7 @@ layout: page.11ty.cjs
 title: <jina-qa-bot> ⌲ Home
 ---
 
-# &lt;jina-qa-bot>
+# &lt;jina-qa-bot&gt;
 
 `<jina-qa-bot>` is the UI part of jina-doc-bot. It's a web component built with [LitElement](https://lit.dev).
 
@@ -111,7 +111,7 @@ Renders to:
         ></jina-qa-bot>
     </div>
 </div>
-<script src="https://unpkg.com/vue@next"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@next"></script>
 <script type="text/javascript">
     const app = Vue.createApp({ 
         data() {

@@ -13,33 +13,16 @@ module.exports = function (data) {
 };
 
 const renderDocuments = ({name, content, collections, page}) => {
-    const sortedDocuments = _.sortBy(collections.documents || [], (x)=> {
-        const fileName = x.inputPath;
-
-        if (fileName.includes('index.')) {
-            return 0;
-        }
-
-        return fileName;
+    const sortedDocuments = _.sortBy(collections.documentation || [], (x)=> {
+        return x.data.sort || 0;
     })
 
   return `
     <h1>${name}</h1>
-    <section class="documents">
+    <section class="documentation">
       <nav class="collection">
         <ul>
           ${sortedDocuments
-                  .sort((a, b)=> {
-                      if (a.inputPath.indexOf('index') >= 0) {
-                          return -1;
-                      }
-                      if (a.inputPath > b.inputPath) {
-                          return 1;
-                      } else if (a.inputPath === b.inputPath) {
-                          return 0;
-                      }
-                      return -1;
-                  })
                   .map(
                     (post) => `
                   <li class=${post.url === page.url ? 'selected' : ''}>

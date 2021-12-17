@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": " WebComponent jina-qa-bot for Jina docs bot",
   "main": "dist/jina-qa-bot.js",
+  "module": "dist/jina-qa-bot.js",
   "types": "dist/typings/jina-qa-bot.d.ts",
   "type": "module",
   "scripts": {
@@ -13,13 +14,14 @@
     "test:watch": "concurrently -k -r \"tsc -b src test --watch --preserveWatchOutput\" \"wtr --watch\"",
     "test:prod": "tsc -b src test && MODE=prod wtr",
     "test:prod:watch": "concurrently -k -r \"tsc -b src test --watch --preserveWatchOutput\" \"MODE=prod wtr --watch\"",
-    "build": "npm run clean && tsc -b src && npm run copy && rollup -c rollup.config.js && npm run copy:prod",
+    "build": "npm run clean && tsc -b src && npm run copy && rollup -c rollup.config.js",
     "start:build": "web-dev-server --root-dir dist --app-index index.html --open",
     "analyze": "cem analyze --litelement --globs \"src/**/*.ts\"",
     "analyze:watch": "cem analyze --litelement --globs \"src/**/*.ts\" --watch",
     "serve": "npm run start",
     "dev": "npm run start",
     "serve:prod": "MODE=prod npm run serve",
+    "serve:dist": "MODE=prod wds --root-dir=dist",
     "start": "npm run copy && concurrently -k -r \"tsc -b src --watch --preserveWatchOutput\" \"npm run copy:watch\" \"wds --root-dir=build --watch\"",
     "copy:watch": "copy-and-watch --watch 'src/**/*.{html,json}' build/",
     "copy": "copy-and-watch 'src/**/*.html' build/",
@@ -57,6 +59,12 @@
     "url": "https://github.com/jina-ai/jina-docs-bot-ui/issues"
   },
   "homepage": "https://github.com/jina-ai/jina-docs-bot-ui#readme",
+  "files": [
+    "dist",
+    "package.json",
+    "LICENSE",
+    "README.md"
+  ],
   "dependencies": {
     "events": "^3.3.0",
     "lit": "^2.0.2",

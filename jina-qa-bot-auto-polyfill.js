@@ -38,7 +38,7 @@
             polyfills.push(loadScript('./polyfills/fetch.js'));
         }
 
-        if (!!Array.prototype.flat) {
+        if (!Array.prototype.flat) {
             polyfills.push(loadScript('./polyfills/systemjs.js'));
         }
 
@@ -55,7 +55,7 @@
         }
 
         function loadFiles() {
-            if (!!Array.prototype.flat) {
+            if (!Array.prototype.flat) {
                 System.import('./legacy-jina-qa-bot.js');
             } else {
                 loadScript('./jina-qa-bot.js', 'module', []);

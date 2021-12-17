@@ -15,12 +15,12 @@ import { getBabelOutputPlugin } from '@rollup/plugin-babel';
 const htmlPlugin = html({
   // injectServiceWorker: true,
   // serviceWorkerPath: 'dist/sw.js',
-  rootDir: './',
+  rootDir: './build',
   flattenOutput: false,
 });
 
 export default {
-  input: 'build/index.html',
+  input: 'index.html',
   preserveEntrySignatures: false,
 
   plugins: [
@@ -59,7 +59,7 @@ export default {
       // Feature detection for loading legacy bundles
       legacyOutput: {
         name: 'legacy',
-        test: '!!Array.prototype.flat',
+        test: '!Array.prototype.flat',
         type: 'systemjs',
       },
       // List of polyfills to inject (each has individual feature detection)
