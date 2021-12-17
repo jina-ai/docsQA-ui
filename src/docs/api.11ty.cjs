@@ -8,7 +8,7 @@ module.exports = class Docs {
   data() {
     return {
       layout: 'page.11ty.cjs',
-      title: '<jina-qa-bot> ⌲ Docs',
+      title: '<qa-bot> ⌲ Docs',
     };
   }
 

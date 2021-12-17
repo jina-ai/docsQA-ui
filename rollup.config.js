@@ -112,7 +112,7 @@ export default {
           dest: 'dist/typings/'
         },
         {
-          src: 'jina-qa-bot-auto-polyfill.js',
+          src: 'qabot-auto-polyfill.js',
           dest: 'dist/'
         },
         {
