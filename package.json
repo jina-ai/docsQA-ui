@@ -36,7 +36,7 @@
     "docs:assets": "copy-and-watch node_modules/prismjs/themes/prism-okaidia.css docs/_build && copy-and-watch 'dist/**/*' docs/_build/dist/",
     "docs:serve": "wds --root-dir=docs/_build --watch",
     "docs:dev": "npm run docs && concurrently -k -r \"npm run docs:gen:watch\" \"npm run docs:serve\"",
-    "gh-pages": "npm run docs && npm copy:gh-pages"
+    "gh-pages": "npm run docs && npm run copy:gh-pages"
   },
   "repository": {
     "type": "git",
