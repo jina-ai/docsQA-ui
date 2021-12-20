@@ -2,7 +2,7 @@ import { html } from 'lit';
 import { fixture, expect } from '@open-wc/testing';
 
 import { QaBot } from '../src/qa-bot/qa-bot.js';
-import '../index.js';
+import '../qabot.js';
 
 describe('QaBot', () => {
   let element: QaBot;

@@ -206,13 +206,15 @@ export class QaBot extends LitElement {
     protected getAnswerBlock() {
         if (!(this.qaControl?.qaPairs.length)) {
             return html`
-            <div class="answer-hint">
+            <div class="answer-hint" tabindex="0">
                 <slot>
-                    <dt>You can ask questions about Jina. Try:</dt>
-                    <dd>What is Jina?</dd>
-                    <dd>Does Jina support Kubernetes?</dd>
-                    <dd>How can I traverse a nested DocumentArray?</dd>
-                    <dd>What are the basic concepts in Jina?</dd>
+                    <dl>
+                        <dt>You can ask questions about Jina. Try:</dt>
+                        <dd>What is Jina?</dd>
+                        <dd>Does Jina support Kubernetes?</dd>
+                        <dd>How can I traverse a nested DocumentArray?</dd>
+                        <dd>What are the basic concepts in Jina?</dd>
+                    </dl>
                 </slot>
             </div>
         `;
@@ -243,6 +245,7 @@ export class QaBot extends LitElement {
                 </div>
                 <div class="qabot__control">
                     <textarea maxlength="100" rows="3"
+                        tabindex="0"
                         ?disabled="${!(this.qaControl?.ready)}"
                         @keypress="${this.onTextAreaInput}"
                         placeholder="${this.server ? 'Type your question here...' : 'Waiting for server configuration...'}"></textarea>

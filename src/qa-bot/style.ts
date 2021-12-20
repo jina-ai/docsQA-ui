@@ -268,7 +268,7 @@ export const masterStyle = css`
         font-family: monospace;
     }
 
-    .answer-hint ul, ol, ::slotted(ul), ::slotted(ol) {
+    .answer-hint ul, ol, dl, ::slotted(ul), ::slotted(ol), ::slotted(dl) {
         font-size: var(--qabot-size-text-primary);
         color: var(--qabot-color-muted);
         padding: 0;
