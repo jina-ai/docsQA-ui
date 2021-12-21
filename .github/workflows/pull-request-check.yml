@@ -1,0 +1,27 @@
+name: Test and lint
+
+on:
+  pull_request:
+    branches: [main, staging, master]
+jobs:
+  test-build-publish-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+
+      - name: Install and Build
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+      - run: npm ci
+      - run: npm test
+      - run: npm version --no-git-tag-version $RELEASE_VERSION
+      - run: npm run docs
+      - name: NPM Publish
+        uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          dry-run: true
