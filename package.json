@@ -116,9 +116,8 @@
     }
   },
   "lint-staged": {
-    "*.ts": [
-      "eslint --fix",
-      "prettier --write"
+    "src/**/*.ts": [
+      "eslint"
     ]
   },
   "customElements": "custom-elements.json"
