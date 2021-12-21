@@ -34,7 +34,8 @@
     "docs:gen:watch": "eleventy --config=.eleventy.cjs --watch",
     "docs:assets": "copy-and-watch node_modules/prismjs/themes/prism-okaidia.css docs/ && copy-and-watch 'dist/**/*' docs/dist/",
     "docs:serve": "wds --root-dir=docs/ --watch",
-    "docs:dev": "npm run docs && concurrently -k -r \"npm run docs:gen:watch\" \"npm run docs:serve\""
+    "docs:dev": "npm run docs && concurrently -k -r \"npm run docs:gen:watch\" \"npm run docs:serve\"",
+    "husky:install": "husky install"
   },
   "repository": {
     "type": "git",
@@ -94,6 +95,9 @@
     "concurrently": "^6.4.0",
     "copy-and-watch": "^0.1.6",
     "eslint": "^8.4.0",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-lit-a11y": "^2.2.0",
+    "eslint-plugin-wc": "^1.3.2",
     "husky": "^7.0.4",
     "lint-staged": "^12.1.2",
     "lodash": "^4.17.21",
@@ -112,9 +116,8 @@
     }
   },
   "lint-staged": {
-    "*.ts": [
-      "eslint --fix",
-      "prettier --write"
+    "src/**/*.ts": [
+      "eslint"
     ]
   },
   "customElements": "custom-elements.json"

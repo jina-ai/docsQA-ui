@@ -1,12 +1,17 @@
-import { LitElement, html, css, PropertyValues } from 'lit';
-import { property, query, state } from 'lit/decorators.js';
+import { LitElement, html, PropertyValues } from 'lit';
+import { property, query } from 'lit/decorators.js';
 import { throttle } from '../lib/decorators/throttle';
 import customScrollbarCSS from '../shared/customized-scrollbar';
 import { resetCSS } from '../shared/reset-css';
 import { JinaQABotController, QAPair } from './controller';
 import masterStyle from './style';
-import { discussionIcon, downArrow, paperPlane, poweredByJina, thumbDown, thumbUp, tripleDot, upArrow } from './svg-icons';
+import {
+    discussionIcon, downArrow, paperPlane,
+    poweredByJina, thumbDown, thumbUp,
+    tripleDot, upArrow
+} from './svg-icons';
 
+const ABSPATHREGEXP = /^(https?:)?\/\/\S/;
 
 /**
  * QABot custom element
@@ -22,7 +27,7 @@ import { discussionIcon, downArrow, paperPlane, poweredByJina, thumbDown, thumbU
  * @attr animate-by - Choose slide-up/slide-down animation between `height` or `position`
  */
 export class QaBot extends LitElement {
-    @property({ type: String, reflect: true})
+    @property({ type: String, reflect: true })
     label = 'Ask our docs!';
 
     @property({ type: String })
@@ -37,7 +42,7 @@ export class QaBot extends LitElement {
     @property({ type: String, reflect: true })
     theme?: 'auto' | 'dark' | 'light' | string = 'auto';
 
-    @property({attribute: 'animate-by', type: String, reflect: true })
+    @property({ attribute: 'animate-by', type: String, reflect: true })
     animateBy?: 'position' | 'height' = 'height';
 
     // @property({ type: Boolean })
@@ -152,6 +157,27 @@ export class QaBot extends LitElement {
         }
     }
 
+    protected makeReferenceLink(uri: string) {
+        if (ABSPATHREGEXP.test(uri)) {
+            return uri;
+        }
+
+        if (this.site) {
+            const fixedLink = `/${uri}`.replace(/^\/+/, '/');
+            if (ABSPATHREGEXP.test(this.site)) {
+                return `${this.site}${fixedLink}`;
+            }
+
+            if (this.site.startsWith('/')) {
+                return `${this.site}${uri}`.replace(/^\/+/, '/');
+            }
+
+            return `//${this.site}${fixedLink}`;
+        }
+
+        return uri;
+    }
+
     protected getSingleQAComp(qa: QAPair) {
         return html`
             <div class="qa-pair">
@@ -174,7 +200,7 @@ export class QaBot extends LitElement {
                             }
                             ${qa.error ? html`
                                 <p>${qa.error.toString()}</p>
-                            `:'' }
+                            ` : ''}
                         </div>
 
 
@@ -183,16 +209,16 @@ export class QaBot extends LitElement {
                                 <a class="answer-reference" href="https://slack.jina.ai" target="_blank">Report</a>
                             ` : ''}
                             ${qa.answer?.uri ? html`
-                                <a class="answer-reference" href="${(this.site || '') + qa.answer.uri}" target="${this.target as any}">Source</a>
-                            `:''}
+                                <a class="answer-reference" href="${this.makeReferenceLink(qa.answer.uri)}" target="${this.target as any}">Source</a>
+                            ` : ''}
                             ${(qa.question && qa.answer) ? html`
                                 <div class="thumbs">
-                                    <div class="thumb thumbup" ?active="${qa.feedback === true}" @click="${()=> this.submitFeedback(qa, 'up')}">
+                                    <button class="thumb thumbup" ?active="${qa.feedback === true}" @click="${()=> this.submitFeedback(qa, 'up')}">
                                         <i class="icon icon-thumb-up">${thumbUp}</i>
-                                    </div>
-                                    <div class="thumb thumbdown" ?active="${qa.feedback === false}" @click="${()=> this.submitFeedback(qa, 'down')}">
+                                    </button>
+                                    <button class="thumb thumbdown" ?active="${qa.feedback === false}" @click="${()=> this.submitFeedback(qa, 'down')}">
                                         <i class="icon icon-thumb-down">${thumbDown}</i>
-                                    </div>
+                                    </button>
                                 </div>
                             ` : ''}
 
@@ -206,13 +232,15 @@ export class QaBot extends LitElement {
     protected getAnswerBlock() {
         if (!(this.qaControl?.qaPairs.length)) {
             return html`
-            <div class="answer-hint">
+            <div class="answer-hint" tabindex="0">
                 <slot>
-                    <dt>You can ask questions about Jina. Try:</dt>
-                    <dd>What is Jina?</dd>
-                    <dd>Does Jina support Kubernetes?</dd>
-                    <dd>How can I traverse a nested DocumentArray?</dd>
-                    <dd>What are the basic concepts in Jina?</dd>
+                    <dl>
+                        <dt>You can ask questions about Jina. Try:</dt>
+                        <dd>What is Jina?</dd>
+                        <dd>Does Jina support Kubernetes?</dd>
+                        <dd>How can I traverse a nested DocumentArray?</dd>
+                        <dd>What are the basic concepts in Jina?</dd>
+                    </dl>
                 </slot>
             </div>
         `;
@@ -229,20 +257,21 @@ export class QaBot extends LitElement {
 
         return html`
         <div class="qabot card" ?busy="${!(this.qaControl?.ready)}" >
-            <div class="card__header" @click="${this.toggleOpen}">
+            <button class="card__header" @click="${this.toggleOpen}">
                 <span class="card__title">
                     <i class="icon">${discussionIcon}</i>
                     <span class="text">${this.label}</span>
                 </span>
                 <i class="icon arrow-down">${downArrow}</i>
                 <i class="icon arrow-up">${upArrow}</i>
-            </div>
+            </button>
             <div class="card__content">
                 <div class="qabot__answer-block">
                     ${this.getAnswerBlock()}
                 </div>
                 <div class="qabot__control">
                     <textarea maxlength="100" rows="3"
+                        tabindex="0"
                         ?disabled="${!(this.qaControl?.ready)}"
                         @keypress="${this.onTextAreaInput}"
                         placeholder="${this.server ? 'Type your question here...' : 'Waiting for server configuration...'}"></textarea>

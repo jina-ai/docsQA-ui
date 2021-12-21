@@ -33,8 +33,11 @@
   "typescript.locale": "en",
   "cSpell.enabled": true,
   "cSpell.words": [
-    "qabot",
     "docbot",
+    "maxlength",
+    "qabot",
+    "tabindex",
+    "talktext",
     "vmin"
   ]
 }

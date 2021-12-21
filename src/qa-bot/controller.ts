@@ -67,9 +67,9 @@ export class JinaQABotController implements ReactiveController {
     async sendFeedback(qaPair: QAPair, feedback: 'up' | 'down' | 'none') {
 
         const thumbUpMap = {
-            'up': true,
-            'down': false,
-            'none': null
+            up: true,
+            down: false,
+            none: null
         };
         const thumbUpVal = thumbUpMap[feedback];
 
@@ -87,8 +87,8 @@ export class JinaQABotController implements ReactiveController {
             if (feedback !== 'none') {
                 this.qaPairs.push({
                     answer: {
-                        "text": "Thanks for your feedback! We will improve 🙇‍♂️",
-                        "uri": ""
+                        text: 'Thanks for your feedback! We will improve 🙇‍♂️',
+                        uri: ''
                     }
                 });
             }

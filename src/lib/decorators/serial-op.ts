@@ -1,4 +1,5 @@
 import { Defer } from '../defer';
+
 const NOOP = () => undefined;
 
 const DEFAULT_SERIAL_SYMBOL = Symbol('Default serial ops');
@@ -31,6 +32,7 @@ export function serialOperation(id: symbol = DEFAULT_SERIAL_SYMBOL) {
             return deferred.promise;
         }
 
+        // eslint-disable-next-line no-param-reassign
         propDesc.value = serialOperationAwareFunction;
 
         return propDesc;

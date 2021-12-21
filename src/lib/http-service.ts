@@ -45,6 +45,7 @@ export class HTTPServiceError<T extends HTTPServiceRequestOptions = HTTPServiceR
     status?: string | number;
     config?: T;
     response?: Response;
+
     constructor(serial: number, options?: {
         err?: Error;
         status?: string | number;
@@ -58,8 +59,9 @@ export class HTTPServiceError<T extends HTTPServiceRequestOptions = HTTPServiceR
         }
         this.message = `Req(${serial} ${(this.config?.method || 'get').toUpperCase()} ${this.config?.url}): ${stringifyErrorLike(this.err)}`;
         if (this.err?.stack && this.stack) {
-            const message_lines = (this.message.match(/\n/g) || []).length + 1;
-            this.stack = this.stack.split('\n').slice(0, message_lines + 1).join('\n') +
+            const messageLines = (this.message.match(/\n/g) || []).length + 1;
+            // eslint-disable-next-line prefer-template
+            this.stack = this.stack.split('\n').slice(0, messageLines + 1).join('\n') +
                 '\n\nWhich was derived from:\n\n' +
                 this.err.stack;
         }
@@ -287,7 +289,6 @@ export abstract class HTTPService<
     }
 
     postFormWithSearchParams<T = any>(uri: string, searchParams: any = {}, data: any = {}, options?: To) {
-
         const form = new FormData();
         for (const [k, v] of Object.entries(data)) {
             form.append(k, `${v}`);
@@ -365,11 +366,22 @@ export abstract class HTTPService<
 }
 // eslint-disable max-len
 export interface HTTPService {
-    addEventListener(name: 'request', listener: (config: HTTPServiceRequestOptions, serial: number) => void, options: AddEventListenerOptions): this;
+    addEventListener(
+        name: 'request',
+        listener: (
+            config: HTTPServiceRequestOptions,
+            serial: number
+        ) => void,
+        options: AddEventListenerOptions
+    ): this;
 
     addEventListener(
         name: 'response',
-        listener: (response: Response & FetchPatch<HTTPServiceRequestOptions>, serial: number) => void, options: AddEventListenerOptions
+        listener: (
+            response: Response & FetchPatch<HTTPServiceRequestOptions>,
+            serial: number
+        ) => void,
+        options: AddEventListenerOptions
     ): this;
     addEventListener(
         name: 'exception',
@@ -387,7 +399,11 @@ export interface HTTPService {
             serial: number
         ) => void, options: AddEventListenerOptions
     ): this;
-    addEventListener(event: string | symbol, listener: (...args: any[]) => void, options: AddEventListenerOptions): this;
+    addEventListener(
+        event: string | symbol,
+        listener: (...args: any[]) => void,
+        options: AddEventListenerOptions
+    ): this;
 }
 // eslint-enable max-len
 
