@@ -45,4 +45,7 @@ jobs:
           git config --local user.name "Jina Dev Bot"
           git add package.json package-lock.json
           git commit -m "bump npm version $RELEASE_VERSION"
-          git push origin main
+      - name: GitHub Push
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          branch: main
