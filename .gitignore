@@ -108,3 +108,5 @@ custom-elements.json
 /docs
 
 .DS_Store
+
+.husky/

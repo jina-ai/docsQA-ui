@@ -34,7 +34,8 @@
     "docs:gen:watch": "eleventy --config=.eleventy.cjs --watch",
     "docs:assets": "copy-and-watch node_modules/prismjs/themes/prism-okaidia.css docs/ && copy-and-watch 'dist/**/*' docs/dist/",
     "docs:serve": "wds --root-dir=docs/ --watch",
-    "docs:dev": "npm run docs && concurrently -k -r \"npm run docs:gen:watch\" \"npm run docs:serve\""
+    "docs:dev": "npm run docs && concurrently -k -r \"npm run docs:gen:watch\" \"npm run docs:serve\"",
+    "husky:install": "husky install"
   },
   "repository": {
     "type": "git",
