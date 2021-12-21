@@ -11,6 +11,7 @@ import {
     tripleDot, upArrow
 } from './svg-icons';
 
+const ABSPATHREGEXP = /^(https?:)?\/\/\S/;
 
 /**
  * QABot custom element
@@ -156,6 +157,23 @@ export class QaBot extends LitElement {
         }
     }
 
+    protected makeReferenceLink(uri: string) {
+        if (ABSPATHREGEXP.test(uri)) {
+            return uri;
+        }
+
+        if (this.site) {
+            const fixedLink = `/${uri}`.replace(/^\/+/, '/');
+            if (ABSPATHREGEXP.test(this.site)) {
+                return `${this.site}${fixedLink}`;
+            }
+
+            return `//${this.site}${fixedLink}`;
+        }
+
+        return uri;
+    }
+
     protected getSingleQAComp(qa: QAPair) {
         return html`
             <div class="qa-pair">
@@ -187,7 +205,7 @@ export class QaBot extends LitElement {
                                 <a class="answer-reference" href="https://slack.jina.ai" target="_blank">Report</a>
                             ` : ''}
                             ${qa.answer?.uri ? html`
-                                <a class="answer-reference" href="${(this.site || '') + qa.answer.uri}" target="${this.target as any}">Source</a>
+                                <a class="answer-reference" href="${this.makeReferenceLink(qa.answer.uri)}" target="${this.target as any}">Source</a>
                             ` : ''}
                             ${(qa.question && qa.answer) ? html`
                                 <div class="thumbs">
