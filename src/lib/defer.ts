@@ -36,13 +36,13 @@ export function TimedDefer<T = any>(timeout: number = 5000): Deferred<T> {
 
             return resolve(stuff);
         };
-        self.reject = (...argv: any[]) => {
+        self.reject = (err: any) => {
             if (timeoutHandle) {
                 clearTimeout(timeoutHandle);
                 timeoutHandle = null;
             }
 
-            return reject(...argv);
+            return reject(err);
         };
     });
 

@@ -1,7 +1,3 @@
-
-
-export interface DocumentArray<T extends Document = Document> extends Array<T> { }
-
 export interface DenseNDArray {
     buffer?: string;
     shape: number[];
@@ -56,3 +52,5 @@ export interface Document {
     modality: string;
     evaluations: { [k: string]: NamedScore; };
 }
+
+export interface DocumentArray<T extends Document = Document> extends Array<T> { }
