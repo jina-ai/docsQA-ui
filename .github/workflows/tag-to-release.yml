@@ -30,14 +30,7 @@ jobs:
         uses: JS-DevTools/npm-publish@v1
         with:
           token: ${{ secrets.NPM_TOKEN }}
-      - name: Commit NPM version bump
-        run: |
-          git config --local user.email "dev-bot@jina.ai"
-          git config --local user.name "Jina Dev Bot"
-          git add package.json package-lock.json
-          git commit -m "bump npm version $RELEASE_VERSION"
-          git push
-
+          check-version: true
       - name: Deploy docs📖 to GitHub Pages 🚀
         uses: JamesIves/github-pages-deploy-action@4.1.8
         with:
@@ -46,3 +39,10 @@ jobs:
           git-config-name: Jina Dev Bot
           git-config-email: dev-bot@jina.ai
           clean: true
+      - name: Commit NPM version bump
+        run: |
+          git config --local user.email "dev-bot@jina.ai"
+          git config --local user.name "Jina Dev Bot"
+          git add package.json package-lock.json
+          git commit -m "bump npm version $RELEASE_VERSION"
+          git push origin main
