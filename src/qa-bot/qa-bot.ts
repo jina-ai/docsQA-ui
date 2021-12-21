@@ -168,6 +168,10 @@ export class QaBot extends LitElement {
                 return `${this.site}${fixedLink}`;
             }
 
+            if (this.site.startsWith('/')) {
+                return `${this.site}${uri}`.replace(/^\/+/, '/');
+            }
+
             return `//${this.site}${fixedLink}`;
         }
 
