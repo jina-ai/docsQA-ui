@@ -197,7 +197,7 @@ export const masterStyle = css`
 
     .qabot__control textarea {
         width: 100%;
-        padding: 0.5em calc(1.5em + 0.5em) 0.5em 0.5em;
+        padding: 0.72em 2.85em 0.72em 0.72em;
         border: 1px solid var(--qabot-color-action);
         border-right: none;
         border-radius: var(--qabot-size-border-radius-primary) calc(var(--qabot-size-border-radius-primary) + 6px) calc(var(--qabot-size-border-radius-primary) + 6px) var(--qabot-size-border-radius-primary);
@@ -256,7 +256,7 @@ export const masterStyle = css`
         display: list-item;
         list-style-position: inside;
         padding-left: 1em;
-        text-indent: -0.9em;
+        text-indent: -1.2em;
         list-style-type: "•   ";
     }
 
@@ -296,7 +296,7 @@ export const masterStyle = css`
         height: auto;
         background-color: var(--qabot-color-action);
         color: var(--qabot-color-action-contrast);
-        margin-bottom: 1.5em;
+        margin-bottom: 1.2em;
         border-radius: 0.3125em;
         max-width: 80%;
     }
@@ -349,8 +349,7 @@ export const masterStyle = css`
 
     .qa-pair .bubble .feedback-tooltip {
         position: absolute;
-        bottom: calc(-2.75 * var(--qabot-size-text-primary));
-        left: calc(2.25 * var(--qabot-size-text-primary));
+        left: 1.5em;
         font-size: var(--qabot-size-text-primary);
         display: flex;
         flex-direction: row;
