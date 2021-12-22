@@ -263,8 +263,9 @@ export const masterStyle = css`
     .answer-hint p::marker,.answer-hint li::marker,.answer-hint dd::marker,
     .answer-hint ::slotted(p)::marker,.answer-hint ::slotted(li)::marker,.answer-hint ::slotted(dd)::marker {
         content: '• ';
-        font-weight: 1;
+        font-weight: bold;
         white-space: pre-wrap;
+        font-family: ui-monospace;
     }
 
     .answer-hint ul, .answer-hint ol, .answer-hint dl, .answer-hint ::slotted(ul),
