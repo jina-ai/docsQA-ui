@@ -167,13 +167,14 @@ export const masterStyle = css`
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: 0 calc(var(--qabot-size-border-radius-primary) - 1px) calc(var(--qabot-size-border-radius-primary) - 1px) 0;
+        border-radius: 0 var(--qabot-size-border-radius-primary) var(--qabot-size-border-radius-primary) 0;
         position: absolute;
         padding: 0.5em;
         border: none;
-        right: 1px;
-        top: 1px;
-        height: calc(100% - 2px);
+        right: 0;
+        border: 1px solid var(--qabot-color-action);
+        border-left: none;
+        height: 100%;
         cursor: pointer;
         color: var(--qabot-color-action);
         fill: var(--qabot-color-action);
@@ -198,7 +199,8 @@ export const masterStyle = css`
         width: 100%;
         padding: 0.5em calc(1.5em + 0.5em) 0.5em 0.5em;
         border: 1px solid var(--qabot-color-action);
-        border-radius: var(--qabot-size-border-radius-primary);
+        border-right: none;
+        border-radius: var(--qabot-size-border-radius-primary) calc(var(--qabot-size-border-radius-primary) + 6px) calc(var(--qabot-size-border-radius-primary) + 6px) var(--qabot-size-border-radius-primary);
         font-size: var(--qabot-size-text-primary);
         resize: none;
 
