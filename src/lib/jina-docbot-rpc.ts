@@ -21,7 +21,7 @@ export class JinaDocBotRPC extends HTTPService {
         answer_uri?: string;
         thumbup?: boolean | null;
     }) {
-        return this.postJson('/slack', options);
+        return this.postJson('/slack', { data: [], parameters: options });
     }
 
 }
