@@ -138,8 +138,6 @@ export const masterStyle = css`
     .card .card__content {
         height: calc(100% - var(--qabot-card-header-height));
         overflow: hidden;
-        overflow: overlay;
-        scroll-behavior: smooth;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -154,7 +152,8 @@ export const masterStyle = css`
         scrollbar-width: thin;
         overflow: overlay;
         scroll-behavior: smooth;
-        padding: 1rem 0.5rem 0 1rem;
+        padding: 1rem 1rem 0 1rem;
+        -moz-padding-end: calc(1rem - 10px);
     }
 
     .qabot__control {
@@ -283,7 +282,6 @@ export const masterStyle = css`
     }
 
     .qa-pair {
-        padding: 0 0.5rem 0 0;
         width: 100%;
     }
     .qa-pair:last-child {
