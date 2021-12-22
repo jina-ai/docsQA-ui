@@ -294,8 +294,8 @@ export const masterStyle = css`
         height: auto;
         background-color: var(--qabot-color-action);
         color: var(--qabot-color-action-contrast);
-        margin-bottom: 20px;
-        border-radius: 5px;
+        margin-bottom: 1.5em;
+        border-radius: 0.3125em;
         max-width: 80%;
     }
 
@@ -307,8 +307,8 @@ export const masterStyle = css`
         left: 0;
         right: auto;
         top: auto;
-        bottom: -10px;
-        border: 10px solid;
+        bottom: -0.58em;
+        border: 0.58em solid;
         border-color: transparent transparent transparent var(--qabot-color-action);
     }
 
@@ -346,14 +346,14 @@ export const masterStyle = css`
     }
 
     .qa-pair .bubble .feedback-tooltip {
-        bottom: -1.78em;
         position: absolute;
-        left: 1.78em;
-
+        bottom: calc(-2.75 * var(--qabot-size-text-primary));
+        left: calc(2.25 * var(--qabot-size-text-primary));
+        font-size: var(--qabot-size-text-primary);
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-        align-items: center;
+        align-items: end;
         width: calc(100% - 2.5em);
         color: var(--qabot-color-action);
     }
