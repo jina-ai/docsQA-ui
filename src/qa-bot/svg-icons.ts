@@ -46,7 +46,7 @@ export const thumbDown = svg`
 `;
 
 export const tripleDot = svg`
-<svg height="10" width="40" class="loader">
+<svg viewBox="0 0 40 10" class="loader">
     <circle class="dot" cx="10" cy="5" r="3" />
     <circle class="dot" cx="20" cy="5" r="3" />
     <circle class="dot" cx="30" cy="5" r="3" />

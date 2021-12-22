@@ -196,7 +196,7 @@ export class QaBot extends LitElement {
                             ${
                                 qa.answer ?
                                     html`<p>${qa.answer.text}</p>` :
-                                    qa.error ? '' : html`<div class="loading triple-dot">${tripleDot}</div>`
+                                    qa.error ? '' : html`<i class="icon loading triple-dot">${tripleDot}</i>`
                             }
                             ${qa.error ? html`
                                 <p>${qa.error.toString()}</p>

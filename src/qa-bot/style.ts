@@ -13,11 +13,11 @@ export const masterStyle = css`
         --qabot-color-dimmed: #eeebee;
         --qabot-color-muted: #646776;
 
-        --qabot-size-text-primary: 0.7rem;
-        --qabot-size-text-title: 1rem;
-        --qabot-size-border-radius-primary: 0.25rem;
+        --qabot-size-text-primary: 0.7em;
+        --qabot-size-text-title: 1em;
+        --qabot-size-border-radius-primary: 0.25em;
 
-        --qabot-card-header-height: calc(var(--qabot-size-text-title) + 2.5rem);
+        --qabot-card-header-height: calc(var(--qabot-size-text-title) + 2.5em);
     }
 
     :host([theme='dark']){
@@ -47,10 +47,11 @@ export const masterStyle = css`
     }
 
     :host {
-        width: 16rem;
+        font-size: 1rem;
+        width: 16em;
         height: 100%;
         transition: transform 0.15s ease-in-out, max-height 0.15s ease-in-out;
-        max-height: 25rem;
+        max-height: 25em;
         position: absolute;
         bottom: 0;
     }
@@ -72,7 +73,6 @@ export const masterStyle = css`
         width: 100%;
         height: 100%;
         overflow: hidden;
-        font-size: var(--qabot-size-text-primary);
     }
 
     .qabot[busy] {
@@ -80,7 +80,7 @@ export const masterStyle = css`
     }
 
     .card {
-        box-shadow: 0 0.1rem 0.25rem var(--qabot-color-shadow), 0 0 0.0625rem rgba(0, 0, 0, 0.1);
+        box-shadow: 0 0.1em 0.25em var(--qabot-color-shadow), 0 0 0.0625em rgba(0, 0, 0, 0.1);
         box-sizing: border-box;
         background-clip: border-box;
         background-color: var(--qabot-color-background);
@@ -97,8 +97,8 @@ export const masterStyle = css`
 
     .card .card__header {
         height: var(--qabot-card-header-height);
-        padding: 1rem;
-        line-height: 1.15rem;
+        padding: 1em;
+        line-height: 1.15em;
         font-size: var(--qabot-size-text-title);
         cursor: pointer;
         user-select: none;
@@ -120,7 +120,7 @@ export const masterStyle = css`
     .card .card__title {
         display: flex;
         align-items: center;
-        column-gap: 0.75rem;
+        column-gap: 0.75em;
     }
 
     .card .icon {
@@ -147,20 +147,20 @@ export const masterStyle = css`
         display: flex;
         flex-grow: 1;
         flex-shrink: 1;
-        min-height: 3rem;
+        min-height: 3em;
         overflow-y: scroll;
         scrollbar-width: thin;
         overflow: overlay;
         scroll-behavior: smooth;
-        padding: 1rem 1rem 0 1rem;
-        -moz-padding-end: calc(1rem - 10px);
+        padding: 1em 1em 0 1em;
+        -moz-padding-end: calc(1em - 10px);
     }
 
     .qabot__control {
-        margin: 0 1rem 1rem 1rem;
+        margin: 0 1em 1em 1em;
         display: flex;
         position: relative;
-        line-height: 1.15rem;
+        line-height: 1.15em;
     }
 
     .qabot__control button {
@@ -169,14 +169,12 @@ export const masterStyle = css`
         justify-content: center;
         border-radius: 0 calc(var(--qabot-size-border-radius-primary) - 1px) calc(var(--qabot-size-border-radius-primary) - 1px) 0;
         position: absolute;
-        padding: 0.5rem;
+        padding: 0.5em;
         border: none;
         right: 1px;
         top: 1px;
         height: calc(100% - 2px);
         cursor: pointer;
-
-        font-size: 1rem;
         color: var(--qabot-color-action);
         fill: var(--qabot-color-action);
         background-color: var(--qabot-color-action-contrast);
@@ -189,7 +187,7 @@ export const masterStyle = css`
         fill: var(--qabot-color-action-contrast);
         background-color: var(--qabot-color-action);
 
-        box-shadow: 0 0 0.15rem var(--qabot-color-action);
+        box-shadow: 0 0 0.15em var(--qabot-color-action);
     }
 
     .qabot__control *:disabled {
@@ -198,7 +196,7 @@ export const masterStyle = css`
 
     .qabot__control textarea {
         width: 100%;
-        padding: 0.5rem calc(1.5rem + 0.5rem) 0.5rem 0.5rem;
+        padding: 0.5em calc(1.5em + 0.5em) 0.5em 0.5em;
         border: 1px solid var(--qabot-color-action);
         border-radius: var(--qabot-size-border-radius-primary);
         font-size: var(--qabot-size-text-primary);
@@ -211,7 +209,7 @@ export const masterStyle = css`
     }
 
     .qabot__control textarea:focus {
-        box-shadow: 0 0 0.15rem var(--qabot-color-action);
+        box-shadow: 0 0 0.15em var(--qabot-color-action);
     }
 
     .qabot__control textarea:disabled {
@@ -222,8 +220,8 @@ export const masterStyle = css`
         position: absolute;
         display: flex;
         width: 100%;
-        height: 1rem;
-        bottom: -1rem;
+        height: 1em;
+        bottom: -1em;
         justify-content: center;
     }
     .qabot .powered-by .icon {
@@ -233,48 +231,50 @@ export const masterStyle = css`
 
     .answer-hint {
         width: 100%;
-        padding-right: 0.5rem;
-        line-height: 1.15rem;
+        padding-right: 0.5em;
+        line-height: 1.15em;
         display: block;
     }
 
-    .answer-hint h1,h2,h3,h4,h5,h6,dt,::slotted(h1),
-        ::slotted(h2),::slotted(h3),::slotted(h4),
-        ::slotted(h5),::slotted(h6),::slotted(dt) {
+    .answer-hint h1,.answer-hint h2,.answer-hint h3,.answer-hint h4,.answer-hint h5,
+    .answer-hint h6,.answer-hint dt,.answer-hint ::slotted(h1),
+    .answer-hint ::slotted(h2),.answer-hint ::slotted(h3),.answer-hint ::slotted(h4),
+    .answer-hint ::slotted(h5),.answer-hint ::slotted(h6),.answer-hint ::slotted(dt) {
         margin: 0;
-        margin-bottom: 0.75rem;
+        margin-bottom: 0.75em;
         font-size: var(--qabot-size-text-primary);
         font-weight: bold;
         color: var(--qabot-color-primary);
     }
 
-    .answer-hint p,li,dd,::slotted(p),::slotted(li),::slotted(dd) {
+    .answer-hint p,.answer-hint li,.answer-hint dd,.answer-hint ::slotted(p),.answer-hint ::slotted(li),.answer-hint ::slotted(dd) {
         margin: 0;
         font-size: var(--qabot-size-text-primary);
         color: var(--qabot-color-muted);
         display: list-item;
         list-style-position: inside;
-        padding-left: 1rem;
-        text-indent: -0.9rem;
+        padding-left: 1em;
+        text-indent: -0.9em;
         list-style-type: "•   ";
     }
 
-    .answer-hint p::marker,li::marker,dd::marker,
-        ::slotted(p)::marker,::slotted(li)::marker,::slotted(dd)::marker {
+    .answer-hint p::marker,.answer-hint li::marker,.answer-hint dd::marker,
+    .answer-hint ::slotted(p)::marker,.answer-hint ::slotted(li)::marker,.answer-hint ::slotted(dd)::marker {
         content: '• ';
         font-weight: 1;
         white-space: pre-wrap;
         font-family: monospace;
     }
 
-    .answer-hint ul, ol, dl, ::slotted(ul), ::slotted(ol), ::slotted(dl) {
+    .answer-hint ul, .answer-hint ol, .answer-hint dl, .answer-hint ::slotted(ul),
+    .answer-hint ::slotted(ol), .answer-hint ::slotted(dl) {
         font-size: var(--qabot-size-text-primary);
         color: var(--qabot-color-muted);
         padding: 0;
     }
 
-    .answer-hint >*:last-child, ::slotted(*:last-child) {
-        padding-bottom: 1rem;
+    .answer-hint >*:last-child, .answer-hint ::slotted(*:last-child) {
+        padding-bottom: 1em;
     }
 
     .answer-dialog {
@@ -285,7 +285,7 @@ export const masterStyle = css`
         width: 100%;
     }
     .qa-pair:last-child {
-        padding-bottom: 1rem;
+        padding-bottom: 1em;
     }
 
     .qa-pair .bubble {
@@ -317,12 +317,17 @@ export const masterStyle = css`
     }
 
     .qa-pair:not(:first-child) {
-        margin-top: 1rem;
+        margin-top: 1em;
     }
 
     .qa-pair .talktext {
         padding: 1em;
         text-align: left;
+        font-size: var(--qabot-size-text-primary);
+    }
+
+    .qa-pair .feedback-tooltip {
+        font-size: var(--qabot-size-text-primary);
     }
 
     .qa-pair .talktext p {
@@ -341,15 +346,15 @@ export const masterStyle = css`
     }
 
     .qa-pair .bubble .feedback-tooltip {
-        bottom: -1.25rem;
+        bottom: -1.78em;
         position: absolute;
-        left: 1.25rem;
+        left: 1.78em;
 
         display: flex;
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-        width: calc(100% - 1.25rem - 0.75rem);
+        width: calc(100% - 2.5em);
         color: var(--qabot-color-action);
     }
 
@@ -358,6 +363,11 @@ export const masterStyle = css`
         50% {
             fill: transparent
         }
+    }
+
+    .triple-dot {
+        width: 3em;
+        height: 1em;
     }
 
     .triple-dot .dot{
@@ -381,7 +391,7 @@ export const masterStyle = css`
     .feedback-tooltip .thumbs {
         display: flex;
         flex-direction: row;
-        margin-left: 0.5rem;
+        margin-left: 0.5em;
         align-items: center;
     }
 
@@ -393,7 +403,7 @@ export const masterStyle = css`
     }
 
     .feedback-tooltip .thumbs .thumb:not(:first-child) {
-        margin-left: 0.25rem;
+        margin-left: 0.25em;
     }
 
     .feedback-tooltip .thumbs .thumb:hover, .feedback-tooltip .thumbs .thumb[active] {
@@ -407,7 +417,7 @@ export const masterStyle = css`
     }
     .answer-reference:after {
         content: url("data:image/svg+xml;charset=utf-8,%3Csvg width='12' height='12' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke-width='1.5' stroke='%23607D8B' fill='none' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M0 0h24v24H0z' stroke='none'/%3E%3Cpath d='M11 7H6a2 2 0 00-2 2v9a2 2 0 002 2h9a2 2 0 002-2v-5M10 14L20 4M15 4h5v5'/%3E%3C/svg%3E");
-        margin: 0 .25rem;
+        margin: 0 .25em;
         vertical-align: middle;
         color: var(--color-sidebar-link-text);
     }
