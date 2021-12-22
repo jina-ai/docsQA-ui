@@ -255,8 +255,8 @@ export const masterStyle = css`
         color: var(--qabot-color-muted);
         display: list-item;
         list-style-position: inside;
-        padding-left: 1em;
-        text-indent: -1.2em;
+        padding-left: var(--qabot-size-text-primary);
+        text-indent: calc(-1.2 * var(--qabot-size-text-primary));
         list-style-type: "•   ";
     }
 
@@ -265,12 +265,10 @@ export const masterStyle = css`
         content: '• ';
         font-weight: 1;
         white-space: pre-wrap;
-        font-family: monospace;
     }
 
     .answer-hint ul, .answer-hint ol, .answer-hint dl, .answer-hint ::slotted(ul),
     .answer-hint ::slotted(ol), .answer-hint ::slotted(dl) {
-        font-size: var(--qabot-size-text-primary);
         color: var(--qabot-color-muted);
         padding: 0;
     }
