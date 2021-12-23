@@ -1,12 +1,12 @@
 import { LitElement, html, PropertyValues } from 'lit';
-import { property, query } from 'lit/decorators.js';
+import { property, query, state } from 'lit/decorators.js';
 import { throttle } from '../lib/decorators/throttle';
 import customScrollbarCSS from '../shared/customized-scrollbar';
 import { resetCSS } from '../shared/reset-css';
 import { JinaQABotController, QAPair } from './controller';
 import masterStyle from './style';
 import {
-    discussionIcon, downArrow, paperPlane,
+    discussionIcon, downArrow, linkIcon, paperPlane,
     poweredByJina, thumbDown, thumbUp,
     tripleDot, upArrow
 } from './svg-icons';
@@ -50,6 +50,11 @@ export class QaBot extends LitElement {
 
     @property({ type: Boolean, reflect: true })
     open?: boolean;
+
+    @state()
+    get busy() {
+        return !(this.qaControl?.ready);
+    }
 
     protected qaControl?: JinaQABotController;
 
@@ -119,11 +124,10 @@ export class QaBot extends LitElement {
             await this.scrollDialogToBottom();
         }
 
-        setTimeout(()=> {
-            if (this.open) {
-                this.textarea?.focus();
-            }
-        }, 100);
+        await this.updateComplete;
+        if (this.open) {
+            this.textarea?.focus();
+        }
     }
 
     @throttle()
@@ -132,7 +136,7 @@ export class QaBot extends LitElement {
             return;
         }
 
-        const r = await this.qaControl?.sendFeedback(qaPair, feedback);
+        const r = await this.qaControl?.sendBlockingFeedback(qaPair, feedback);
 
         await this.scrollDialogToBottom();
 
@@ -196,7 +200,7 @@ export class QaBot extends LitElement {
                             ${
                                 qa.answer ?
                                     html`<p>${qa.answer.text}</p>` :
-                                    qa.error ? '' : html`<div class="loading triple-dot">${tripleDot}</div>`
+                                    qa.error ? '' : html`<i class="icon loading triple-dot">${tripleDot}</i>`
                             }
                             ${qa.error ? html`
                                 <p>${qa.error.toString()}</p>
@@ -209,7 +213,7 @@ export class QaBot extends LitElement {
                                 <a class="answer-reference" href="https://slack.jina.ai" target="_blank">Report</a>
                             ` : ''}
                             ${qa.answer?.uri ? html`
-                                <a class="answer-reference" href="${this.makeReferenceLink(qa.answer.uri)}" target="${this.target as any}">Source</a>
+                                <a class="answer-reference" href="${this.makeReferenceLink(qa.answer.uri)}" target="${this.target as any}">Source<i class="icon link">${linkIcon}</i></a>
                             ` : ''}
                             ${(qa.question && qa.answer) ? html`
                                 <div class="thumbs">
@@ -256,7 +260,7 @@ export class QaBot extends LitElement {
     override render() {
 
         return html`
-        <div class="qabot card" ?busy="${!(this.qaControl?.ready)}" >
+        <div class="qabot card" ?busy="${this.busy}" >
             <button class="card__header" @click="${this.toggleOpen}">
                 <span class="card__title">
                     <i class="icon">${discussionIcon}</i>
@@ -272,10 +276,10 @@ export class QaBot extends LitElement {
                 <div class="qabot__control">
                     <textarea maxlength="100" rows="3"
                         tabindex="0"
-                        ?disabled="${!(this.qaControl?.ready)}"
+                        ?disabled="${this.busy}"
                         @keypress="${this.onTextAreaInput}"
                         placeholder="${this.server ? 'Type your question here...' : 'Waiting for server configuration...'}"></textarea>
-                    <button title="Submit" ?disabled="${!(this.qaControl?.ready)}" @click="${this.submitQuestion}">
+                    <button title="Submit" ?disabled="${this.busy}" @click="${this.submitQuestion}">
                         <i class="icon icon-plane">${paperPlane}</i>
                     </button>
                     <div class="powered-by"><i class="icon icon-powered-by-jina">${poweredByJina}</i></div>

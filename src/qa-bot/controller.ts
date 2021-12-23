@@ -63,9 +63,7 @@ export class JinaQABotController implements ReactiveController {
         }
     }
 
-    @serialOperation()
     async sendFeedback(qaPair: QAPair, feedback: 'up' | 'down' | 'none') {
-
         const thumbUpMap = {
             up: true,
             down: false,
@@ -74,9 +72,6 @@ export class JinaQABotController implements ReactiveController {
         const thumbUpVal = thumbUpMap[feedback];
 
         try {
-            this.ready = false;
-            this.host.requestUpdate();
-
             const r = await this.rpc.sendFeedback({
                 question: qaPair.question,
                 answer: qaPair.answer?.text,
@@ -99,6 +94,17 @@ export class JinaQABotController implements ReactiveController {
             throw e;
         } finally {
             qaPair.feedback = thumbUpVal;
+            this.host.requestUpdate();
+        }
+    }
+
+    @serialOperation()
+    async sendBlockingFeedback(qaPair: QAPair, feedback: 'up' | 'down' | 'none') {
+        this.ready = false;
+        try {
+            this.host.requestUpdate();
+            await this.sendFeedback(qaPair, feedback);
+        } finally {
             this.ready = true;
             this.host.requestUpdate();
         }
@@ -106,6 +112,7 @@ export class JinaQABotController implements ReactiveController {
 
     clear() {
         this.qaPairs.length = 0;
+        this.ready = true;
         this.host.requestUpdate();
     }
 
