@@ -1,5 +1,5 @@
 import { LitElement, html, PropertyValues } from 'lit';
-import { property, query } from 'lit/decorators.js';
+import { property, query, state } from 'lit/decorators.js';
 import { throttle } from '../lib/decorators/throttle';
 import customScrollbarCSS from '../shared/customized-scrollbar';
 import { resetCSS } from '../shared/reset-css';
@@ -51,6 +51,11 @@ export class QaBot extends LitElement {
     @property({ type: Boolean, reflect: true })
     open?: boolean;
 
+    @state()
+    get busy() {
+        return !(this.qaControl?.ready);
+    }
+
     protected qaControl?: JinaQABotController;
 
     @query('.qabot__control textarea')
@@ -75,6 +80,8 @@ export class QaBot extends LitElement {
     }
 
     protected onTextAreaInput(event: KeyboardEvent) {
+        event.stopPropagation();
+
         if (event.key !== 'Enter') {
             return;
         }
@@ -119,11 +126,10 @@ export class QaBot extends LitElement {
             await this.scrollDialogToBottom();
         }
 
-        setTimeout(()=> {
-            if (this.open) {
-                this.textarea?.focus();
-            }
-        }, 100);
+        await this.updateComplete;
+        if (this.open) {
+            this.textarea?.focus();
+        }
     }
 
     @throttle()
@@ -132,7 +138,7 @@ export class QaBot extends LitElement {
             return;
         }
 
-        const r = await this.qaControl?.sendFeedback(qaPair, feedback);
+        const r = await this.qaControl?.sendBlockingFeedback(qaPair, feedback);
 
         await this.scrollDialogToBottom();
 
@@ -256,7 +262,7 @@ export class QaBot extends LitElement {
     override render() {
 
         return html`
-        <div class="qabot card" ?busy="${!(this.qaControl?.ready)}" >
+        <div class="qabot card" ?busy="${this.busy}" >
             <button class="card__header" @click="${this.toggleOpen}">
                 <span class="card__title">
                     <i class="icon">${discussionIcon}</i>
@@ -272,10 +278,10 @@ export class QaBot extends LitElement {
                 <div class="qabot__control">
                     <textarea maxlength="100" rows="3"
                         tabindex="0"
-                        ?disabled="${!(this.qaControl?.ready)}"
+                        ?disabled="${this.busy}"
                         @keypress="${this.onTextAreaInput}"
                         placeholder="${this.server ? 'Type your question here...' : 'Waiting for server configuration...'}"></textarea>
-                    <button title="Submit" ?disabled="${!(this.qaControl?.ready)}" @click="${this.submitQuestion}">
+                    <button title="Submit" ?disabled="${this.busy}" @click="${this.submitQuestion}">
                         <i class="icon icon-plane">${paperPlane}</i>
                     </button>
                     <div class="powered-by"><i class="icon icon-powered-by-jina">${poweredByJina}</i></div>
