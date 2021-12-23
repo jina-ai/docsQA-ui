@@ -256,7 +256,7 @@ export const masterStyle = css`
         display: list-item;
         list-style-position: inside;
         padding-left: var(--qabot-size-text-primary);
-        text-indent: calc(-1.2 * var(--qabot-size-text-primary));
+        text-indent: calc(-1.3 * var(--qabot-size-text-primary));
         list-style-type: "•   ";
     }
 
@@ -329,6 +329,7 @@ export const masterStyle = css`
 
     .qa-pair .feedback-tooltip {
         font-size: var(--qabot-size-text-primary);
+        line-height: 1.75em;
     }
 
     .qa-pair .talktext p {
