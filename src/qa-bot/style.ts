@@ -210,6 +210,10 @@ export const masterStyle = css`
         transition: box-shadow 0.2s ease-in-out;
     }
 
+    .qabot__control textarea::placeholder {
+        color: var(--qabot-color-muted);
+    }
+
     .qabot__control textarea:focus {
         box-shadow: 0 0 0.15em var(--qabot-color-action);
     }
@@ -327,11 +331,6 @@ export const masterStyle = css`
         font-size: var(--qabot-size-text-primary);
     }
 
-    .qa-pair .feedback-tooltip {
-        font-size: var(--qabot-size-text-primary);
-        line-height: 1.75em;
-    }
-
     .qa-pair .talktext p {
         overflow-wrap: anywhere;
     }
@@ -351,6 +350,7 @@ export const masterStyle = css`
         position: absolute;
         left: 1.5em;
         font-size: var(--qabot-size-text-primary);
+        height: 2em;
         display: flex;
         flex-direction: row;
         justify-content: space-between;
@@ -397,8 +397,9 @@ export const masterStyle = css`
     }
 
     .feedback-tooltip .thumbs .thumb {
-        color: var(--qabot-color-dimmed);
-        fill: var(--qabot-color-dimmed);
+        color: var(--qabot-color-muted);
+        fill: var(--qabot-color-muted);
+        opacity: 0.5;
 
         cursor: pointer;
     }
@@ -410,17 +411,19 @@ export const masterStyle = css`
     .feedback-tooltip .thumbs .thumb:hover, .feedback-tooltip .thumbs .thumb[active] {
         color: var(--qabot-color-action);
         fill: var(--qabot-color-action);
+        opacity: 1;
     }
 
     .answer-reference {
         white-space: nowrap;
         cursor: pointer;
+        display: flex;
+        align-items: center;
     }
-    .answer-reference:after {
-        content: url("data:image/svg+xml;charset=utf-8,%3Csvg width='12' height='12' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke-width='1.5' stroke='%23607D8B' fill='none' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M0 0h24v24H0z' stroke='none'/%3E%3Cpath d='M11 7H6a2 2 0 00-2 2v9a2 2 0 002 2h9a2 2 0 002-2v-5M10 14L20 4M15 4h5v5'/%3E%3C/svg%3E");
-        margin: 0 .25em;
-        vertical-align: middle;
-        color: var(--color-sidebar-link-text);
+
+    .answer-reference .icon.link {
+        width: 1em;
+        margin-left: 0.25em;
     }
 `;
 

@@ -6,7 +6,7 @@ import { resetCSS } from '../shared/reset-css';
 import { JinaQABotController, QAPair } from './controller';
 import masterStyle from './style';
 import {
-    discussionIcon, downArrow, paperPlane,
+    discussionIcon, downArrow, linkIcon, paperPlane,
     poweredByJina, thumbDown, thumbUp,
     tripleDot, upArrow
 } from './svg-icons';
@@ -213,7 +213,7 @@ export class QaBot extends LitElement {
                                 <a class="answer-reference" href="https://slack.jina.ai" target="_blank">Report</a>
                             ` : ''}
                             ${qa.answer?.uri ? html`
-                                <a class="answer-reference" href="${this.makeReferenceLink(qa.answer.uri)}" target="${this.target as any}">Source</a>
+                                <a class="answer-reference" href="${this.makeReferenceLink(qa.answer.uri)}" target="${this.target as any}">Source<i class="icon link">${linkIcon}</i></a>
                             ` : ''}
                             ${(qa.question && qa.answer) ? html`
                                 <div class="thumbs">
