@@ -80,8 +80,6 @@ export class QaBot extends LitElement {
     }
 
     protected onTextAreaInput(event: KeyboardEvent) {
-        event.stopPropagation();
-
         if (event.key !== 'Enter') {
             return;
         }
