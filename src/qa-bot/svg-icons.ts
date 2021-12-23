@@ -46,7 +46,7 @@ export const thumbDown = svg`
 `;
 
 export const tripleDot = svg`
-<svg viewBox="0 0 40 10" class="loader">
+<svg height="100%" viewBox="0 0 40 10" class="loader">
     <circle class="dot" cx="10" cy="5" r="3" />
     <circle class="dot" cx="20" cy="5" r="3" />
     <circle class="dot" cx="30" cy="5" r="3" />
@@ -75,7 +75,7 @@ export const poweredByJina = svg`
 `;
 
 export const linkIcon = svg`
-<svg width='12' height='12' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'
+<svg height="100%" xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'
     stroke-width='1.5' stroke='#607D8B' fill='none' stroke-linecap='round'
     stroke-linejoin='round'>
     <path d='M0 0h24v24H0z' stroke='none'/>

@@ -350,7 +350,7 @@ export const masterStyle = css`
         position: absolute;
         left: 1.5em;
         font-size: var(--qabot-size-text-primary);
-        height: 2em;
+        margin-top: 0.25em;
         display: flex;
         flex-direction: row;
         justify-content: space-between;
