@@ -317,6 +317,10 @@ export const masterStyle = css`
         border-color: transparent transparent transparent var(--qabot-color-action);
     }
 
+    .qa-pair .qa-row.answer .talktext p:first-letter {
+        text-transform: uppercase;
+    }
+
     .qa-pair .qa-row.question {
         text-align: right;
     }
