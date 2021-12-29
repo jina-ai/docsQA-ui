@@ -4,7 +4,7 @@ on:
   pull_request:
     branches: [main, staging, master]
 jobs:
-  test-build-publish-deploy:
+  test-build-publish-dryrun:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️
