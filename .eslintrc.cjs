@@ -30,6 +30,7 @@ module.exports = {
         'no-plusplus': 'off',
         'no-redeclare': 'off',
         'no-nested-ternary': 'off',
+        'no-useless-return': 'off',
         'operator-linebreak': ['warn', 'after'],
         'object-curly-newline': ['warn', { consistent: true }],
         'no-useless-constructor': 'off',

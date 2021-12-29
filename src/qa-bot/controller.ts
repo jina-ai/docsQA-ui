@@ -1,4 +1,5 @@
 import { ReactiveController, ReactiveControllerHost } from 'lit';
+import { perNextTick } from '../lib/decorators/per-tick';
 import { serialOperation } from '../lib/decorators/serial-op';
 import { JinaDocBotRPC } from '../lib/jina-docbot-rpc';
 import { Document as JinaDocument } from '../lib/jina-document-array';
@@ -9,6 +10,11 @@ export interface QAPair {
     answer?: Partial<JinaDocument>;
     error?: Error | string;
     feedback?: boolean | null;
+    requestId?: string;
+}
+
+export function getChannel(channel: string = 'default'): string {
+    return `qabot:channel:${channel}`;
 }
 
 export class JinaQABotController implements ReactiveController {
@@ -20,14 +26,41 @@ export class JinaQABotController implements ReactiveController {
     rpc: JinaDocBotRPC;
 
     qaPairs: QAPair[];
+    channel: string;
 
     constructor(
         protected host: ReactiveControllerHost,
-        public serverUri: string
+        public serverUri: string,
+        channel?: string
     ) {
         this.qaPairs = [];
         this.rpc = new JinaDocBotRPC(serverUri);
+        this.channel = getChannel(channel);
+        window.addEventListener('storage', (storageEvent: StorageEvent) => {
+            if (storageEvent.key !== this.channel) {
+                return;
+            }
+
+            if (storageEvent.newValue === null) {
+                return;
+            }
+
+            try {
+                const qaPair = JSON.parse(storageEvent.newValue!);
+                this.qaPairs.push(qaPair);
+            } catch (err) {
+                return;
+            }
+
+            return;
+        });
+
         host.addController(this);
+    }
+
+    @perNextTick()
+    saveQaPairs() {
+        localStorage.setItem(this.channel, JSON.stringify(this.qaPairs.filter((pair) => pair.requestId)));
     }
 
     hostConnected() {
@@ -50,7 +83,10 @@ export class JinaQABotController implements ReactiveController {
             this.ready = false;
             this.host.requestUpdate();
             const r = await this.rpc.askQuestion(text);
-            qaPair.answer = r;
+            qaPair.answer = r.data.answer;
+            qaPair.requestId = r.data.requestId;
+
+            this.saveQaPairs();
 
             return qaPair;
         } catch (e: any) {
@@ -86,6 +122,7 @@ export class JinaQABotController implements ReactiveController {
                         uri: ''
                     }
                 });
+                this.saveQaPairs();
             }
 
             return r;
@@ -114,6 +151,7 @@ export class JinaQABotController implements ReactiveController {
         this.qaPairs.length = 0;
         this.ready = true;
         this.host.requestUpdate();
+        this.saveQaPairs();
     }
 
 }
