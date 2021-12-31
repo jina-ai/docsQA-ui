@@ -4,13 +4,13 @@ import { serialOperation } from '../lib/decorators/serial-op';
 import { JinaDocBotRPC } from '../lib/jina-docbot-rpc';
 import { Document as JinaDocument } from '../lib/jina-document-array';
 
-
 export interface QAPair {
     question?: string;
     answer?: Partial<JinaDocument>;
     error?: Error | string;
     feedback?: boolean | null;
     requestId?: string;
+    ts: number;
 }
 
 export function getChannel(channel: string = 'default'): string {
@@ -46,8 +46,29 @@ export class JinaQABotController implements ReactiveController {
             }
 
             try {
-                const qaPair = JSON.parse(storageEvent.newValue!);
-                this.qaPairs.push(qaPair);
+                const foreignPairs = JSON.parse(storageEvent.newValue!);
+
+                if (!Array.isArray(foreignPairs) || !foreignPairs.length) {
+                    return;
+                }
+
+                const curIdx = new Set();
+                for (const qaPair of this.qaPairs) {
+                    curIdx.add(qaPair.requestId);
+                }
+
+                for (const foreignPair of foreignPairs) {
+                    if (curIdx.has(foreignPair.requestId)) {
+                        continue;
+                    }
+
+                    this.qaPairs.push(foreignPair);
+                    curIdx.add(foreignPair.requestId);
+                }
+
+                this.qaPairs.sort((a, b) => a.ts - b.ts);
+
+
             } catch (err) {
                 return;
             }
@@ -75,7 +96,8 @@ export class JinaQABotController implements ReactiveController {
     async askQuestion(text: string) {
         const qaPair: QAPair = {
             question: text,
-            answer: undefined
+            answer: undefined,
+            ts: Date.now()
         };
         this.qaPairs.push(qaPair);
 
@@ -119,8 +141,9 @@ export class JinaQABotController implements ReactiveController {
                 this.qaPairs.push({
                     answer: {
                         text: 'Thanks for your feedback! We will improve 🙇‍♂️',
-                        uri: ''
-                    }
+                        uri: '',
+                    },
+                    ts: Date.now()
                 });
                 this.saveQaPairs();
             }
