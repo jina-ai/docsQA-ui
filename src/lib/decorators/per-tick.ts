@@ -1,6 +1,6 @@
 const NOT_RUN = Symbol('NOT RUN');
 
-const tickFunction = process?.nextTick || setImmediate || setTimeout;
+const tickFunction = setTimeout;
 
 export function perTick() {
     return function perTickDecorator(_target: any, _propName: string | symbol, propDesc: PropertyDescriptor) {

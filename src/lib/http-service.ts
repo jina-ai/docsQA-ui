@@ -202,7 +202,7 @@ export abstract class HTTPService<
                 try {
                     const parsed = await this.__processResponse(options, r);
                     Object.defineProperties(r, {
-                        data: { value: parsed },
+                        data: { value: parsed, writable: true },
                     });
 
                     this.dispatchEvent(new CustomEvent('parsed', {
