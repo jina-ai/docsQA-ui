@@ -11,10 +11,15 @@ export interface QAPair {
     feedback?: boolean | null;
     requestId?: string;
     ts: number;
+    TARGETED?: boolean;
 }
 
 export function getChannel(channel: string = 'default'): string {
     return `qabot:channel:${channel}`;
+}
+
+function patchTextFragmentEncoding(text: string) {
+    return encodeURIComponent(text).replace(/-/g, '%2D');
 }
 
 export class JinaQABotController implements ReactiveController {
@@ -28,15 +33,100 @@ export class JinaQABotController implements ReactiveController {
     qaPairs: QAPair[];
     channel: string;
 
+    qaPairToFocus?: string;
+
+    protected storageEventListener?: (storageEvent: StorageEvent) => void;
+
     constructor(
         protected host: ReactiveControllerHost,
         public serverUri: string,
-        channel?: string
+        public linkToTextFragment?: boolean,
+        channel?: string,
     ) {
         this.qaPairs = [];
         this.rpc = new JinaDocBotRPC(serverUri);
         this.channel = getChannel(channel);
-        window.addEventListener('storage', (storageEvent: StorageEvent) => {
+
+        host.addController(this);
+    }
+
+    loadQaPairs(localData?: string) {
+        const data = localData || localStorage.getItem(this.channel);
+        if (!data) {
+            return;
+        }
+        try {
+            const foreignPairs = JSON.parse(data);
+
+            if (!Array.isArray(foreignPairs) || !foreignPairs.length) {
+                return;
+            }
+
+            if (foreignPairs[foreignPairs.length - 1].ts + 1000 * 60 * 60 * 24 < Date.now()) {
+                return;
+            }
+
+            const curIdx = new Set();
+            for (const qaPair of this.qaPairs) {
+                curIdx.add(qaPair.requestId);
+            }
+
+            for (const foreignPair of foreignPairs) {
+
+                if (curIdx.has(foreignPair.requestId)) {
+                    continue;
+                }
+
+                this.qaPairs.push(foreignPair);
+                curIdx.add(foreignPair.requestId);
+            }
+
+            this.qaPairs.sort((a, b) => a.ts - b.ts);
+
+            if (!this.active) {
+                const parsedUrl = new URL(window.location.href);
+                const hash = parsedUrl.hash.slice(1);
+                const pathname = parsedUrl.pathname;
+                for (const x of this.qaPairs) {
+                    if (!x.requestId) {
+                        continue;
+                    }
+                    if (!x.TARGETED) {
+                        continue;
+                    }
+
+                    const parsedUri = new URL(x.answer?.uri || '/', window.location.href);
+                    if (parsedUri.pathname !== pathname) {
+                        continue;
+                    }
+                    if (hash && !parsedUri.hash.includes(hash)) {
+                        continue;
+                    }
+
+                    this.qaPairToFocus = x.requestId;
+                    delete x.TARGETED;
+                    this.saveQaPairs();
+
+                    break;
+                }
+            }
+
+        } catch (err) {
+            return;
+        }
+    }
+
+    @perNextTick()
+    saveQaPairs() {
+        this.__saveQaPairs();
+    }
+    protected __saveQaPairs() {
+        localStorage.setItem(this.channel, JSON.stringify(this.qaPairs.filter((pair) => pair.requestId)));
+    }
+
+    hostConnected() {
+
+        this.storageEventListener = (storageEvent: StorageEvent) => {
             if (storageEvent.key !== this.channel) {
                 return;
             }
@@ -45,51 +135,43 @@ export class JinaQABotController implements ReactiveController {
                 return;
             }
 
-            try {
-                const foreignPairs = JSON.parse(storageEvent.newValue!);
+            const beforeLoadQaCount = this.qaPairs.length;
+            this.loadQaPairs(storageEvent.newValue);
 
-                if (!Array.isArray(foreignPairs) || !foreignPairs.length) {
-                    return;
-                }
-
-                const curIdx = new Set();
-                for (const qaPair of this.qaPairs) {
-                    curIdx.add(qaPair.requestId);
-                }
-
-                for (const foreignPair of foreignPairs) {
-                    if (curIdx.has(foreignPair.requestId)) {
-                        continue;
-                    }
-
-                    this.qaPairs.push(foreignPair);
-                    curIdx.add(foreignPair.requestId);
-                }
-
-                this.qaPairs.sort((a, b) => a.ts - b.ts);
-
-
-            } catch (err) {
-                return;
+            if (this.qaPairs.length !== beforeLoadQaCount) {
+                this.host.requestUpdate();
             }
 
             return;
-        });
+        };
 
-        host.addController(this);
-    }
+        window.addEventListener('storage', this.storageEventListener);
 
-    @perNextTick()
-    saveQaPairs() {
-        localStorage.setItem(this.channel, JSON.stringify(this.qaPairs.filter((pair) => pair.requestId)));
-    }
+        this.loadQaPairs();
 
-    hostConnected() {
+        if (this.qaPairs.length) {
+            this.host.requestUpdate();
+        }
+
         this.active = true;
     }
 
     hostDisconnected() {
+
+        if (this.storageEventListener) {
+            window.removeEventListener('storage', this.storageEventListener);
+        }
+
         this.active = false;
+    }
+
+    setTargeted(requestId: string) {
+        const targetPair = this.qaPairs.find((x) => x.requestId === requestId);
+        if (!targetPair) {
+            return;
+        }
+        targetPair['TARGETED'] = true;
+        this.__saveQaPairs();
     }
 
     @serialOperation()
@@ -105,7 +187,23 @@ export class JinaQABotController implements ReactiveController {
             this.ready = false;
             this.host.requestUpdate();
             const r = await this.rpc.askQuestion(text);
-            qaPair.answer = r.data.answer;
+            const answer = r.data.answer;
+
+            const paragraph = answer?.tags?.paragraph;
+
+            if (this.linkToTextFragment && paragraph && answer.uri) {
+                const parsedUri = new URL(answer.uri, window.location.href);
+                if (!parsedUri.hash) {
+                    answer.uri += `${answer.uri.endsWith('#') ? '' : '#'}${this.makeTextFragmentFromPassage(paragraph, answer.text)}`;
+                } else {
+                    const newHash = this.makeTextFragmentFromPassage(paragraph, answer.text);
+                    answer.uri += newHash;
+
+                }
+            }
+
+            qaPair.answer = answer;
+
             qaPair.requestId = r.data.requestId;
 
             this.saveQaPairs();
@@ -119,6 +217,15 @@ export class JinaQABotController implements ReactiveController {
             this.ready = true;
             this.host.requestUpdate();
         }
+    }
+
+    makeTextFragmentFromPassage(passage: string, fragment: string) {
+        const [prefix, suffix] = passage.split(fragment);
+
+        const prefixFragment = prefix.match(/\b\w.{0,15}$/)?.[0].trim();
+        const suffixFragment = (suffix || '').trim().match(/^\S.{0,14}\b/)?.[0].trim();
+
+        return `:~:text=${prefixFragment ? `${patchTextFragmentEncoding(prefixFragment)}-,` : ''}${patchTextFragmentEncoding(fragment)}${suffixFragment ? `,-${patchTextFragmentEncoding(suffixFragment)}` : ''}`;
     }
 
     async sendFeedback(qaPair: QAPair, feedback: 'up' | 'down' | 'none') {
