@@ -61,7 +61,7 @@ export class JinaQABotController implements ReactiveController {
                 return;
             }
 
-            if (foreignPairs[foreignPairs.length - 1].ts + 1000 * 60 * 60 * 24 < Date.now()) {
+            if (foreignPairs[0].ts + 1000 * 60 * 60 * 24 < Date.now()) {
                 return;
             }
 
