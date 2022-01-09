@@ -37,8 +37,8 @@ export class QaBot extends LitElement {
     @property({ type: String })
     site?: string;
 
-    @property({ attribute: 'link-to-text-fragment', type: Boolean, reflect: true })
-    linkToTextFragment?: boolean = true;
+    @property({ attribute: 'link-to-text-fragment', type: String, reflect: true })
+    linkToTextFragment?: 'auto' | 'none' = 'auto';
 
     @property({ type: String, reflect: true })
     target?: string = '_self';
@@ -81,7 +81,7 @@ export class QaBot extends LitElement {
 
     override update(changedProps: PropertyValues) {
         if (changedProps.has('server') && this.server) {
-            this.qaControl = new JinaQABotController(this, this.server, this.linkToTextFragment, this.channel);
+            this.qaControl = new JinaQABotController(this, this.server, this.channel);
 
             if (this.qaControl.qaPairs.length) {
                 this.scrollDialogToBottom();
@@ -232,7 +232,23 @@ export class QaBot extends LitElement {
         }
     }
 
-    protected makeReferenceLink(uri: string) {
+    protected makeReferenceLink(qa: QAPair) {
+        if (!qa?.answer) {
+            return '#';
+        }
+        let uri: string | undefined;
+        if (this.linkToTextFragment === 'none') {
+            uri = qa.answer.uri;
+        } else if ('fragmentDirective' in Location.prototype || 'fragmentDirective' in document) {
+            uri = qa.answer.textFragmentUri || qa.answer.uri;
+        } else {
+            uri = qa.answer.uri;
+        }
+
+        if (!uri) {
+            return '#';
+        }
+
         if (ABSPATHREGEXP.test(uri)) {
             return uri;
         }
@@ -284,7 +300,7 @@ export class QaBot extends LitElement {
                                 <a class="answer-reference" href="https://slack.jina.ai" target="_blank">Report</a>
                             ` : ''}
                             ${qa.answer?.uri ? html`
-                                <a class="answer-reference" @click="${()=> this.setQaPairTargeted(qa)}" href="${this.makeReferenceLink(qa.answer.uri)}" target="${this.target as any}">Source<i class="icon link">${linkIcon}</i></a>
+                                <a class="answer-reference" @click="${()=> this.setQaPairTargeted(qa)}" href="${this.makeReferenceLink(qa)}" target="${this.target as any}">Source<i class="icon link">${linkIcon}</i></a>
                             ` : ''}
                             ${(qa.question && qa.answer) ? html`
                                 <div class="thumbs">

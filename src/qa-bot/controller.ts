@@ -6,7 +6,7 @@ import { Document as JinaDocument } from '../lib/jina-document-array';
 
 export interface QAPair {
     question?: string;
-    answer?: Partial<JinaDocument>;
+    answer?: Partial<JinaDocument> & { textFragmentUri?: string; };
     error?: Error | string;
     feedback?: boolean | null;
     requestId?: string;
@@ -40,7 +40,6 @@ export class JinaQABotController implements ReactiveController {
     constructor(
         protected host: ReactiveControllerHost,
         public serverUri: string,
-        public linkToTextFragment?: boolean,
         channel?: string,
     ) {
         this.qaPairs = [];
@@ -85,7 +84,7 @@ export class JinaQABotController implements ReactiveController {
 
             if (!this.active) {
                 const parsedUrl = new URL(window.location.href);
-                const hash = parsedUrl.hash.slice(1);
+                const hash = parsedUrl.hash.slice(1).replace(/:~:.*$/, '');
                 const pathname = parsedUrl.pathname;
                 for (const x of this.qaPairs) {
                     if (!x.requestId) {
@@ -191,14 +190,13 @@ export class JinaQABotController implements ReactiveController {
 
             const paragraph = answer?.tags?.paragraph;
 
-            if (this.linkToTextFragment && paragraph && answer.uri) {
+            if (paragraph && answer.uri) {
                 const parsedUri = new URL(answer.uri, window.location.href);
                 if (!parsedUri.hash) {
-                    answer.uri += `${answer.uri.endsWith('#') ? '' : '#'}${this.makeTextFragmentFromPassage(paragraph, answer.text)}`;
+                    answer.textFragmentUri = `${answer.uri}${answer.uri.endsWith('#') ? '' : '#'}${this.makeTextFragmentFromPassage(paragraph, answer.text)}`;
                 } else {
                     const newHash = this.makeTextFragmentFromPassage(paragraph, answer.text);
-                    answer.uri += newHash;
-
+                    answer.textFragmentUri = `${answer.uri}${newHash}`;
                 }
             }
 
