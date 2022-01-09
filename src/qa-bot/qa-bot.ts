@@ -1,5 +1,6 @@
 import { LitElement, html, PropertyValues } from 'lit';
 import { property, query, state } from 'lit/decorators.js';
+import { perNextTick } from '../lib/decorators/per-tick';
 import { throttle } from '../lib/decorators/throttle';
 import customScrollbarCSS from '../shared/customized-scrollbar';
 import { resetCSS } from '../shared/reset-css';
@@ -36,8 +37,14 @@ export class QaBot extends LitElement {
     @property({ type: String })
     site?: string;
 
+    @property({ attribute: 'link-to-text-fragment', type: String, reflect: true })
+    linkToTextFragment?: 'auto' | 'none' = 'auto';
+
     @property({ type: String, reflect: true })
     target?: string = '_self';
+
+    @property({ type: String })
+    channel?: string;
 
     @property({ type: String, reflect: true })
     theme?: 'auto' | 'dark' | 'light' | string = 'auto';
@@ -74,9 +81,25 @@ export class QaBot extends LitElement {
 
     override update(changedProps: PropertyValues) {
         if (changedProps.has('server') && this.server) {
-            this.qaControl = new JinaQABotController(this, this.server);
+            this.qaControl = new JinaQABotController(this, this.server, this.channel);
+
+            if (this.qaControl.qaPairs.length) {
+                this.scrollDialogToBottom();
+            }
         }
         super.update(changedProps);
+    }
+
+    override updated() {
+        if (!this.qaControl) {
+            return;
+        }
+
+        if (this.qaControl.qaPairToFocus) {
+            this.scrollToAnswerByRequestId(this.qaControl.qaPairToFocus);
+            this.open = true;
+            this.qaControl.qaPairToFocus = undefined;
+        }
     }
 
     protected onTextAreaInput(event: KeyboardEvent) {
@@ -90,6 +113,13 @@ export class QaBot extends LitElement {
         event.preventDefault();
 
         this.submitQuestion();
+    }
+
+    setQaPairTargeted(qaPair?: QAPair) {
+        if (!qaPair?.requestId) {
+            return;
+        }
+        this.qaControl?.setTargeted(qaPair.requestId);
     }
 
     @throttle()
@@ -111,9 +141,7 @@ export class QaBot extends LitElement {
 
         const rPromise = this.qaControl.askQuestion(questionInput);
 
-        setTimeout(() => {
-            this.scrollDialogToBottom();
-        }, 0);
+        this.scrollDialogToBottom();
 
         try {
             const qaPair = await rPromise;
@@ -143,14 +171,57 @@ export class QaBot extends LitElement {
         return r;
     }
 
+    @perNextTick()
     @throttle()
     async scrollDialogToBottom() {
         await this.updateComplete;
         const elem = this.renderRoot?.querySelector('.qabot__answer-block');
-        elem?.scroll({
+
+        if (!elem) {
+            return;
+        }
+
+        elem.scroll({
             top: elem.scrollHeight,
             left: 0,
-            behavior: 'smooth'
+            behavior: this.open ? 'smooth' : 'auto'
+        });
+    }
+
+    @perNextTick()
+    @throttle()
+    async scrollToAnswerByRequestId(requestId: string) {
+        if (!this.qaControl) {
+            return;
+        }
+
+        await this.updateComplete;
+
+        let targetIdx = -1;
+
+        for (const [index, qaPair] of this.qaControl.qaPairs.entries()) {
+            if (!qaPair.requestId) {
+                continue;
+            }
+            if (qaPair.requestId === requestId) {
+                targetIdx = index;
+                break;
+            }
+        }
+
+        if (targetIdx === -1) {
+            return this.scrollDialogToBottom();
+        }
+
+        const elem = this.renderRoot?.querySelector(`.answer-dialog > .qa-pair:nth-child(${targetIdx + 1})`);
+
+        if (!elem) {
+            return this.scrollDialogToBottom();
+        }
+
+        elem.scrollIntoView({
+            block: 'start',
+            behavior: this.open ? 'smooth' : 'auto'
         });
     }
 
@@ -161,7 +232,23 @@ export class QaBot extends LitElement {
         }
     }
 
-    protected makeReferenceLink(uri: string) {
+    protected makeReferenceLink(qa: QAPair) {
+        if (!qa?.answer) {
+            return '#';
+        }
+        let uri: string | undefined;
+        if (this.linkToTextFragment === 'none') {
+            uri = qa.answer.uri;
+        } else if ('fragmentDirective' in Location.prototype || 'fragmentDirective' in document) {
+            uri = qa.answer.textFragmentUri || qa.answer.uri;
+        } else {
+            uri = qa.answer.uri;
+        }
+
+        if (!uri) {
+            return '#';
+        }
+
         if (ABSPATHREGEXP.test(uri)) {
             return uri;
         }
@@ -213,7 +300,7 @@ export class QaBot extends LitElement {
                                 <a class="answer-reference" href="https://slack.jina.ai" target="_blank">Report</a>
                             ` : ''}
                             ${qa.answer?.uri ? html`
-                                <a class="answer-reference" href="${this.makeReferenceLink(qa.answer.uri)}" target="${this.target as any}">Source<i class="icon link">${linkIcon}</i></a>
+                                <a class="answer-reference" @click="${()=> this.setQaPairTargeted(qa)}" href="${this.makeReferenceLink(qa)}" target="${this.target as any}">Source<i class="icon link">${linkIcon}</i></a>
                             ` : ''}
                             ${(qa.question && qa.answer) ? html`
                                 <div class="thumbs">

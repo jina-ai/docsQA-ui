@@ -151,7 +151,6 @@ export const masterStyle = css`
         overflow-y: scroll;
         scrollbar-width: thin;
         overflow: overlay;
-        scroll-behavior: smooth;
         padding: 1em 1em 0 1em;
         -moz-padding-end: calc(1em - 10px);
     }
