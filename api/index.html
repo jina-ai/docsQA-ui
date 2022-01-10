@@ -70,6 +70,14 @@
          <td>animate-by</td><td>Choose slide-up/slide-down animation between `height` or `position`</td><td>'position' | 'height' | undefined</td><td>'height'</td>
        </tr>
      
+       <tr>
+         <td>link-to-text-fragment</td><td></td><td>'auto' | 'none' | undefined</td><td>'auto'</td>
+       </tr>
+     
+       <tr>
+         <td>channel</td><td></td><td>string | undefined</td><td></td>
+       </tr>
+     
    </table>
  
        
@@ -92,7 +100,15 @@
        </tr>
      
        <tr>
+         <td>linkToTextFragment</td><td>link-to-text-fragment</td><td></td><td>'auto' | 'none' | undefined</td><td>'auto'</td>
+       </tr>
+     
+       <tr>
          <td>target</td><td>target</td><td></td><td>string | undefined</td><td>'_self'</td>
+       </tr>
+     
+       <tr>
+         <td>channel</td><td>channel</td><td></td><td>string | undefined</td><td></td>
        </tr>
      
        <tr>
@@ -107,6 +123,10 @@
          <td>open</td><td>open</td><td></td><td>boolean | undefined</td><td></td>
        </tr>
      
+       <tr>
+         <td>busy</td><td></td><td></td><td></td><td></td>
+       </tr>
+     
    </table>
  
        
@@ -117,11 +137,43 @@
      </tr>
      
        <tr>
+         <td>setQaPairTargeted</td><td>
+   
+   <table>
+     <tr>
+       <th>Name</th><th>Description</th><th>Type</th>
+     </tr>
+     
+       <tr>
+         <td>qaPair</td><td></td><td>QAPair</td>
+       </tr>
+     
+   </table>
+ </td><td></td><td></td>
+       </tr>
+     
+       <tr>
          <td>submitQuestion</td><td></td><td></td><td></td>
        </tr>
      
        <tr>
          <td>scrollDialogToBottom</td><td></td><td></td><td></td>
+       </tr>
+     
+       <tr>
+         <td>scrollToAnswerByRequestId</td><td>
+   
+   <table>
+     <tr>
+       <th>Name</th><th>Description</th><th>Type</th>
+     </tr>
+     
+       <tr>
+         <td>requestId</td><td></td><td>string</td>
+       </tr>
+     
+   </table>
+ </td><td></td><td></td>
        </tr>
      
        <tr>
@@ -153,7 +205,7 @@
     
 <footer>
   <p>
-    © Jina AI 2020-2021. All rights reserved.
+    © Jina AI 2020-2022. All rights reserved.
   </p>
 </footer>
   </body>

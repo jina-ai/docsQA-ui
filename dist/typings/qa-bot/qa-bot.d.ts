@@ -4,26 +4,27 @@ export declare class QaBot extends LitElement {
     label: string;
     server?: string;
     site?: string;
+    linkToTextFragment?: 'auto' | 'none';
     target?: string;
+    channel?: string;
     theme?: 'auto' | 'dark' | 'light' | string;
     animateBy?: 'position' | 'height';
     open?: boolean;
+    get busy(): boolean;
     protected qaControl?: JinaQABotController;
     protected textarea?: HTMLTextAreaElement;
     constructor();
     static styles: import("lit").CSSResult[];
     update(changedProps: PropertyValues): void;
+    updated(): void;
     protected onTextAreaInput(event: KeyboardEvent): void;
+    setQaPairTargeted(qaPair?: QAPair): void;
     submitQuestion(): Promise<void>;
-    protected submitFeedback(qaPair: QAPair, feedback?: 'up' | 'down' | 'none'): Promise<(Response & {
-        data: any;
-    } & {
-        serial: number;
-        config: import("../lib/http-service").HTTPServiceRequestOptions;
-    }) | undefined>;
+    protected submitFeedback(qaPair: QAPair, feedback?: 'up' | 'down' | 'none'): Promise<void>;
     scrollDialogToBottom(): Promise<void>;
+    scrollToAnswerByRequestId(requestId: string): Promise<void>;
     toggleOpen(): void;
-    protected makeReferenceLink(uri: string): string;
+    protected makeReferenceLink(qa: QAPair): string;
     protected getSingleQAComp(qa: QAPair): import("lit-html").TemplateResult<1>;
     protected getAnswerBlock(): import("lit-html").TemplateResult<1>;
     render(): import("lit-html").TemplateResult<1>;
