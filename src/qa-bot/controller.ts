@@ -226,7 +226,7 @@ export class JinaQABotController implements ReactiveController {
         return `:~:text=${prefixFragment ? `${patchTextFragmentEncoding(prefixFragment)}-,` : ''}${patchTextFragmentEncoding(fragment)}${suffixFragment ? `,-${patchTextFragmentEncoding(suffixFragment)}` : ''}`;
     }
 
-    async sendFeedback(qaPair: QAPair, feedback: 'up' | 'down' | 'none') {
+    async sendFeedback(qaPair: QAPair, feedback: 'up' | 'down' | 'none', overrideURI?: string) {
         const thumbUpMap = {
             up: true,
             down: false,
@@ -238,7 +238,7 @@ export class JinaQABotController implements ReactiveController {
             const r = await this.rpc.sendFeedback({
                 question: qaPair.question,
                 answer: qaPair.answer?.text,
-                answer_uri: qaPair.answer?.uri,
+                answer_uri: overrideURI || qaPair.answer?.uri,
                 thumbup: thumbUpVal
             });
 
@@ -264,11 +264,11 @@ export class JinaQABotController implements ReactiveController {
     }
 
     @serialOperation()
-    async sendBlockingFeedback(qaPair: QAPair, feedback: 'up' | 'down' | 'none') {
+    async sendBlockingFeedback(qaPair: QAPair, feedback: 'up' | 'down' | 'none', overrideURI?: string) {
         this.ready = false;
         try {
             this.host.requestUpdate();
-            await this.sendFeedback(qaPair, feedback);
+            await this.sendFeedback(qaPair, feedback, overrideURI);
         } finally {
             this.ready = true;
             this.host.requestUpdate();

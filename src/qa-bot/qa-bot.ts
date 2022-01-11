@@ -145,7 +145,11 @@ export class QaBot extends LitElement {
 
         try {
             const qaPair = await rPromise;
-            this.qaControl.sendFeedback(qaPair, 'none').catch(()=> 'swallow');
+            this.qaControl.sendFeedback(
+                qaPair,
+                'none',
+                new URL(this.makeReferenceLink(qaPair), window.location.href).toString()
+            ).catch(()=> 'swallow');
             this.textarea!.value = '';
 
         } finally {
@@ -164,7 +168,11 @@ export class QaBot extends LitElement {
             return;
         }
 
-        const r = await this.qaControl?.sendBlockingFeedback(qaPair, feedback);
+        const r = await this.qaControl?.sendBlockingFeedback(
+            qaPair,
+            feedback,
+            new URL(this.makeReferenceLink(qaPair), window.location.href).toString()
+        );
 
         await this.scrollDialogToBottom();
 
