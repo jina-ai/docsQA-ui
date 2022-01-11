@@ -32,12 +32,12 @@ export declare class JinaQABotController implements ReactiveController {
     setTargeted(requestId: string): void;
     askQuestion(text: string): Promise<QAPair>;
     makeTextFragmentFromPassage(passage: string, fragment: string): string;
-    sendFeedback(qaPair: QAPair, feedback: 'up' | 'down' | 'none'): Promise<Response & {
+    sendFeedback(qaPair: QAPair, feedback: 'up' | 'down' | 'none', overrideURI?: string): Promise<Response & {
         data: any;
     } & {
         serial: number;
         config: import("../lib/http-service").HTTPServiceRequestOptions;
     }>;
-    sendBlockingFeedback(qaPair: QAPair, feedback: 'up' | 'down' | 'none'): Promise<void>;
+    sendBlockingFeedback(qaPair: QAPair, feedback: 'up' | 'down' | 'none', overrideURI?: string): Promise<void>;
     clear(): void;
 }
