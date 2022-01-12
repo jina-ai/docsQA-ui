@@ -1,0 +1,85 @@
+
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><qa-bot> ⌲ Contributing</title>
+    <link rel="stylesheet" href="../../docs.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600|Roboto+Mono">
+    <link href="../../prism-okaidia.css" rel="stylesheet" />
+    <script src="/node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+    <script src="/node_modules/lit/polyfill-support.js"></script>
+    <script type="module" src="../../dist/qabot.js"></script>
+  </head>
+  <body>
+    
+<header>
+  <h1>DocsQA UI</h1>
+  <h2>&lt;qa-bot&gt;&lt;/qa-bot&gt;</h2>
+</header>
+    
+<nav>
+  <a href="../../">Home</a>
+  <a href="../">Documentation</a>
+  <a href="../../api/">API</a>
+  <a href="../../install/">Install</a>
+</nav>
+    <div id="main-wrapper">
+      <main>
+        
+    <h1>Contributing</h1>
+    <section class="documentation">
+      <nav class="collection">
+        <ul>
+          
+                  <li class=>
+                    <a href="../">Getting started</a>
+                  </li>
+                
+                  <li class=>
+                    <a href="../customizing/">Customizing</a>
+                  </li>
+                
+                  <li class=selected>
+                    <a href="">Contributing</a>
+                  </li>
+                
+                  <li class=>
+                    <a href="../theming/">Theming</a>
+                  </li>
+                
+        </ul>
+      </nav>
+      <div>
+        <h2>Setup development environment</h2>
+<pre class="language-shell"><code class="language-shell"><span class="token comment"># In project directory</span><br><span class="token function">npm</span> <span class="token function">install</span></code></pre>
+<h2>Run development server locally</h2>
+<pre class="language-shell"><code class="language-shell"><span class="token comment"># In project directory</span><br><span class="token function">npm</span> run dev</code></pre>
+<h2>Customize your development server</h2>
+<p>You can modify <code>index.html</code> to customize the content of development server.</p>
+<p><qa-bot server="https://docsbot.jina.ai" site="https://docs.jina.ai"></qa-bot></p>
+<h2>Run this doc site locally</h2>
+<pre class="language-shell"><code class="language-shell"><span class="token comment"># In project directory</span><br><span class="token function">npm</span> run docs:dev</code></pre>
+<style>
+    qa-bot {
+        position: fixed; 
+        left: 2rem; 
+    }
+    qa-bot:not(:defined) { display: none; }
+</style>
+
+      </div>
+    </section>
+  
+      </main>
+    </div>
+    
+<footer>
+  <p>
+    © Jina AI 2020-2022. All rights reserved.
+  </p>
+</footer>
+  </body>
+</html>
