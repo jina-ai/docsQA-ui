@@ -4,7 +4,7 @@ title: <qa-bot> ⌲ Contributing
 tags: documentation
 name: Contributing
 description: Contributing
-sort: 2
+sort: 3
 ---
 ## Setup development environment
 ```shell
@@ -20,6 +20,16 @@ npm run dev
 
 ## Customize your development server
 You can modify `index.html` to customize the content of development server.
+
+To customize the backend server, you can modify the `server` attribute of `<qa-bot>` element.
+
+```html
+<qa-bot 
+    server="YOUR OWN BACKEND SERVER HERE (e.g. http://localhost:3001)"
+    site="https://docs.jina.ai"
+    target="_blank"
+></qa-bot>
+```
 
 <qa-bot server="https://docsbot.jina.ai" site="https://docs.jina.ai"></qa-bot>
 
