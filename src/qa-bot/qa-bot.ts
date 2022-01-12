@@ -71,6 +71,9 @@ export class QaBot extends LitElement {
     constructor() {
         super();
 
+        document.addEventListener('DOMContentLoaded', () => {
+            this.requestUpdate();
+        }, { once: true });
     }
 
     static override styles = [
