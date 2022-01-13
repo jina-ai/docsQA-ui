@@ -72,10 +72,14 @@ export class QaBot extends LitElement {
     constructor() {
         super();
 
-        document.addEventListener('DOMContentLoaded', () => {
+        if (document.readyState === 'complete') {
             customTextFragmentsPolyfill();
-            this.requestUpdate();
-        }, { once: true });
+        } else {
+            document.addEventListener('DOMContentLoaded', () => {
+                customTextFragmentsPolyfill();
+                this.requestUpdate();
+            }, { once: true });
+        }
     }
 
     static override styles = [
