@@ -19,6 +19,7 @@ export declare class QaBot extends LitElement {
     updated(): void;
     protected onTextAreaInput(event: KeyboardEvent): void;
     setQaPairTargeted(qaPair?: QAPair): void;
+    debugCommands(input: string): void;
     submitQuestion(): Promise<void>;
     protected submitFeedback(qaPair: QAPair, feedback?: 'up' | 'down' | 'none'): Promise<void>;
     scrollDialogToBottom(): Promise<void>;
