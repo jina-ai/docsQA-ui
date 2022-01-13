@@ -10,6 +10,7 @@ module.exports = {
         'class-methods-use-this': 'off',
         'consistent-return': 'off',
         'dot-notation': 'warn',
+        'arrow-body-style': 'off',
         'indent': 'off',
         'import/extensions': 'off',
         'import/no-unresolved': 'off',

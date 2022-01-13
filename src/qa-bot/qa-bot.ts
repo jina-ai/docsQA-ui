@@ -2,6 +2,7 @@ import { LitElement, html, PropertyValues } from 'lit';
 import { property, query, state } from 'lit/decorators.js';
 import { perNextTick } from '../lib/decorators/per-tick';
 import { throttle } from '../lib/decorators/throttle';
+import { customTextFragmentsPolyfill } from '../lib/text-fragments-polyfill';
 import customScrollbarCSS from '../shared/customized-scrollbar';
 import { resetCSS } from '../shared/reset-css';
 import { JinaQABotController, QAPair } from './controller';
@@ -38,7 +39,7 @@ export class QaBot extends LitElement {
     site?: string;
 
     @property({ attribute: 'link-to-text-fragment', type: String, reflect: true })
-    linkToTextFragment?: 'auto' | 'none' = 'auto';
+    linkToTextFragment?: 'none';
 
     @property({ type: String, reflect: true })
     target?: string = '_self';
@@ -72,6 +73,7 @@ export class QaBot extends LitElement {
         super();
 
         document.addEventListener('DOMContentLoaded', () => {
+            customTextFragmentsPolyfill();
             this.requestUpdate();
         }, { once: true });
     }
@@ -250,10 +252,8 @@ export class QaBot extends LitElement {
         let uri: string | undefined;
         if (this.linkToTextFragment === 'none') {
             uri = qa.answer.uri;
-        } else if ('fragmentDirective' in Location.prototype || 'fragmentDirective' in document) {
-            uri = qa.answer.textFragmentUri || qa.answer.uri;
         } else {
-            uri = qa.answer.uri;
+            uri = qa.answer.textFragmentUri;
         }
 
         if (!uri) {
