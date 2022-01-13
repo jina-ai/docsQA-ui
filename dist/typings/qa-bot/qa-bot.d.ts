@@ -4,7 +4,7 @@ export declare class QaBot extends LitElement {
     label: string;
     server?: string;
     site?: string;
-    linkToTextFragment?: 'auto' | 'none';
+    linkToTextFragment?: 'none';
     target?: string;
     channel?: string;
     theme?: 'auto' | 'dark' | 'light' | string;
