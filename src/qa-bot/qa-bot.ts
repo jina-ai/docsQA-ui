@@ -72,11 +72,9 @@ export class QaBot extends LitElement {
     constructor() {
         super();
 
-        if (document.readyState === 'complete') {
-            customTextFragmentsPolyfill();
-        } else {
+        customTextFragmentsPolyfill();
+        if (document.readyState !== 'complete') {
             document.addEventListener('DOMContentLoaded', () => {
-                customTextFragmentsPolyfill();
                 this.requestUpdate();
             }, { once: true });
         }
@@ -131,6 +129,50 @@ export class QaBot extends LitElement {
         this.qaControl?.setTargeted(qaPair.requestId);
     }
 
+    debugCommands(input: string) {
+        const [cmd, ...args] = input.split(' ');
+        switch (cmd) {
+            case 'clear': {
+                this.qaControl?.clear();
+                break;
+            }
+
+            case 'debug': {
+                const qabotDebug = {
+                    this: this,
+                    customTextFragmentsPolyfill,
+                };
+                (window as any).qabotDebug = qabotDebug;
+
+                break;
+            }
+
+            case 'highlight': {
+                if (!args.length) {
+                    break;
+                }
+                if (location.hash.includes(':~:')) {
+                    location.hash = location.hash.replace(/:~:text=.*$/, `:~:text=${args.join(' ')}`);
+                    break;
+                }
+                location.hash += `:~:text=${args.join(' ')}`;
+                break;
+            }
+
+            case 'close': {
+                this.open = false;
+
+                break;
+            }
+
+            default: {
+                break;
+            }
+        }
+
+        this.textarea!.value = '';
+    }
+
     @throttle()
     async submitQuestion() {
         if (!this.qaControl) {
@@ -141,9 +183,8 @@ export class QaBot extends LitElement {
             return;
         }
 
-        if (questionInput.startsWith(':clear')) {
-            this.qaControl.clear();
-            this.textarea!.value = '';
+        if (questionInput.startsWith(':')) {
+            this.debugCommands(questionInput.slice(1));
 
             return;
         }

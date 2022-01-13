@@ -33,15 +33,21 @@ export function markAndScrollToTextFragment() {
 
 let polyfillLive: boolean = false;
 export function customTextFragmentsPolyfill() {
-    if ('fragmentDirective' in document || 'fragmentDirective' in Location.prototype || polyfillLive) {
+    if (('fragmentDirective' in document) || ('fragmentDirective' in Location.prototype) || polyfillLive) {
         return;
     }
 
     markAndScrollToTextFragment();
 
     window.addEventListener('hashchange', () => {
-        // eslint-disable-next-line no-debugger
         markAndScrollToTextFragment();
+    });
+
+    document.addEventListener('readystatechange', () => {
+        if (document.readyState !== 'complete') {
+            return;
+        }
+        window.setTimeout(markAndScrollToTextFragment);
     });
 
     polyfillLive = true;
