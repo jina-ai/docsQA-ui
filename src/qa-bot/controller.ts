@@ -191,7 +191,15 @@ export class JinaQABotController implements ReactiveController {
             const paragraph = answer?.tags?.paragraph;
 
             if (paragraph && answer.uri) {
-                const parsedUri = new URL(answer.uri, window.location.href);
+                let parsedUri;
+                try {
+                    parsedUri = new URL(answer.uri, window.location.href);
+                } catch (err) {
+                    // Try to fix the uri.
+                    parsedUri = new URL(`${window.location.href}${answer.uri}`);
+                    parsedUri.pathname = parsedUri.pathname.replace(/\/+/g, '/');
+                    answer.uri = parsedUri.toString();
+                }
                 if (!parsedUri.hash) {
                     answer.textFragmentUri = `${answer.uri}${answer.uri.endsWith('#') ? '' : '#'}${this.makeTextFragmentFromPassage(paragraph, answer.text)}`;
                 } else {
