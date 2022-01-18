@@ -1,6 +1,6 @@
 {
   "name": "qabot",
-  "version": "0.3.3",
+  "version": "0.3.6",
   "description": "WebComponent <qa-bot> for Jina DocsQA",
   "main": "dist/qabot.js",
   "module": "dist/qabot.js",
@@ -69,7 +69,7 @@
   ],
   "dependencies": {
     "events": "^3.3.0",
-    "lit": "^2.0.2",
+    "lit": "^2.1.1",
     "lodash-es": "^4.17.21",
     "reflect-metadata": "^0.1.13",
     "tslib": "^2.3.1"

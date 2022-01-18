@@ -46,7 +46,12 @@ export default {
     /** Minify JS */
     terser({
       module: true,
+      toplevel: true,
+      enclose: true,
       warnings: true,
+      format: {
+        comments: false,
+      }
     }),
     /** Bundle assets references via import.meta.url */
     importMetaAssets(),
@@ -162,6 +167,5 @@ export default {
         }),
       ],
     },
-  ],
-  preserveEntrySignatures: false,
+  ]
 };
