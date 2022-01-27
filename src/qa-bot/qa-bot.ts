@@ -219,8 +219,8 @@ export class QaBot extends LitElement {
 
                         // eslint-disable-next-line no-console
                         console.log(
-                            `%c${x.confidence.toFixed(2)}\t%c... ${a}%c${b}%c${c} ...\n\t\t%c${x.url}`,
-                            'color: #EB6161', 'color: gray', 'color: #009191', 'color: gray', 'color: blue'
+                            `%c${x.confidence.toFixed(2)}\t%c... ${a}%c${b}%c${c} ...\n\t\t${x.url}`,
+                            'color: #EB6161', 'color: gray', 'color: #009191', 'color: gray'
                         );
                     }
                 }
