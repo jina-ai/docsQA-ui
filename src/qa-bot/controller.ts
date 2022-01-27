@@ -1,8 +1,10 @@
 import { ReactiveController, ReactiveControllerHost } from 'lit';
+import get from 'lodash-es/get';
 import { perNextTick } from '../lib/decorators/per-tick';
 import { serialOperation } from '../lib/decorators/serial-op';
 import { JinaDocBotRPC } from '../lib/jina-docbot-rpc';
 import { Document as JinaDocument } from '../lib/jina-document-array';
+import { getLocalStorageKey, makeTextFragmentUriFromPassage } from './shared';
 
 export interface QAPair {
     question?: string;
@@ -12,14 +14,6 @@ export interface QAPair {
     requestId?: string;
     ts: number;
     TARGETED?: boolean;
-}
-
-export function getChannel(channel: string = 'default'): string {
-    return `qabot:channel:${channel}`;
-}
-
-function patchTextFragmentEncoding(text: string) {
-    return encodeURIComponent(text).replace(/-/g, '%2D');
 }
 
 export class JinaQABotController implements ReactiveController {
@@ -44,7 +38,7 @@ export class JinaQABotController implements ReactiveController {
     ) {
         this.qaPairs = [];
         this.rpc = new JinaDocBotRPC(serverUri);
-        this.channel = getChannel(channel);
+        this.channel = getLocalStorageKey(channel);
 
         host.addController(this);
     }
@@ -169,8 +163,19 @@ export class JinaQABotController implements ReactiveController {
         if (!targetPair) {
             return;
         }
+        // eslint-disable-next-line dot-notation
         targetPair['TARGETED'] = true;
         this.__saveQaPairs();
+    }
+
+    dispatchEvent(eventName: string, detail?: object) {
+        const host = this.host as ReactiveControllerHost & EventTarget;
+        if (!host?.dispatchEvent) {
+            return;
+        }
+        host.dispatchEvent(new CustomEvent(eventName, {
+            detail,
+        }));
     }
 
     @serialOperation()
@@ -182,10 +187,13 @@ export class JinaQABotController implements ReactiveController {
         };
         this.qaPairs.push(qaPair);
 
+        // To improve the quality of DPR results, always have `?` at the end of query text https://github.com/jina-ai/docsQA-ui/issues/14
+        const mangledText = text.trim().concat('?').replace(/\?+$/, '?');
+
         try {
             this.ready = false;
             this.host.requestUpdate();
-            const r = await this.rpc.askQuestion(text);
+            const r = await this.rpc.askQuestion(mangledText);
             const answer = r.data.answer;
 
             const paragraph = answer?.tags?.paragraph;
@@ -200,13 +208,19 @@ export class JinaQABotController implements ReactiveController {
                     parsedUri.pathname = parsedUri.pathname.replace(/\/+/g, '/');
                     answer.uri = parsedUri.toString();
                 }
-                if (!parsedUri.hash) {
-                    answer.textFragmentUri = `${answer.uri}${answer.uri.endsWith('#') ? '' : '#'}${this.makeTextFragmentFromPassage(paragraph, answer.text)}`;
-                } else {
-                    const newHash = this.makeTextFragmentFromPassage(paragraph, answer.text);
-                    answer.textFragmentUri = `${answer.uri}${newHash}`;
-                }
+
+                answer.textFragmentUri = makeTextFragmentUriFromPassage(
+                    answer.text, paragraph, answer.uri
+                );
             }
+
+            this.dispatchEvent('debug', {
+                type: 'question-answered',
+                question: mangledText,
+                answer,
+                qaPair,
+                document: get(r, 'data.data.docs[0]'),
+            });
 
             qaPair.answer = answer;
 
@@ -223,15 +237,6 @@ export class JinaQABotController implements ReactiveController {
             this.ready = true;
             this.host.requestUpdate();
         }
-    }
-
-    makeTextFragmentFromPassage(passage: string, fragment: string) {
-        const [prefix, suffix] = passage.split(fragment);
-
-        const prefixFragment = prefix.match(/\b\w.{0,15}$/)?.[0].trim();
-        const suffixFragment = (suffix || '').trim().match(/^\S.{0,14}\b/)?.[0].trim();
-
-        return `:~:text=${prefixFragment ? `${patchTextFragmentEncoding(prefixFragment)}-,` : ''}${patchTextFragmentEncoding(fragment)}${suffixFragment ? `,-${patchTextFragmentEncoding(suffixFragment)}` : ''}`;
     }
 
     async sendFeedback(qaPair: QAPair, feedback: 'up' | 'down' | 'none', overrideURI?: string) {

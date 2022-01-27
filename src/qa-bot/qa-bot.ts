@@ -1,4 +1,5 @@
 import { LitElement, html, PropertyValues } from 'lit';
+import get from 'lodash-es/get';
 import { property, query, state } from 'lit/decorators.js';
 import { perNextTick } from '../lib/decorators/per-tick';
 import { throttle } from '../lib/decorators/throttle';
@@ -6,10 +7,12 @@ import { customTextFragmentsPolyfill } from '../lib/text-fragments-polyfill';
 import customScrollbarCSS from '../shared/customized-scrollbar';
 import { resetCSS } from '../shared/reset-css';
 import { JinaQABotController, QAPair } from './controller';
+import { getLocalStorageKey, makeTextFragmentUriFromPassage } from './shared';
+import type { Document as JinaDocument } from '../lib/jina-document-array'
 import masterStyle from './style';
 import {
     discussionIcon, downArrow, linkIcon, paperPlane,
-    poweredByJina, thumbDown, thumbUp,
+    thumbDown, thumbUp,
     tripleDot, upArrow
 } from './svg-icons';
 
@@ -53,6 +56,9 @@ export class QaBot extends LitElement {
     @property({ attribute: 'animate-by', type: String, reflect: true })
     animateBy?: 'position' | 'height' = 'height';
 
+    @property({ attribute: 'powered-by-icon-src', type: String, reflect: true })
+    poweredByIconSrc?: string;
+
     // @property({ type: Boolean })
     // manual?: boolean;
 
@@ -69,8 +75,24 @@ export class QaBot extends LitElement {
     @query('.qabot__control textarea')
     protected textarea?: HTMLTextAreaElement;
 
+    debugEnabled?: boolean = false;
+
+    private __debugEventListener?: (evt: CustomEvent)=> void;
+
     constructor() {
         super();
+
+        try {
+            this.debugEnabled = Boolean(
+                JSON.parse(localStorage.getItem(getLocalStorageKey(this.channel, 'debug')) || '')
+            );
+        } catch (err) {
+            this.debugEnabled = false;
+        }
+
+        if (this.debugEnabled) {
+            this.setupDebugEventListener();
+        }
 
         customTextFragmentsPolyfill();
         if (document.readyState !== 'complete') {
@@ -129,6 +151,92 @@ export class QaBot extends LitElement {
         this.qaControl?.setTargeted(qaPair.requestId);
     }
 
+    protected setupDebugEventListener(flag: boolean = true) {
+        if (!this.__debugEventListener) {
+            this.__debugEventListener = (event: CustomEvent)=> {
+                const detail = event.detail;
+
+                if (detail.type === 'question-answered') {
+
+                    const dispObjs = (detail.document as JinaDocument)?.matches?.map((x: JinaDocument) => {
+                        const dispObj = {
+                            answer: x.text,
+                            confidence: get(x, 'scores.confidence.value') as number,
+                            paragraph: get(x, 'tags.paragraph') as string,
+                            uri: get(x, 'uri') as string,
+                            url: '',
+                        };
+                        dispObj.confidence *= 100;
+                        dispObj.url = new URL(
+                            this.makeReferenceLink({
+                                answer: {
+                                    text: dispObj.answer,
+                                    uri: dispObj.uri,
+                                    textFragmentUri: makeTextFragmentUriFromPassage(
+                                        dispObj.answer, dispObj.paragraph, dispObj.uri
+                                    )
+                                }
+                            } as any), window.location.href
+                        ).toString();
+
+                        return dispObj;
+                    });
+                    // eslint-disable-next-line no-console
+                    console.log(`\n%cThe question: %c${detail.question}`, 'color: gray', 'color: #EB6161');
+                    for (const x of dispObjs.reverse()) {
+
+                        const [before, after, ...etc] = x.paragraph.split(x.answer);
+
+                        const contentVec = [];
+                        if (etc.length) {
+                            contentVec.push(before, x.answer, etc.join(x.answer));
+                        } else if (after) {
+                            contentVec.push(before, x.answer, after);
+                        } else if (!before) {
+                            contentVec.push('', x.answer, '');
+                        } else {
+                            contentVec.push(before, x.answer, '');
+                        }
+
+                        // eslint-disable-next-line prefer-const
+                        let [a, b, c] = contentVec;
+                        if (a) {
+                            // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+                            const cappedA = a.replace(/[\r\n]/gi, '').slice(-60);
+                            const words = cappedA.split(' ');
+                            const firstLetter = words[0]?.[0];
+                            if (firstLetter.toUpperCase() !== firstLetter) {
+                                words.shift();
+                            }
+                            a = words.join(' ');
+                        }
+                        if (c) {
+                            const cappedC = c.replace(/[\r\n]/gi, '').slice(0, 60);
+                            const words = cappedC.split(' ');
+                            words.pop();
+                            c = words.join(' ');
+                        }
+
+                        // eslint-disable-next-line no-console
+                        console.log(
+                            `%c${x.confidence.toFixed(2)}\t%c... ${a}%c${b}%c${c} ...\n\t\t%c${x.url}`,
+                            'color: #EB6161', 'color: gray', 'color: #009191', 'color: gray', 'color: blue'
+                        );
+                    }
+                }
+
+            };
+        }
+
+        if (!flag) {
+            this.removeEventListener('debug', this.__debugEventListener as any);
+
+            return;
+        }
+
+        this.addEventListener('debug', this.__debugEventListener as any);
+    }
+
     debugCommands(input: string) {
         const [cmd, ...args] = input.split(' ');
         switch (cmd) {
@@ -138,11 +246,31 @@ export class QaBot extends LitElement {
             }
 
             case 'debug': {
+                if (args.length) {
+                    // clear debug;
+                    delete (window as any).qabotDebug;
+                    this.debugEnabled = false;
+                    localStorage.removeItem(getLocalStorageKey(this.channel, 'debug'));
+
+                    this.setupDebugEventListener(false);
+
+                    // eslint-disable-next-line no-console
+                    console.info(`Debug disabled for qabot: ${this.channel || 'default'}`);
+
+                    break;
+                }
+
                 const qabotDebug = {
                     this: this,
                     customTextFragmentsPolyfill,
                 };
                 (window as any).qabotDebug = qabotDebug;
+                this.debugEnabled = true;
+                localStorage.setItem(getLocalStorageKey(this.channel, 'debug'), JSON.stringify(this.debugEnabled));
+
+                this.setupDebugEventListener();
+                // eslint-disable-next-line no-console
+                console.info(`Debug enabled for qabot: ${this.channel || 'default'}`);
 
                 break;
             }
@@ -425,7 +553,7 @@ export class QaBot extends LitElement {
                     <button title="Submit" ?disabled="${this.busy}" @click="${this.submitQuestion}">
                         <i class="icon icon-plane">${paperPlane}</i>
                     </button>
-                    <div class="powered-by"><i class="icon icon-powered-by-jina">${poweredByJina}</i></div>
+                    ${this.poweredByIconSrc ? html`<div class="powered-by"><i class="icon"><img src="${this.poweredByIconSrc}" alt="powered-by"></i></div>` : ''}
                 </div>
             </div>
         </div>
