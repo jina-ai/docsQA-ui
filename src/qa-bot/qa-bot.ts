@@ -6,15 +6,15 @@ import { throttle } from '../lib/decorators/throttle';
 import { customTextFragmentsPolyfill } from '../lib/text-fragments-polyfill';
 import customScrollbarCSS from '../shared/customized-scrollbar';
 import { resetCSS } from '../shared/reset-css';
-import { JinaQABotController, QAPair } from './controller';
-import { getLocalStorageKey, makeTextFragmentUriFromPassage } from './shared';
+import { JinaQABotController } from './controller';
+import { ANSWER_RENDER_TEMPLATE, getLocalStorageKey, QAPair } from './shared';
 import type { Document as JinaDocument } from '../lib/jina-document-array';
 import masterStyle from './style';
 import {
-    discussionIcon, downArrow, linkIcon, paperPlane,
-    thumbDown, thumbUp,
+    discussionIcon, downArrow, paperPlane,
     tripleDot, upArrow
 } from './svg-icons';
+import { AnswerRenderer, ANSWER_RENDERER_MAP } from './answer-renderers';
 
 const ABSPATHREGEXP = /^(https?:)?\/\/\S/;
 
@@ -77,7 +77,9 @@ export class QaBot extends LitElement {
 
     debugEnabled?: boolean = false;
 
-    private __debugEventListener?: (evt: CustomEvent)=> void;
+    private __debugEventListener?: (evt: CustomEvent) => void;
+
+    answerRenderer: { [k in ANSWER_RENDER_TEMPLATE]: AnswerRenderer } = ANSWER_RENDERER_MAP;
 
     constructor() {
         super();
@@ -153,76 +155,74 @@ export class QaBot extends LitElement {
 
     protected setupDebugEventListener(flag: boolean = true) {
         if (!this.__debugEventListener) {
-            this.__debugEventListener = (event: CustomEvent)=> {
+            this.__debugEventListener = (event: CustomEvent) => {
                 const detail = event.detail;
 
                 if (detail.type === 'question-answered') {
+                    console.log(detail);
+                    return;
+                    // const dispObjs = (detail.document as JinaDocument)?.matches?.map((x: JinaDocument) => {
+                    //     const dispObj = {
+                    //         answer: x.text,
+                    //         confidence: get(x, 'scores.confidence.value') as number,
+                    //         paragraph: get(x, 'tags.paragraph') as string,
+                    //         uri: get(x, 'uri') as string,
+                    //         url: '',
+                    //     };
+                    //     dispObj.confidence *= 100;
+                    //     dispObj.url = new URL(
+                    //         this.makeReferenceLink({
+                    //             answer: {
+                    //                 text: dispObj.answer,
+                    //                 uri: dispObj.uri,
+                    //             }
+                    //         } as any), window.location.href
+                    //     ).toString();
 
-                    const dispObjs = (detail.document as JinaDocument)?.matches?.map((x: JinaDocument) => {
-                        const dispObj = {
-                            answer: x.text,
-                            confidence: get(x, 'scores.confidence.value') as number,
-                            paragraph: get(x, 'tags.paragraph') as string,
-                            uri: get(x, 'uri') as string,
-                            url: '',
-                        };
-                        dispObj.confidence *= 100;
-                        dispObj.url = new URL(
-                            this.makeReferenceLink({
-                                answer: {
-                                    text: dispObj.answer,
-                                    uri: dispObj.uri,
-                                    textFragmentUri: makeTextFragmentUriFromPassage(
-                                        dispObj.answer, dispObj.paragraph, dispObj.uri
-                                    )
-                                }
-                            } as any), window.location.href
-                        ).toString();
+                    //     return dispObj;
+                    // });
+                    // // eslint-disable-next-line no-console
+                    // console.log(`\n%cThe question: %c${detail.question}`, 'color: gray', 'color: #EB6161');
+                    // for (const x of dispObjs.reverse()) {
 
-                        return dispObj;
-                    });
-                    // eslint-disable-next-line no-console
-                    console.log(`\n%cThe question: %c${detail.question}`, 'color: gray', 'color: #EB6161');
-                    for (const x of dispObjs.reverse()) {
+                    //     const [before, after, ...etc] = x.paragraph.split(x.answer);
 
-                        const [before, after, ...etc] = x.paragraph.split(x.answer);
+                    //     const contentVec = [];
+                    //     if (etc.length) {
+                    //         contentVec.push(before, x.answer, etc.join(x.answer));
+                    //     } else if (after) {
+                    //         contentVec.push(before, x.answer, after);
+                    //     } else if (!before) {
+                    //         contentVec.push('', x.answer, '');
+                    //     } else {
+                    //         contentVec.push(before, x.answer, '');
+                    //     }
 
-                        const contentVec = [];
-                        if (etc.length) {
-                            contentVec.push(before, x.answer, etc.join(x.answer));
-                        } else if (after) {
-                            contentVec.push(before, x.answer, after);
-                        } else if (!before) {
-                            contentVec.push('', x.answer, '');
-                        } else {
-                            contentVec.push(before, x.answer, '');
-                        }
+                    //     // eslint-disable-next-line prefer-const
+                    //     let [a, b, c] = contentVec;
+                    //     if (a) {
+                    //         // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+                    //         const cappedA = a.replace(/[\r\n]/gi, '').slice(-60);
+                    //         const words = cappedA.split(' ');
+                    //         const firstLetter = words[0]?.[0];
+                    //         if (firstLetter.toUpperCase() !== firstLetter) {
+                    //             words.shift();
+                    //         }
+                    //         a = words.join(' ');
+                    //     }
+                    //     if (c) {
+                    //         const cappedC = c.replace(/[\r\n]/gi, '').slice(0, 60);
+                    //         const words = cappedC.split(' ');
+                    //         words.pop();
+                    //         c = words.join(' ');
+                    //     }
 
-                        // eslint-disable-next-line prefer-const
-                        let [a, b, c] = contentVec;
-                        if (a) {
-                            // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-                            const cappedA = a.replace(/[\r\n]/gi, '').slice(-60);
-                            const words = cappedA.split(' ');
-                            const firstLetter = words[0]?.[0];
-                            if (firstLetter.toUpperCase() !== firstLetter) {
-                                words.shift();
-                            }
-                            a = words.join(' ');
-                        }
-                        if (c) {
-                            const cappedC = c.replace(/[\r\n]/gi, '').slice(0, 60);
-                            const words = cappedC.split(' ');
-                            words.pop();
-                            c = words.join(' ');
-                        }
-
-                        // eslint-disable-next-line no-console
-                        console.log(
-                            `%c${x.confidence.toFixed(2)}\t%c... ${a}%c${b}%c${c} ...\n\t\t${x.url}`,
-                            'color: #EB6161', 'color: gray', 'color: #009191', 'color: gray'
-                        );
-                    }
+                    //     // eslint-disable-next-line no-console
+                    //     console.log(
+                    //         `%c${x.confidence.toFixed(2)}\t%c... ${a}%c${b}%c${c} ...\n\t\t${x.url}`,
+                    //         'color: #EB6161', 'color: gray', 'color: #009191', 'color: gray'
+                    //     );
+                    // }
                 }
 
             };
@@ -326,8 +326,9 @@ export class QaBot extends LitElement {
             this.qaControl.sendFeedback(
                 qaPair,
                 'none',
-                new URL(this.makeReferenceLink(qaPair), window.location.href).toString()
-            ).catch(()=> 'swallow');
+                qaPair.answer?.uri ?
+                    new URL(this.makeReferenceLink(qaPair.answer.uri), window.location.href).toString() : undefined
+            ).catch(() => 'swallow');
             this.textarea!.value = '';
 
         } finally {
@@ -349,7 +350,8 @@ export class QaBot extends LitElement {
         const r = await this.qaControl?.sendBlockingFeedback(
             qaPair,
             feedback,
-            new URL(this.makeReferenceLink(qaPair), window.location.href).toString()
+            qaPair.answer?.uri ?
+                new URL(this.makeReferenceLink(qaPair.answer.uri), window.location.href).toString() : undefined
         );
 
         await this.scrollDialogToBottom();
@@ -418,17 +420,7 @@ export class QaBot extends LitElement {
         }
     }
 
-    protected makeReferenceLink(qa: QAPair) {
-        if (!qa?.answer) {
-            return '#';
-        }
-        let uri: string | undefined;
-        if (this.linkToTextFragment === 'none') {
-            uri = qa.answer.uri;
-        } else {
-            uri = qa.answer.textFragmentUri;
-        }
-
+    protected makeReferenceLink(uri?: string) {
         if (!uri) {
             return '#';
         }
@@ -457,51 +449,41 @@ export class QaBot extends LitElement {
         return html`
             <div class="qa-pair">
                 ${qa.question ? html`
-                    <div class="qa-row question">
-                        <div class="bubble">
-                            <div class="talktext">
-                                <p>${qa.question}</p>
-                            </div>
+                <div class="qa-row question">
+                    <div class="bubble">
+                        <div class="talktext">
+                            <p>${qa.question}</p>
                         </div>
                     </div>
+                </div>
                 ` : ''}
                 <div class="qa-row answer">
                     <div class="bubble">
-                        <div class="talktext">
-                            ${
-                                qa.answer ?
-                                    html`<p>${qa.answer.text}</p>` :
-                                    qa.error ? '' : html`<i class="icon loading triple-dot">${tripleDot}</i>`
-                            }
-                            ${qa.error ? html`
-                                <p>${qa.error.toString()}</p>
-                            ` : ''}
-                        </div>
-
-
-                        <div class="feedback-tooltip">
-                            ${qa.error ? html`
-                                <a class="answer-reference" href="https://slack.jina.ai" target="_blank">Report</a>
-                            ` : ''}
-                            ${qa.answer?.uri ? html`
-                                <a class="answer-reference" @click="${()=> this.setQaPairTargeted(qa)}" href="${this.makeReferenceLink(qa)}" target="${this.target as any}">Source<i class="icon link">${linkIcon}</i></a>
-                            ` : ''}
-                            ${(qa.question && qa.answer) ? html`
-                                <div class="thumbs">
-                                    <button class="thumb thumbup" ?active="${qa.feedback === true}" @click="${()=> this.submitFeedback(qa, 'up')}">
-                                        <i class="icon icon-thumb-up">${thumbUp}</i>
-                                    </button>
-                                    <button class="thumb thumbdown" ?active="${qa.feedback === false}" @click="${()=> this.submitFeedback(qa, 'down')}">
-                                        <i class="icon icon-thumb-down">${thumbDown}</i>
-                                    </button>
-                                </div>
-                            ` : ''}
-
-                        </div>
+                        ${this.renderAnswerBubble(qa)}
                     </div>
                 </div>
             </div>
     `;
+    }
+
+    protected renderAnswerBubble(qaPair: QAPair) {
+        if (!qaPair.answer) {
+            return html`
+                <div class="talktext"><i class="icon loading triple-dot">${tripleDot}</i></div>`;
+        }
+        if (qaPair.error) {
+            return html`
+            <div class="talktext">
+                <p>${qaPair.error.toString()}</p>
+            </div>
+            <div class="feedback-tooltip">
+                <a class="answer-reference" href="https://slack.jina.ai" target="_blank">Report</a>
+            </div>`;
+        }
+
+        const renderer = this.answerRenderer[qaPair.useTemplate!] || this.answerRenderer.text;
+
+        return renderer.call(this, qaPair);
     }
 
     protected getAnswerBlock() {
@@ -531,7 +513,7 @@ export class QaBot extends LitElement {
     override render() {
 
         return html`
-        <div class="qabot card" ?busy="${this.busy}" >
+        <div class="qabot card" ?busy="${this.busy}">
             <button class="card__header" @click="${this.toggleOpen}">
                 <span class="card__title">
                     <i class="icon">${discussionIcon}</i>
@@ -545,15 +527,13 @@ export class QaBot extends LitElement {
                     ${this.getAnswerBlock()}
                 </div>
                 <div class="qabot__control">
-                    <textarea maxlength="100" rows="3"
-                        tabindex="0"
-                        ?disabled="${this.busy}"
-                        @keypress="${this.onTextAreaInput}"
+                    <textarea maxlength="100" rows="3" tabindex="0" ?disabled="${this.busy}" @keypress="${this.onTextAreaInput}"
                         placeholder="${this.server ? 'Type your question here...' : 'Waiting for server configuration...'}"></textarea>
                     <button title="Submit" ?disabled="${this.busy}" @click="${this.submitQuestion}">
                         <i class="icon icon-plane">${paperPlane}</i>
                     </button>
-                    ${this.poweredByIconSrc ? html`<div class="powered-by"><i class="icon"><img src="${this.poweredByIconSrc}" alt="powered-by"></i></div>` : ''}
+                    ${this.poweredByIconSrc ? html`<div class="powered-by"><i class="icon"><img src="${this.poweredByIconSrc}"
+                                alt="powered-by"></i></div>` : ''}
                 </div>
             </div>
         </div>

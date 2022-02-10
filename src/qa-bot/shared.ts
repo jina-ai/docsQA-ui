@@ -1,27 +1,29 @@
+import { DOCQA_ANSWER_STATUS } from '../lib/jina-docbot-rpc';
+import { Document as JinaDocument } from '../lib/jina-document-array';
+
 export function getLocalStorageKey(channel: string = 'default', key: string = 'channel'): string {
     return `qabot:${key}:${channel}`;
 }
 
-function patchTextFragmentEncoding(text: string) {
-    return encodeURIComponent(text).replace(/-/g, '%2D');
+export enum ANSWER_RENDER_TEMPLATE {
+    TEXT = 'text',
+    TEXT_WITH_LINK = 'text-with-link',
+    TEXT_WITH_MULTIPLE_LINKS = 'text-with-multiple-links',
+
 }
 
-export function makeTextFragmentUriFromPassage(text: string, paragraph: string, uri: string) {
-    const [prefix, suffix] = paragraph.split(text);
-
-    const prefixFragment = prefix.match(/\b\w.{0,15}$/)?.[0].trim();
-    const suffixFragment = (suffix || '').trim().match(/^\S.{0,14}\b/)?.[0].trim();
-
-    const fragment = `:~:text=${prefixFragment ? `${patchTextFragmentEncoding(prefixFragment)}-,` : ''}${patchTextFragmentEncoding(text)}${suffixFragment ? `,-${patchTextFragmentEncoding(suffixFragment)}` : ''}`;
-
-    const parsedUri = new URL(uri, window.location.href);
-    if (!parsedUri.hash) {
-        return `${uri}#${fragment}`;
-    }
-
-    if (uri.endsWith('#')) {
-        return `${uri}${fragment}`;
-    }
-
-    return `${uri}${fragment}`;
+type DeepPartial<T> = T extends object ? {
+    [P in keyof T]?: DeepPartial<T[P]>;
+} : T;
+export interface QAPair {
+    question?: string;
+    answer?: DeepPartial<JinaDocument> & { [k: string]: any; };
+    error?: Error | string;
+    feedback?: boolean | null;
+    requestId?: string;
+    ts: number;
+    TARGETED?: boolean;
+    STATUS?: DOCQA_ANSWER_STATUS;
+    useTemplate?: ANSWER_RENDER_TEMPLATE;
+    [k: string]: any;
 }

@@ -338,6 +338,10 @@ export const masterStyle = css`
         overflow-wrap: anywhere;
     }
 
+    .qa-pair .talktext a {
+        overflow-wrap: anywhere;
+    }
+
     .qa-pair .question .bubble {
         color: var(--qabot-color-primary);
         background-color: var(--qabot-color-dimmed);
@@ -415,6 +419,17 @@ export const masterStyle = css`
         color: var(--qabot-color-action);
         fill: var(--qabot-color-action);
         opacity: 1;
+    }
+
+    .talktext a {
+        color: var(--qabot-color-muted);
+        fill: var(--qabot-color-muted);
+
+        cursor: pointer;
+    }
+
+    .talktext a:hover * {
+        opacity: 0.8;
     }
 
     .answer-reference {

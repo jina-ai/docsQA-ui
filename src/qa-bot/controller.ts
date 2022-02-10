@@ -3,18 +3,8 @@ import get from 'lodash-es/get';
 import { perNextTick } from '../lib/decorators/per-tick';
 import { serialOperation } from '../lib/decorators/serial-op';
 import { JinaDocBotRPC } from '../lib/jina-docbot-rpc';
-import { Document as JinaDocument } from '../lib/jina-document-array';
-import { getLocalStorageKey, makeTextFragmentUriFromPassage } from './shared';
-
-export interface QAPair {
-    question?: string;
-    answer?: Partial<JinaDocument> & { textFragmentUri?: string; };
-    error?: Error | string;
-    feedback?: boolean | null;
-    requestId?: string;
-    ts: number;
-    TARGETED?: boolean;
-}
+import { AnswerProcessingPlugin, ANSWER_PROCESSING_PLUGINS } from './plugins';
+import { getLocalStorageKey, QAPair } from './shared';
 
 export class JinaQABotController implements ReactiveController {
 
@@ -28,6 +18,8 @@ export class JinaQABotController implements ReactiveController {
     channel: string;
 
     qaPairToFocus?: string;
+
+    answerPlugins: AnswerProcessingPlugin[] = [...ANSWER_PROCESSING_PLUGINS];
 
     protected storageEventListener?: (storageEvent: StorageEvent) => void;
 
@@ -194,37 +186,22 @@ export class JinaQABotController implements ReactiveController {
             this.ready = false;
             this.host.requestUpdate();
             const r = await this.rpc.askQuestion(mangledText);
-            const answer = r.data.answer;
 
-            const paragraph = answer?.tags?.paragraph;
+            const result = r.data;
 
-            if (paragraph && answer.uri) {
-                let parsedUri;
-                try {
-                    parsedUri = new URL(answer.uri, window.location.href);
-                } catch (err) {
-                    // Try to fix the uri.
-                    parsedUri = new URL(`${window.location.href}${answer.uri}`);
-                    parsedUri.pathname = parsedUri.pathname.replace(/\/+/g, '/');
-                    answer.uri = parsedUri.toString();
-                }
+            qaPair.requestId = result.requestId;
+            qaPair.STATUS = get(result, 'data.docs[0].tags.STATUS');
 
-                answer.textFragmentUri = makeTextFragmentUriFromPassage(
-                    answer.text, paragraph, answer.uri
-                );
+            for (const plugin of this.answerPlugins) {
+                plugin.call(result, qaPair);
             }
 
             this.dispatchEvent('debug', {
                 type: 'question-answered',
                 question: mangledText,
-                answer,
                 qaPair,
                 document: get(r, 'data.data.docs[0]'),
             });
-
-            qaPair.answer = answer;
-
-            qaPair.requestId = r.data.requestId;
 
             this.saveQaPairs();
 
