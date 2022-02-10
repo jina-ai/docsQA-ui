@@ -36,6 +36,8 @@ module.exports = {
         'no-useless-return': 'off',
         'no-continue': 'off',
         'no-labels': 'off',
+        'no-shadow': 'off',
+        'no-unused-vars': 'off',
         'operator-linebreak': ['warn', 'after'],
         'object-curly-newline': ['warn', { consistent: true }],
         'no-useless-constructor': 'off',

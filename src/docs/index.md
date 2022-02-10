@@ -38,7 +38,7 @@ title: <qa-bot> ⌲ Home
 ```html
 <qa-bot 
     label="Try custom title ✨"
-    server="https://docsbot.jina.ai" 
+    server="https://jina-ai-jina-docsqa.jina.ai" 
     open
     site="https://docs.jina.ai" 
     target="_blank">
@@ -51,7 +51,7 @@ title: <qa-bot> ⌲ Home
 
   </div>
   <div class="bot-container">
-        <qa-bot label="Try custom title ✨" server="https://docsbot.jina.ai" site="https://docs.jina.ai" target="_blank" open>
+        <qa-bot label="Try custom title ✨" server="https://jina-ai-jina-docsqa.jina.ai" site="https://docs.jina.ai" target="_blank" open>
             <dt>You can tryout qabot easily:</dt>
             <dd>What is qabot?</dd>
             <dd>Does qabot support Vue/React/Angular?</dd>

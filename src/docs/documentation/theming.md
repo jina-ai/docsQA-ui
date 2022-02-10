@@ -15,7 +15,7 @@ You can specify `theme="light"` or `theme="dark"` to intentionally set the theme
 
 ```html
 <qa-bot
-    server="https://docsbot.jina.ai"
+    server="https://jina-ai-jina-docsqa.jina.ai"
     theme="light"
 ></qa-bot>
 ```
@@ -40,7 +40,7 @@ To do so, override the following CSS variables:
 </style>
 ```
 
-<qa-bot server="https://docsbot.jina.ai" theme="light" site="https://docs.jina.ai"></qa-bot>
+<qa-bot server="https://jina-ai-jina-docsqa.jina.ai" theme="light" site="https://docs.jina.ai"></qa-bot>
 
 <style>
     qa-bot {

@@ -2,12 +2,25 @@ import get from 'lodash-es/get';
 import { HTTPService } from './http-service';
 import { DocumentArray, Document } from './jina-document-array';
 
-
 export interface JinaServerEnvelope<T = any> {
     data: {
         docs: T;
+        groundtruths: unknown[];
     };
     requestId: string;
+}
+
+export enum DOCQA_ANSWER_STATUS {
+    UNKNOWN = -1,
+    ANSWERED = 0,
+    NOT_CONFIDENT = 1,
+    NOT_ANSWERED = 2,
+}
+
+export interface DocQAAnswer {
+    STATUS: DOCQA_ANSWER_STATUS;
+    matches: Document[];
+    [k: string]: any;
 }
 
 export class JinaDocBotRPC extends HTTPService {
@@ -17,15 +30,17 @@ export class JinaDocBotRPC extends HTTPService {
     }
 
     async askQuestion(text: string) {
-        // To improve the quality of DPR results, always have `?` at the end of query text https://github.com/jina-ai/docsQA-ui/issues/14
-        const mangledText = text.trim().concat('?').replace(/\?+$/, '?');
-
         const result = await this.postJson<
             JinaServerEnvelope<DocumentArray> &
-            { [k: string]: any; }
-        >('/search', { data: [{ text: mangledText }] });
+            DocQAAnswer
+        >('/search', { data: [{ text }] });
 
-        result.data = { ...result.data, answer: get(result.data, 'data.docs[0].matches[0]') as Document };
+        result.data = {
+            ...result.data,
+            STATUS: get(result.data, 'data.docs[0].tags.STATUS') || -1 as DOCQA_ANSWER_STATUS,
+            answer: get(result.data, 'data.docs[0].matches[0]') as Document,
+            matches: get(result.data, 'data.docs[0].matches') as Document[]
+        };
         return result;
     }
 
