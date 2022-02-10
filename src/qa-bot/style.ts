@@ -422,8 +422,8 @@ export const masterStyle = css`
     }
 
     .talktext a {
-        color: var(--qabot-color-muted);
-        fill: var(--qabot-color-muted);
+        color: var(--qabot-color-dimmed);
+        fill: var(--qabot-color-dimmed);
 
         cursor: pointer;
     }

@@ -1,7 +1,7 @@
 import { html } from 'lit';
 import { QAPair } from '../shared';
 import type { QaBot } from '../qa-bot';
-import { thumbUp, thumbDown } from '../svg-icons';
+import { thumbUp, thumbDown, linkIcon } from '../svg-icons';
 
 export function renderTextWithMultipleLinks(this: QaBot, qa: QAPair) {
 
@@ -10,8 +10,9 @@ export function renderTextWithMultipleLinks(this: QaBot, qa: QAPair) {
         <p>${qa.answer?.text}</p>
         <ul style="padding-top: 0.5em;">
             ${qa.answer?.matches?.map((x) => html`
-            <a href="${this.makeReferenceLink(x?.uri)}" style="line-height: 2em;">
-                <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; padding-right: 1em;">${x?.text}</p>
+            <a href="${this.makeReferenceLink(x?.uri)}" style="line-height: 2em; display: flex; align-items: center; ">
+                <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;">${x?.text}</p>
+                <i class="icon link" style="width: 1em; height: 1em; margin: 0 0.5em; ">${linkIcon}</i>
             </a>
             `)}
         </ul>
