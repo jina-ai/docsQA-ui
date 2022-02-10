@@ -3,15 +3,25 @@ import { DocumentArray, Document } from './jina-document-array';
 export interface JinaServerEnvelope<T = any> {
     data: {
         docs: T;
+        groundtruths: unknown[];
     };
     requestId: string;
+}
+export declare enum DOCQA_ANSWER_STATUS {
+    UNKNOWN = -1,
+    ANSWERED = 0,
+    NOT_CONFIDENT = 1,
+    NOT_ANSWERED = 2
+}
+export interface DocQAAnswer {
+    STATUS: DOCQA_ANSWER_STATUS;
+    matches: Document[];
+    [k: string]: any;
 }
 export declare class JinaDocBotRPC extends HTTPService {
     constructor(serverUri: string);
     askQuestion(text: string): Promise<Response & {
-        data: JinaServerEnvelope<DocumentArray<Document>> & {
-            [k: string]: any;
-        };
+        data: JinaServerEnvelope<DocumentArray<Document>> & DocQAAnswer;
     } & {
         serial: number;
         config: import("./http-service").HTTPServiceRequestOptions;

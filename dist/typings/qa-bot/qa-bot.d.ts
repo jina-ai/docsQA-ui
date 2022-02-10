@@ -1,5 +1,7 @@
 import { LitElement, PropertyValues } from 'lit';
-import { JinaQABotController, QAPair } from './controller';
+import { JinaQABotController } from './controller';
+import { ANSWER_RENDER_TEMPLATE, QAPair } from './shared';
+import { AnswerRenderer } from './answer-renderers';
 export declare class QaBot extends LitElement {
     label: string;
     server?: string;
@@ -9,24 +11,32 @@ export declare class QaBot extends LitElement {
     channel?: string;
     theme?: 'auto' | 'dark' | 'light' | string;
     animateBy?: 'position' | 'height';
+    poweredByIconSrc?: string;
     open?: boolean;
     get busy(): boolean;
     protected qaControl?: JinaQABotController;
     protected textarea?: HTMLTextAreaElement;
+    debugEnabled?: boolean;
+    private __debugEventListener?;
+    answerRenderer: {
+        [k in ANSWER_RENDER_TEMPLATE]: AnswerRenderer;
+    };
     constructor();
     static styles: import("lit").CSSResult[];
     update(changedProps: PropertyValues): void;
     updated(): void;
     protected onTextAreaInput(event: KeyboardEvent): void;
     setQaPairTargeted(qaPair?: QAPair): void;
+    protected setupDebugEventListener(flag?: boolean): void;
     debugCommands(input: string): void;
     submitQuestion(): Promise<void>;
     protected submitFeedback(qaPair: QAPair, feedback?: 'up' | 'down' | 'none'): Promise<void>;
     scrollDialogToBottom(): Promise<void>;
     scrollToAnswerByRequestId(requestId: string): Promise<void>;
     toggleOpen(): void;
-    protected makeReferenceLink(qa: QAPair): string;
+    protected makeReferenceLink(uri?: string): string;
     protected getSingleQAComp(qa: QAPair): import("lit-html").TemplateResult<1>;
+    protected renderAnswerBubble(qaPair: QAPair): any;
     protected getAnswerBlock(): import("lit-html").TemplateResult<1>;
     render(): import("lit-html").TemplateResult<1>;
 }
