@@ -8,7 +8,7 @@ import customScrollbarCSS from '../shared/customized-scrollbar';
 import { resetCSS } from '../shared/reset-css';
 import { JinaQABotController, QAPair } from './controller';
 import { getLocalStorageKey, makeTextFragmentUriFromPassage } from './shared';
-import type { Document as JinaDocument } from '../lib/jina-document-array'
+import type { Document as JinaDocument } from '../lib/jina-document-array';
 import masterStyle from './style';
 import {
     discussionIcon, downArrow, linkIcon, paperPlane,
