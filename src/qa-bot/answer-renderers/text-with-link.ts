@@ -5,11 +5,13 @@ import { linkIcon, thumbUp, thumbDown } from '../svg-icons';
 
 export function renderTextWithLink(this: QaBot, qa: QAPair) {
 
-    let textVec = html`<p>${qa.answer?.text}</p>`;
+    let textVec = html`<p>&#8203;${qa.answer?.text}&#8203;</p>`;
 
     if (qa.answer?.tags?.answerVec) {
         const [a, b, c] = qa.answer.tags.answerVec;
-        textVec = html`<p class="hl-enabled">${a}<span class="hl" style="font-weight: bold">${b}</span>${c}</p>`;
+        // Note that `&#8203;` stands for zero-width white space.
+        // This is to prevent highlighting the answer text itself. If the chat bot is on the same page with the source.
+        textVec = html`<p class="hl-enabled">${a}&#8203;<span class="hl" style="font-weight: bold">&#8203;${b}</span>${c}</p>`;
     }
 
 
