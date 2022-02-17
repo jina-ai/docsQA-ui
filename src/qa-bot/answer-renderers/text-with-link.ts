@@ -5,17 +5,26 @@ import { linkIcon, thumbUp, thumbDown } from '../svg-icons';
 
 export function renderTextWithLink(this: QaBot, qa: QAPair) {
 
+    let textVec = html`<p>${qa.answer?.text}</p>`;
+
+    if (qa.answer?.tags?.answerVec) {
+        const [a, b, c] = qa.answer.tags.answerVec;
+        textVec = html`<p class="hl-enabled">${a}<span class="hl" style="font-weight: bold">${b}</span>${c}</p>`;
+    }
+
+
     return html`
     <div class="talktext">
-        <p>${qa.answer?.text}</p>
+        ${textVec}
     </div>
     <div class="feedback-tooltip">
         ${qa.error ? html`
         <a class="answer-reference" href="https://slack.jina.ai" target="_blank">Report</a>
         ` : ''}
         ${qa.answer?.uri ? html`
-        <a class="answer-reference" @click="${() => this.setQaPairTargeted(qa)}" href="${this.makeReferenceLink(qa.answer.uri)}"
-            target="${this.target as any}">Source<i class="icon link">${linkIcon}</i></a>
+        <a class="answer-reference" @click="${() => this.setQaPairTargeted(qa)}"
+            href="${this.makeReferenceLink(qa.answer.uri)}" target="${this.target as any}">Source<i
+                class="icon link">${linkIcon}</i></a>
         ` : ''}
         ${(qa.question && qa.answer) ? html`
         <div class="thumbs">
