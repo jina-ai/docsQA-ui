@@ -10,10 +10,7 @@ import { JinaQABotController } from './controller';
 import { ANSWER_RENDER_TEMPLATE, getLocalStorageKey, QAPair } from './shared';
 import type { Document as JinaDocument } from '../lib/jina-document-array';
 import masterStyle from './style';
-import {
-    discussionIcon, downArrow, paperPlane,
-    tripleDot, upArrow
-} from './svg-icons';
+import { paperPlane, tripleDot, downArrowCycle, defaultAvatar, thumbUp, thumbDown } from './svg-icons';
 import { AnswerRenderer, ANSWER_RENDERER_MAP } from './answer-renderers';
 
 const ABSPATHREGEXP = /^(https?:)?\/\/\S/;
@@ -21,9 +18,10 @@ const ABSPATHREGEXP = /^(https?:)?\/\/\S/;
 /**
  * QABot custom element
  * @summary WebComponent for DocsQA
- * @slot - The intro headline and example questions user might define
+ * @slot = avatar - customize the avatar
  *
- * @attr label - Customize title text in the header part
+ * @attr name - Customize name text in the header part
+ * @attr description - Customize description text in the header part
  * @attr server - REQUIRED, specify the server url bot talks to.
  * @attr site - Specify site base location the links refer to, if not relative to current location.
  * @attr target - Specify <a target=""> of reference links.
@@ -33,7 +31,23 @@ const ABSPATHREGEXP = /^(https?:)?\/\/\S/;
  */
 export class QaBot extends LitElement {
     @property({ type: String, reflect: true })
-    label = 'Ask our docs!';
+    name?: string = 'Chatbot Name';
+
+    @property({ type: String, reflect: true })
+    description?: string = '@company';
+
+    @property({ type: String, reflect: true })
+    avatar?: string;
+
+    @property({ type: String, reflect: true })
+    greeting?: string = 'You can ask questions about Jina. Try:';
+
+    @property({ type: Array, reflect: true })
+    questions?: Array<string> = [
+        'What is Jina?',
+        'Does Jina support Kubernetes?',
+        'How can I traverse a nested DocumentArray?'
+    ];
 
     @property({ type: String })
     server?: string;
@@ -458,12 +472,35 @@ export class QaBot extends LitElement {
                 </div>
                 ` : ''}
                 <div class="qa-row answer">
+                    <div class="avatar">${this.getAvatar()}</div>
                     <div class="bubble">
                         ${this.renderAnswerBubble(qa)}
+                    </div>
+                    <div class="feedback-tooltip">
+                        ${this.getFeedbackTooltip(qa)}
                     </div>
                 </div>
             </div>
     `;
+    }
+
+    protected getFeedbackTooltip(qa: QAPair) {
+        return html`
+        ${qa.error ? html`
+            <a class="answer-reference" href="https://slack.jina.ai" target="_blank">Report</a>
+            ` : ''}
+            ${(qa.question && qa.answer) ? html`
+            <div class="thumbs">
+                <button class="thumb thumbup" ?active="${qa.feedback === true}" @click="${() => this.submitFeedback(qa, 'up')}">
+                    <i class="icon icon-thumb-up">${thumbUp}</i>
+                </button>
+                <button class="thumb thumbdown" ?active="${qa.feedback === false}"
+                    @click="${() => this.submitFeedback(qa, 'down')}">
+                    <i class="icon icon-thumb-down">${thumbDown}</i>
+                </button>
+            </div>
+            ` : ''}
+        `;
     }
 
     protected renderAnswerBubble(qaPair: QAPair) {
@@ -487,56 +524,69 @@ export class QaBot extends LitElement {
     }
 
     protected getAnswerBlock() {
-        if (!(this.qaControl?.qaPairs.length)) {
-            return html`
-            <div class="answer-hint" tabindex="0">
-                <slot>
-                    <dl>
-                        <dt>You can ask questions about Jina. Try:</dt>
-                        <dd>What is Jina?</dd>
-                        <dd>Does Jina support Kubernetes?</dd>
-                        <dd>How can I traverse a nested DocumentArray?</dd>
-                        <dd>What are the basic concepts in Jina?</dd>
-                    </dl>
-                </slot>
-            </div>
-        `;
-        }
-
         return html`
-            <div class="answer-dialog">
-                ${this.qaControl?.qaPairs.map((qa) => this.getSingleQAComp(qa))}
-            </div>
+        <div class="answer-hint" tabindex="0">
+            <div class="avatar">${this.getAvatar()}</div>
+            <dl class="answer-hint__content">
+            <dt class="greeting">${this.greeting}</dt>
+            ${this.questions?.map((item, index) => html`<dd class="question"><button key="${index}" @click="${this.onClickQuestion}">${item}</button></dd>`)}
+            </dl>
+        </div>
+         <div class="answer-dialog">
+            ${this.qaControl?.qaPairs.map((qa) => this.getSingleQAComp(qa))}
+        </div>
         `;
+    }
+
+    protected onClickQuestion(e: Event) {
+        const index = Number((e.target as Element).getAttribute('key')!);
+        this.textarea!.value = this.questions?.[index] || '';
+        this.submitQuestion();
+    }
+
+    protected getAvatar() {
+        if (this.avatar) {
+            return html`
+            <img src="${this.avatar}" alt="avatar" />
+            `;
+        }
+        return defaultAvatar;
     }
 
     override render() {
 
-        return html`
-        <div class="qabot card" ?busy="${this.busy}">
-            <button class="card__header" @click="${this.toggleOpen}">
-                <span class="card__title">
-                    <i class="icon">${discussionIcon}</i>
-                    <span class="text">${this.label}</span>
-                </span>
-                <i class="icon arrow-down">${downArrow}</i>
-                <i class="icon arrow-up">${upArrow}</i>
-            </button>
-            <div class="card__content">
-                <div class="qabot__answer-block">
-                    ${this.getAnswerBlock()}
-                </div>
-                <div class="qabot__control">
-                    <textarea maxlength="100" rows="3" tabindex="0" ?disabled="${this.busy}" @keypress="${this.onTextAreaInput}"
-                        placeholder="${this.server ? 'Type your question here...' : 'Waiting for server configuration...'}"></textarea>
-                    <button title="Submit" ?disabled="${this.busy}" @click="${this.submitQuestion}">
-                        <i class="icon icon-plane">${paperPlane}</i>
-                    </button>
-                    ${this.poweredByIconSrc ? html`<div class="powered-by"><i class="icon"><img src="${this.poweredByIconSrc}"
-                                alt="powered-by"></i></div>` : ''}
+        if (this.open) {
+            return html`
+            <div class="qabot card" ?busy="${this.busy}">
+                <button class="card__header" @click="${this.toggleOpen}">
+                    <span class="card__title">
+                        <div class="icon avatar">${this.getAvatar()}</div>
+                        <span class="card__title__content">
+                            <span class="name">${this.name}</span>
+                            <span class="description">${this.description}</span>
+                        </span>
+                    </span>
+                    <i class="icon arrow-down">${downArrowCycle}</i>
+                </button>
+                <div class="card__content">
+                    <div class="qabot__answer-block">
+                        ${this.getAnswerBlock()}
+                    </div>
+                    <div class="qabot__control">
+                        <textarea maxlength="100" rows="1" tabindex="0" ?disabled="${this.busy}" @keypress="${this.onTextAreaInput}"
+                            placeholder="${this.server ? 'Type your question here...' : 'Waiting for server configuration...'}"></textarea>
+                        <button title="Submit" ?disabled="${this.busy}" @click="${this.submitQuestion}">
+                            <i class="icon icon-plane">${paperPlane}</i>
+                        </button>
+                        ${this.poweredByIconSrc ? html`<div class="powered-by"><i class="icon"><img src="${this.poweredByIconSrc}"
+                                    alt="powered-by"></i></div>` : ''}
+                    </div>
                 </div>
             </div>
-        </div>
-    `;
+            `;
+        }
+        return html`
+        <button class="default-qabot" @click="${this.toggleOpen}">${this.getAvatar()}</button>
+        `;
     }
 }

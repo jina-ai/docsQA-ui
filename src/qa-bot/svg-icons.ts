@@ -69,3 +69,39 @@ export const linkIcon = svg`
     <path d='M11 7H6a2 2 0 00-2 2v9a2 2 0 002 2h9a2 2 0 002-2v-5M10 14L20 4M15 4h5v5'/>
 </svg>
 `;
+
+export const downArrowCycle = svg`
+<svg width="2em" height="2em" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g id="Jina" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Chatbot_Typing" transform="translate(-1372.000000, -312.000000)">
+            <g id="编组-2备份" transform="translate(1060.000000, 284.000000)">
+                <g id="编组-3" transform="translate(312.000000, 28.000000)">
+                    <circle id="Icon-BG" fill-opacity="0.3" fill="#FFFFFF" cx="16" cy="16" r="16"></circle>
+                    <polyline id="路径" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" transform="translate(16.016854, 14.516854) rotate(-45.000000) translate(-16.016854, -14.516854) " points="20.0168542 18.5168542 12.0168542 18.5168542 12.0168542 10.5168542"></polyline>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
+`;
+
+export const defaultAvatar = svg`
+<svg width="36px" height="29px" viewBox="0 0 36 29" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g id="Jina" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Chatbot_Introduction_01" transform="translate(-1082.000000, -312.000000)">
+            <g id="编组-2备份" transform="translate(1060.000000, 284.000000)">
+                <g id="编组" transform="translate(16.000000, 20.000000)">
+                    <g id="编组-4" transform="translate(6.000000, 8.000000)">
+                        <rect id="矩形" stroke="#009191" stroke-width="3" x="6.5" y="10.5" width="23" height="17" rx="2"></rect>
+                        <path d="M13,17 C14.1045695,17 15,17.8954305 15,19 C15,20.1045695 14.1045695,21 13,21 C11.8954305,21 11,20.1045695 11,19 C11,17.8954305 11.8954305,17 13,17 Z M23,17 C24.1045695,17 25,17.8954305 25,19 C25,20.1045695 24.1045695,21 23,21 C21.8954305,21 21,20.1045695 21,19 C21,17.8954305 21.8954305,17 23,17 Z" id="形状结合" fill="#009191"></path>
+                        <rect id="矩形" fill="#EB6161" x="0" y="15" width="3" height="8" rx="1.5"></rect>
+                        <rect id="矩形备份" fill="#EB6161" x="33" y="15" width="3" height="8" rx="1.5"></rect>
+                        <rect id="矩形备份-2" fill="#009191" x="16.5" y="5" width="3" height="5" rx="1.5"></rect>
+                        <circle id="椭圆形备份-2" fill="#FBCB67" cx="18" cy="3" r="3"></circle>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
+`;

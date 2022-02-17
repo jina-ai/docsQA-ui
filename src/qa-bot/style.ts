@@ -9,15 +9,17 @@ export const masterStyle = css`
 
         --qabot-color-primary: #000;
         --qabot-color-action: #009191;
+        --qabot-color-action-secondary: #F2F8F8;
         --qabot-color-action-contrast: #fff;
         --qabot-color-dimmed: #eeebee;
         --qabot-color-muted: #646776;
 
-        --qabot-size-text-primary: 0.7em;
-        --qabot-size-text-title: 1em;
-        --qabot-size-border-radius-primary: 0.25em;
+        --qabot-size-text-primary: 0.75em;
+        --qabot-size-line-height: 1.25em;
+        --qabot-size-text-title: 0.875em;
+        --qabot-size-border-radius-primary: 1.25em;
 
-        --qabot-card-header-height: calc(var(--qabot-size-text-title) + 2.5em);
+        --qabot-card-header-height: calc(var(--qabot-size-text-title) + 4.5em);
     }
 
     :host([theme='dark']){
@@ -48,20 +50,37 @@ export const masterStyle = css`
 
     :host {
         font-size: 1rem;
-        width: 16em;
+        width: 22.5em;
         height: 100%;
         transition: transform 0.15s ease-in-out, max-height 0.15s ease-in-out;
-        max-height: 25em;
+        max-height: 80%;
         position: absolute;
-        bottom: 0;
+        bottom: 1.25em;
     }
 
-    :host(:not([animate-by='position']):not([open])) {
-        max-height: var(--qabot-card-header-height) !important;
+    :host(:not([open])) {
+        max-height: 3.75em;
     }
 
-    :host([animate-by='position']:not([open])) {
-        transform: translateY(calc(100% - var(--qabot-card-header-height)));
+    .default-qabot {
+        width: 3.75em;
+        height: 3.75em;
+        border-radius: 50%;
+        background-color: var(--qabot-color-action);
+        text-align: center;
+    }
+
+    .default-qabot svg {
+        width: 2.5em;
+        height: 2em;
+    }
+
+    .default-qabot svg rect[fill], .default-qabot svg circle[fill], .default-qabot svg path[fill] {
+        fill: var(--qabot-color-action-contrast);
+    }
+
+    .default-qabot svg rect[stroke] {
+        stroke: var(--qabot-color-action-contrast);
     }
 
     button:active {
@@ -80,12 +99,12 @@ export const masterStyle = css`
     }
 
     .card {
-        box-shadow: 0 0.1em 0.25em var(--qabot-color-shadow), 0 0 0.0625em rgba(0, 0, 0, 0.1);
+        box-shadow: 0 0.125em 0.9375em 0.0625em var(--qabot-color-shadow), 0 0 0.0625em rgba(0, 0, 0, 0.15);
         box-sizing: border-box;
         background-clip: border-box;
         background-color: var(--qabot-color-background);
         border: 1px solid var(--qabot-color-padding);
-        border-radius: var(--qabot-size-border-radius-primary) var(--qabot-size-border-radius-primary) 0 0;
+        border-radius: var(--qabot-size-border-radius-primary);
         color: var(--qabot-color-primary);
         fill: var(--qabot-color-primary);
         display: flex;
@@ -93,17 +112,19 @@ export const masterStyle = css`
         min-width: 0;
         position: relative;
         word-wrap: break-word;
+        box-sizing: border-box;
     }
 
     .card .card__header {
         height: var(--qabot-card-header-height);
         padding: 1em;
-        line-height: 1.15em;
+        line-height: var(--qabot-size-line-height);
         font-size: var(--qabot-size-text-title);
         cursor: pointer;
         user-select: none;
 
-        background-color: var(--qabot-color-padding);
+        background-color: var(--qabot-color-action);
+        color: var(--qabot-color-action-contrast);
 
         border-bottom: 1px solid var(--qabot-color-padding);
 
@@ -113,30 +134,40 @@ export const masterStyle = css`
         justify-content: space-between;
     }
 
-    .card .card__header:first-child {
-        border-radius: calc(var(--qabot-size-border-radius-primary) - 1px) calc(var(--qabot-size-border-radius-primary) - 1px) 0 0;
-    }
-
     .card .card__title {
         display: flex;
         align-items: center;
         column-gap: 0.75em;
     }
 
+    .card .card__title .card__title__content {
+        display: inline-flex;
+        flex-direction: column;
+    }
+
+    .card .card__title .card__title__content .name {
+        font-size: var(--qabot-size-text-title);
+        font-weight: bold;
+    }
+
+    .card .card__title .card__title__content .description {
+        font-size: var(--qabot-size-text-primary);
+    }
+
     .card .icon {
         display: inline-flex;
+        align-items: center;
+        justify-content: center;
     }
 
-    :host([open]) .card__header .icon.arrow-up {
-        display: none;
-    }
-
-    :host(:not([open])) .card__header .icon.arrow-down {
-        display: none;
+    .card .card__title .avatar {
+        width: 3em;
+        height: 3em;
+        border-radius: 50%;
+        background-color: var(--qabot-color-action-contrast);
     }
 
     .card .card__content {
-        height: calc(100% - var(--qabot-card-header-height));
         overflow: hidden;
         display: flex;
         flex-direction: column;
@@ -147,7 +178,7 @@ export const masterStyle = css`
         display: flex;
         flex-grow: 1;
         flex-shrink: 1;
-        min-height: 3em;
+        flex-direction: column;
         overflow-y: scroll;
         scrollbar-width: thin;
         overflow: overlay;
@@ -156,22 +187,20 @@ export const masterStyle = css`
     }
 
     .qabot__control {
-        margin: 0 1em 1em 1em;
         display: flex;
         position: relative;
-        line-height: 1.15em;
+        line-height: var(--qabot-size-line-height);
+        border-top: 1px solid var(--qabot-color-action-secondary);
     }
 
     .qabot__control button {
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: 0 var(--qabot-size-border-radius-primary) var(--qabot-size-border-radius-primary) 0;
         position: absolute;
         padding: 0.5em;
         border: none;
         right: 0;
-        border: 1px solid var(--qabot-color-action);
         border-left: none;
         height: 100%;
         cursor: pointer;
@@ -186,8 +215,6 @@ export const masterStyle = css`
         color: var(--qabot-color-action-contrast);
         fill: var(--qabot-color-action-contrast);
         background-color: var(--qabot-color-action);
-
-        box-shadow: 0 0 0.15em var(--qabot-color-action);
     }
 
     .qabot__control *:disabled {
@@ -196,10 +223,9 @@ export const masterStyle = css`
 
     .qabot__control textarea {
         width: 100%;
-        padding: 0.72em 2.85em 0.72em 0.72em;
-        border: 1px solid var(--qabot-color-action);
+        padding: 1.25em 1em;
+
         border-right: none;
-        border-radius: var(--qabot-size-border-radius-primary) calc(var(--qabot-size-border-radius-primary) + 6px) calc(var(--qabot-size-border-radius-primary) + 6px) var(--qabot-size-border-radius-primary);
         font-size: var(--qabot-size-text-primary);
         resize: none;
 
@@ -211,10 +237,6 @@ export const masterStyle = css`
 
     .qabot__control textarea::placeholder {
         color: var(--qabot-color-muted);
-    }
-
-    .qabot__control textarea:focus {
-        box-shadow: 0 0 0.15em var(--qabot-color-action);
     }
 
     .qabot__control textarea:disabled {
@@ -235,50 +257,66 @@ export const masterStyle = css`
     }
 
     .answer-hint {
-        width: 100%;
+        max-width: calc(100% - 5.5em);
         padding-right: 0.5em;
-        line-height: 1.15em;
-        display: block;
+        line-height: var(--qabot-size-line-height);
+        flex-shrink: 0;
+        display: flex;
+        align-items: flex-end;
+        padding-bottom: 1em;
     }
 
-    .answer-hint h1,.answer-hint h2,.answer-hint h3,.answer-hint h4,.answer-hint h5,
-    .answer-hint h6,.answer-hint dt,.answer-hint ::slotted(h1),
-    .answer-hint ::slotted(h2),.answer-hint ::slotted(h3),.answer-hint ::slotted(h4),
-    .answer-hint ::slotted(h5),.answer-hint ::slotted(h6),.answer-hint ::slotted(dt) {
-        margin: 0;
-        margin-bottom: 0.75em;
+    .answer-hint .answer-hint__content {
+        border-radius: 1.15em 1.15em 1.15em 0.3125em;
+        border: 0.0625em solid var(--qabot-color-action-secondary);
+        background-color: var(--qabot-color-action-secondary);
+        overflow: hidden;
+    }
+
+    .answer-hint .answer-hint__content .greeting {
+        padding: 0.5em 1em;
         font-size: var(--qabot-size-text-primary);
         font-weight: bold;
         color: var(--qabot-color-primary);
     }
 
-    .answer-hint p,.answer-hint li,.answer-hint dd,.answer-hint ::slotted(p),.answer-hint ::slotted(li),.answer-hint ::slotted(dd) {
-        margin: 0;
+    .answer-hint .answer-hint__content .question {
+        background-color: var(--qabot-color-action-contrast);
+        color: var(--qabot-color-action);
         font-size: var(--qabot-size-text-primary);
-        color: var(--qabot-color-muted);
-        display: list-item;
-        list-style-position: inside;
-        padding-left: var(--qabot-size-text-primary);
-        text-indent: calc(-1.3 * var(--qabot-size-text-primary));
-        list-style-type: "•   ";
+        border-bottom: 0.0625em solid var(--qabot-color-action-secondary);
+        padding: 0.5em 1em;
+        display: block;
+        cursor: pointer;
     }
 
-    .answer-hint p::marker,.answer-hint li::marker,.answer-hint dd::marker,
-    .answer-hint ::slotted(p)::marker,.answer-hint ::slotted(li)::marker,.answer-hint ::slotted(dd)::marker {
-        content: '• ';
-        font-weight: bold;
-        white-space: pre-wrap;
-        font-family: ui-monospace;
+    .answer-hint .answer-hint__content .question:hover {
+        background-color: var(--qabot-color-action);
+        color: var(--qabot-color-action-contrast);
     }
 
-    .answer-hint ul, .answer-hint ol, .answer-hint dl, .answer-hint ::slotted(ul),
-    .answer-hint ::slotted(ol), .answer-hint ::slotted(dl) {
-        color: var(--qabot-color-muted);
-        padding: 0;
+    .card__content .avatar {
+        width: 1.875em;
+        height: 1.875em;
+        border-radius: 50%;
+        margin-right: 0.875em;
+        background-color: var(--qabot-color-action-contrast);
+        flex-shrink: 0;
+        border: 0.0625em solid var(--qabot-color-action-secondary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
-    .answer-hint >*:last-child, .answer-hint ::slotted(*:last-child) {
-        padding-bottom: 1em;
+    .avatar svg {
+        width: calc(100% - 0.5em);
+        height: calc(100% - 0.5em);
+    }
+
+    .avatar img {
+        height: 100%;
+        width: 100%;
+        object-fit: contain;
     }
 
     .answer-dialog {
@@ -292,28 +330,23 @@ export const masterStyle = css`
         padding-bottom: 1em;
     }
 
+    .qa-pair .qa-row {
+        margin-bottom: 1em;
+    }
+
+    .qa-pair .qa-row.answer {
+        display: flex;
+        align-items: flex-end;
+    }
+
     .qa-pair .bubble {
         display: inline-block;
         position: relative;
         height: auto;
-        background-color: var(--qabot-color-action);
-        color: var(--qabot-color-action-contrast);
-        margin-bottom: 1.2em;
-        border-radius: 0.3125em;
-        max-width: 80%;
-    }
-
-    .qa-pair .bubble:after {
-        content: ' ';
-        position: absolute;
-        width: 0;
-        height: 0;
-        left: 0;
-        right: auto;
-        top: auto;
-        bottom: -0.58em;
-        border: 0.58em solid;
-        border-color: transparent transparent transparent var(--qabot-color-action);
+        background-color: var(--qabot-color-action-secondary);
+        color: var(--qabot-color-primary);
+        border-radius: 1.15em 1.15em 1.15em 0.3125em;
+        max-width: calc(100% - 5.5em);
     }
 
     .qa-pair .qa-row.answer .talktext p::first-letter {
@@ -332,6 +365,7 @@ export const masterStyle = css`
         padding: 1em;
         text-align: left;
         font-size: var(--qabot-size-text-primary);
+        line-height: var(--qabot-size-line-height);
     }
 
     .qa-pair .talktext p {
@@ -340,32 +374,20 @@ export const masterStyle = css`
 
     .qa-pair .talktext a {
         overflow-wrap: anywhere;
+        white-space: nowrap;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        color: var(--qabot-color-action);
+        text-decoration: underline;
+        margin-top: 0.125em;
     }
 
     .qa-pair .question .bubble {
-        color: var(--qabot-color-primary);
-        background-color: var(--qabot-color-dimmed);
+        color: var(--qabot-color-action-contrast);
+        background-color: var(--qabot-color-action);
+        border-radius: 1.15em 1.15em 0.3125em 1.15em;
     }
-
-    .qa-pair .question .bubble:after {
-        left: auto;
-        right: 0;
-        border-color: var(--qabot-color-dimmed) var(--qabot-color-dimmed) transparent transparent;
-    }
-
-    .qa-pair .bubble .feedback-tooltip {
-        position: absolute;
-        left: 1.5em;
-        font-size: var(--qabot-size-text-primary);
-        margin-top: 0.25em;
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: end;
-        width: calc(100% - 2.5em);
-        color: var(--qabot-color-action);
-    }
-
 
     @keyframes blink {
         50% {
@@ -396,52 +418,44 @@ export const masterStyle = css`
         fill: var(--qabot-color-action-contrast);
     }
 
+    .qa-pair .answer:hover .feedback-tooltip .thumbs {
+        display: flex
+    }
+
     .feedback-tooltip .thumbs {
-        display: flex;
+        display: none;
         flex-direction: row;
-        margin-left: 0.5em;
+        margin-left: 0.25em;
         align-items: center;
+        width: 2.5em;
     }
 
     .feedback-tooltip .thumbs .thumb {
         color: var(--qabot-color-muted);
-        fill: var(--qabot-color-muted);
-        opacity: 0.5;
+        fill: var(--qabot-color-action);
+        background-color: var(--qabot-color-action-secondary);
 
         cursor: pointer;
+        height: 1.125em;
+        width: 1.125em;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .feedback-tooltip .thumbs .thumb .icon {
+        height: 0.5625em;
+        width: 0.5625em;
     }
 
     .feedback-tooltip .thumbs .thumb:not(:first-child) {
-        margin-left: 0.25em;
+        margin-left: 0.125em;
     }
 
     .feedback-tooltip .thumbs .thumb:hover, .feedback-tooltip .thumbs .thumb[active] {
         color: var(--qabot-color-action);
         fill: var(--qabot-color-action);
-        opacity: 1;
-    }
-
-    .talktext a {
-        color: var(--qabot-color-dimmed);
-        fill: var(--qabot-color-dimmed);
-
-        cursor: pointer;
-    }
-
-    .talktext a:hover * {
-        opacity: 0.8;
-    }
-
-    .answer-reference {
-        white-space: nowrap;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-    }
-
-    .answer-reference .icon.link {
-        width: 1em;
-        margin-left: 0.25em;
     }
 `;
 
