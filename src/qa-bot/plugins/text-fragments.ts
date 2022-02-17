@@ -36,7 +36,36 @@ export function transformAnswerUriAddTextFragments(this: DocQAAnswer, _qaPair: Q
 
     for (const match of this.matches) {
 
-        const patched = makeTextFragmentUriFromPassage(match.text, get(match, 'tags.paragraph'), match.uri);
+        const paragraph: string = get(match, 'tags.paragraph');
+
+        if (!paragraph) {
+            continue;
+        }
+
+        const sentenceStart = get(match, 'tags.sentence_start');
+        const sentenceEnd = get(match, 'tags.sentence_end');
+        const spanStart = get(match, 'tags.span_start');
+        const spanEnd = get(match, 'tags.span_end');
+
+        let answerText = match.text;
+        if (Number.isInteger(spanStart) && Number.isInteger(spanEnd)) {
+            answerText = paragraph.slice(spanStart, spanEnd);
+        }
+
+        let sentence = '';
+        if (Number.isInteger(sentenceStart) && Number.isInteger(sentenceEnd)) {
+            sentence = paragraph.slice(sentenceStart, sentenceEnd);
+        }
+
+        if (sentence && sentence.length > (answerText.length + 5)) {
+            const patched = makeTextFragmentUriFromPassage(answerText, sentence, match.uri);
+            if (patched) {
+                match.uri = patched;
+                continue;
+            }
+        }
+
+        const patched = makeTextFragmentUriFromPassage(answerText, paragraph, match.uri);
         if (patched) {
             match.uri = patched;
         }
