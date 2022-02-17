@@ -20,11 +20,10 @@
     server="https://jina-ai-jina-docsqa.jina.ai" 
     open
     site="https://docs.jina.ai" 
-    target="_blank">
-    <dt>You can tryout qabot easily:</dt>
-    <dd>What is qabot?</dd>
-    <dd>Does qabot support Vue/React/Angular?</dd>
-    <dd>What are the basic concepts in qabot?</dd>
+    target="_blank"
+    avatar="https://docs.jina.ai/_static/logo-light.svg",
+    greeting="You can tryout qabot easily:"
+    >
 </qa-bot>
 ```
 ## Install

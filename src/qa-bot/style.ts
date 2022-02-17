@@ -168,10 +168,13 @@ export const masterStyle = css`
     }
 
     .card .card__content {
+        height: calc(100% - var(--qabot-card-header-height));
         overflow: hidden;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+        flex-grow: 1;
+        flex-shrink: 1;
     }
 
     .qabot__answer-block {

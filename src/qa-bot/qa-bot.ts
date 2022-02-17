@@ -18,10 +18,12 @@ const ABSPATHREGEXP = /^(https?:)?\/\/\S/;
 /**
  * QABot custom element
  * @summary WebComponent for DocsQA
- * @slot = avatar - customize the avatar
  *
  * @attr name - Customize name text in the header part
  * @attr description - Customize description text in the header part
+ * @attr avatar - Customize chatbot avatar
+ * @attr greeting - Customize greeting sentence
+ * @attr questions - Customize question examples
  * @attr server - REQUIRED, specify the server url bot talks to.
  * @attr site - Specify site base location the links refer to, if not relative to current location.
  * @attr target - Specify <a target=""> of reference links.
@@ -31,10 +33,10 @@ const ABSPATHREGEXP = /^(https?:)?\/\/\S/;
  */
 export class QaBot extends LitElement {
     @property({ type: String, reflect: true })
-    name?: string = 'Chatbot Name';
+    name?: string = 'DocQA';
 
     @property({ type: String, reflect: true })
-    description?: string = '@company';
+    description?: string = '@Jina AI';
 
     @property({ type: String, reflect: true })
     avatar?: string;
