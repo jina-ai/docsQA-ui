@@ -33,7 +33,7 @@ const ABSPATHREGEXP = /^(https?:)?\/\/\S/;
  */
 export class QaBot extends LitElement {
     @property({ type: String, reflect: true })
-    name?: string = 'DocQA';
+    name: string = 'DocQA';
 
     @property({ type: String, reflect: true })
     description?: string = '@Jina AI';
@@ -588,7 +588,7 @@ export class QaBot extends LitElement {
             `;
         }
         return html`
-        <button class="default-qabot" @click="${this.toggleOpen}">${this.getAvatar()}</button>
+        <button title="${this.name}" class="default-qabot" @click="${this.toggleOpen}">${this.getAvatar()}</button>
         `;
     }
 }
