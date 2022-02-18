@@ -293,6 +293,20 @@ export class QaBot extends LitElement {
                 break;
             }
 
+            case 'project':
+            case 'version': {
+                this.qaControl?.getProject().finally(() => {
+                    this.scrollDialogToBottom();
+                });
+                break;
+            }
+            case 'status': {
+                this.qaControl?.getStatus().finally(() => {
+                    this.scrollDialogToBottom();
+                });
+                break;
+            }
+
             default: {
                 break;
             }

@@ -4,7 +4,7 @@ import { perNextTick } from '../lib/decorators/per-tick';
 import { serialOperation } from '../lib/decorators/serial-op';
 import { JinaDocBotRPC } from '../lib/jina-docbot-rpc';
 import { AnswerProcessingPlugin, ANSWER_PROCESSING_PLUGINS } from './plugins';
-import { getLocalStorageKey, QAPair } from './shared';
+import { ANSWER_RENDER_TEMPLATE, getLocalStorageKey, QAPair } from './shared';
 
 export class JinaQABotController implements ReactiveController {
 
@@ -270,6 +270,85 @@ export class JinaQABotController implements ReactiveController {
         this.ready = true;
         this.host.requestUpdate();
         this.saveQaPairs();
+    }
+
+    async getStatus() {
+        const qaPair: QAPair = {
+            ts: Date.now(),
+        };
+
+        this.qaPairs.push(qaPair);
+        this.host.requestUpdate();
+        try {
+            const r = await this.rpc.getStatus();
+            qaPair.useTemplate = ANSWER_RENDER_TEMPLATE.TEXT_WITH_LINK;
+
+            const infoPairs = [];
+
+            if (r.data.jina) {
+                for (const [k, v] of Object.entries(r.data.jina)) {
+                    infoPairs.push([k, v]);
+                }
+            }
+
+            if (r.data.usedMemory) {
+                infoPairs.push(['usedMemory', r.data.usedMemory]);
+            }
+
+            qaPair.answer = {
+                text: infoPairs.map(([k, v]) => `${k}: ${v}`).join('\n'),
+                uri: `${this.serverUri}/status`,
+            };
+
+            return r.data;
+
+        } catch (err) {
+            qaPair.err = err;
+        } finally {
+            this.host.requestUpdate();
+        }
+    }
+
+    async getProject() {
+        const qaPair: QAPair = {
+            ts: Date.now(),
+        };
+
+        this.qaPairs.push(qaPair);
+        this.host.requestUpdate();
+        try {
+            const r = await this.rpc.getProject();
+            qaPair.useTemplate = ANSWER_RENDER_TEMPLATE.TEXT_WITH_LINK;
+
+            const infoPairs = [];
+            const data = r.data?.[0];
+            if (data) {
+                for (const [k, v] of Object.entries(data)) {
+                    if (k === 'metadata') {
+                        for (const [mk, mv] of Object.entries(v as any)) {
+                            if (typeof mv === 'object') {
+                                continue;
+                            }
+                            infoPairs.push([`${k}.${mk}`, mv]);
+                        }
+                        continue;
+                    }
+                    infoPairs.push([k, v]);
+                }
+            }
+
+            qaPair.answer = {
+                text: infoPairs.map(([k, v]) => `${k}: ${v}`).join('\n'),
+                uri: `https://apidocsqa.jina.ai/projects?metadata=true&host=${this.serverUri}`,
+            };
+
+            return r.data;
+
+        } catch (err) {
+            qaPair.err = err;
+        } finally {
+            this.host.requestUpdate();
+        }
     }
 
 }
