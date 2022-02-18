@@ -302,8 +302,8 @@ export class JinaQABotController implements ReactiveController {
 
             return r.data;
 
-        } catch (err) {
-            qaPair.err = err;
+        } catch (err: any) {
+            qaPair.error = err;
         } finally {
             this.host.requestUpdate();
         }
@@ -329,7 +329,7 @@ export class JinaQABotController implements ReactiveController {
                             if (typeof mv === 'object') {
                                 continue;
                             }
-                            infoPairs.push([`${k}.${mk}`, mv]);
+                            infoPairs.push([`${mk}`, mv]);
                         }
                         continue;
                     }
@@ -344,8 +344,8 @@ export class JinaQABotController implements ReactiveController {
 
             return r.data;
 
-        } catch (err) {
-            qaPair.err = err;
+        } catch (err: any) {
+            qaPair.error = err;
         } finally {
             this.host.requestUpdate();
         }
