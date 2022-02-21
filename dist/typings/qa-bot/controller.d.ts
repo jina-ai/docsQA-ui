@@ -30,4 +30,6 @@ export declare class JinaQABotController implements ReactiveController {
     }>;
     sendBlockingFeedback(qaPair: QAPair, feedback: 'up' | 'down' | 'none', overrideURI?: string): Promise<void>;
     clear(): void;
+    getStatus(...keys: string[]): Promise<QAPair>;
+    getProject(...keys: string[]): Promise<QAPair>;
 }

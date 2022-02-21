@@ -37,4 +37,24 @@ export declare class JinaDocBotRPC extends HTTPService {
         serial: number;
         config: import("./http-service").HTTPServiceRequestOptions;
     }>;
+    getStatus(): import("./http-service").PromiseWithCancel<Response & {
+        data: {
+            jina: {
+                [k: string]: any;
+            };
+            envs: {
+                [k: string]: any;
+            };
+            usedMemory: string;
+        };
+    } & {
+        serial: number;
+        config: import("./http-service").HTTPServiceRequestOptions;
+    }>;
+    getProject(): import("./http-service").PromiseWithCancel<Response & {
+        data: any;
+    } & {
+        serial: number;
+        config: import("./http-service").HTTPServiceRequestOptions;
+    }>;
 }
