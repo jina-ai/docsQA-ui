@@ -53,4 +53,19 @@ export class JinaDocBotRPC extends HTTPService {
         return this.postJson('/slack', { data: [], parameters: options });
     }
 
+    getStatus() {
+        return this.get<{
+            jina: { [k: string]: any; };
+            envs: { [k: string]: any; };
+            usedMemory: string;
+        }>('/status');
+    }
+
+    getProject() {
+        return this.getWithSearchParams('https://apidocsqa.jina.ai/projects', {
+            metadata: true,
+            host: this.baseURL.origin
+        });
+    }
+
 }

@@ -132,7 +132,9 @@ export abstract class HTTPService<
         const pString = params.toString();
         const url = new URL(pString ? `${pathName}?${pString}` : pathName, this.baseUrl);
 
-        url.pathname = `${this.baseURL.pathname}${url.pathname}`.replace(/^\/+/, '/');
+        if (url.origin === this.baseURL.origin) {
+            url.pathname = `${this.baseURL.pathname}${url.pathname}`.replace(/^\/+/, '/');
+        }
 
         return url.toString();
     }

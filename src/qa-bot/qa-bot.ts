@@ -1,5 +1,4 @@
 import { LitElement, html, PropertyValues } from 'lit';
-import get from 'lodash-es/get';
 import { property, query, state } from 'lit/decorators.js';
 import { perNextTick } from '../lib/decorators/per-tick';
 import { throttle } from '../lib/decorators/throttle';
@@ -8,7 +7,6 @@ import customScrollbarCSS from '../shared/customized-scrollbar';
 import { resetCSS } from '../shared/reset-css';
 import { JinaQABotController } from './controller';
 import { ANSWER_RENDER_TEMPLATE, getLocalStorageKey, QAPair } from './shared';
-import type { Document as JinaDocument } from '../lib/jina-document-array';
 import masterStyle from './style';
 import {
     discussionIcon, downArrow, paperPlane,
@@ -161,68 +159,6 @@ export class QaBot extends LitElement {
                 if (detail.type === 'question-answered') {
                     console.log(detail);
                     return;
-                    // const dispObjs = (detail.document as JinaDocument)?.matches?.map((x: JinaDocument) => {
-                    //     const dispObj = {
-                    //         answer: x.text,
-                    //         confidence: get(x, 'scores.confidence.value') as number,
-                    //         paragraph: get(x, 'tags.paragraph') as string,
-                    //         uri: get(x, 'uri') as string,
-                    //         url: '',
-                    //     };
-                    //     dispObj.confidence *= 100;
-                    //     dispObj.url = new URL(
-                    //         this.makeReferenceLink({
-                    //             answer: {
-                    //                 text: dispObj.answer,
-                    //                 uri: dispObj.uri,
-                    //             }
-                    //         } as any), window.location.href
-                    //     ).toString();
-
-                    //     return dispObj;
-                    // });
-                    // // eslint-disable-next-line no-console
-                    // console.log(`\n%cThe question: %c${detail.question}`, 'color: gray', 'color: #EB6161');
-                    // for (const x of dispObjs.reverse()) {
-
-                    //     const [before, after, ...etc] = x.paragraph.split(x.answer);
-
-                    //     const contentVec = [];
-                    //     if (etc.length) {
-                    //         contentVec.push(before, x.answer, etc.join(x.answer));
-                    //     } else if (after) {
-                    //         contentVec.push(before, x.answer, after);
-                    //     } else if (!before) {
-                    //         contentVec.push('', x.answer, '');
-                    //     } else {
-                    //         contentVec.push(before, x.answer, '');
-                    //     }
-
-                    //     // eslint-disable-next-line prefer-const
-                    //     let [a, b, c] = contentVec;
-                    //     if (a) {
-                    //         // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-                    //         const cappedA = a.replace(/[\r\n]/gi, '').slice(-60);
-                    //         const words = cappedA.split(' ');
-                    //         const firstLetter = words[0]?.[0];
-                    //         if (firstLetter.toUpperCase() !== firstLetter) {
-                    //             words.shift();
-                    //         }
-                    //         a = words.join(' ');
-                    //     }
-                    //     if (c) {
-                    //         const cappedC = c.replace(/[\r\n]/gi, '').slice(0, 60);
-                    //         const words = cappedC.split(' ');
-                    //         words.pop();
-                    //         c = words.join(' ');
-                    //     }
-
-                    //     // eslint-disable-next-line no-console
-                    //     console.log(
-                    //         `%c${x.confidence.toFixed(2)}\t%c... ${a}%c${b}%c${c} ...\n\t\t${x.url}`,
-                    //         'color: #EB6161', 'color: gray', 'color: #009191', 'color: gray'
-                    //     );
-                    // }
                 }
 
             };
@@ -290,6 +226,25 @@ export class QaBot extends LitElement {
             case 'close': {
                 this.open = false;
 
+                break;
+            }
+
+            case 'project': {
+                this.qaControl?.getProject(...args).finally(() => {
+                    this.scrollDialogToBottom();
+                });
+                break;
+            }
+            case 'version': {
+                this.qaControl?.getProject('version').finally(() => {
+                    this.scrollDialogToBottom();
+                });
+                break;
+            }
+            case 'status': {
+                this.qaControl?.getStatus(...args).finally(() => {
+                    this.scrollDialogToBottom();
+                });
                 break;
             }
 
@@ -467,10 +422,6 @@ export class QaBot extends LitElement {
     }
 
     protected renderAnswerBubble(qaPair: QAPair) {
-        if (!qaPair.answer) {
-            return html`
-                <div class="talktext"><i class="icon loading triple-dot">${tripleDot}</i></div>`;
-        }
         if (qaPair.error) {
             return html`
             <div class="talktext">
@@ -479,6 +430,11 @@ export class QaBot extends LitElement {
             <div class="feedback-tooltip">
                 <a class="answer-reference" href="https://slack.jina.ai" target="_blank">Report</a>
             </div>`;
+        }
+
+        if (!qaPair.answer) {
+            return html`
+                <div class="talktext"><i class="icon loading triple-dot">${tripleDot}</i></div>`;
         }
 
         const renderer = this.answerRenderer[qaPair.useTemplate!] || this.answerRenderer.text;
