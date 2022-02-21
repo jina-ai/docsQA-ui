@@ -272,13 +272,13 @@ export class JinaQABotController implements ReactiveController {
         this.saveQaPairs();
     }
 
-    async getStatus() {
+    async getStatus(...keys: string[]) {
         const qaPair: QAPair = {
             ts: Date.now(),
         };
 
         this.qaPairs.push(qaPair);
-        this.host.requestUpdate();
+        await this.host.requestUpdate();
         try {
             const r = await this.rpc.getStatus();
             qaPair.useTemplate = ANSWER_RENDER_TEMPLATE.TEXT_WITH_LINK;
@@ -296,31 +296,31 @@ export class JinaQABotController implements ReactiveController {
             }
 
             qaPair.answer = {
-                text: infoPairs.map(([k, v]) => `${k}: ${v}`).join('\n'),
+                text: (keys.length ? infoPairs.filter(([k]) => keys.includes(k)) : infoPairs).map(([k, v]) => `${k}: ${v}`).join('\n'),
                 uri: `${this.serverUri}/status`,
             };
-
-            return r.data;
 
         } catch (err: any) {
             qaPair.error = err;
         } finally {
-            this.host.requestUpdate();
+            await this.host.requestUpdate();
         }
+
+        return qaPair;
     }
 
-    async getProject() {
+    async getProject(...keys: string[]) {
         const qaPair: QAPair = {
             ts: Date.now(),
         };
 
         this.qaPairs.push(qaPair);
-        this.host.requestUpdate();
+        await this.host.requestUpdate();
         try {
             const r = await this.rpc.getProject();
             qaPair.useTemplate = ANSWER_RENDER_TEMPLATE.TEXT_WITH_LINK;
 
-            const infoPairs = [];
+            const infoPairs: [string, any][] = [];
             const data = r.data?.[0];
             if (data) {
                 for (const [k, v] of Object.entries(data)) {
@@ -338,17 +338,17 @@ export class JinaQABotController implements ReactiveController {
             }
 
             qaPair.answer = {
-                text: infoPairs.map(([k, v]) => `${k}: ${v}`).join('\n'),
+                text: (keys.length ? infoPairs.filter(([k]) => keys.includes(k)) : infoPairs).map(([k, v]) => `${k}: ${v}`).join('\n'),
                 uri: `https://apidocsqa.jina.ai/projects?metadata=true&host=${this.serverUri}`,
             };
-
-            return r.data;
 
         } catch (err: any) {
             qaPair.error = err;
         } finally {
-            this.host.requestUpdate();
+            await this.host.requestUpdate();
         }
+
+        return qaPair;
     }
 
 }

@@ -1,5 +1,4 @@
 import { LitElement, html, PropertyValues } from 'lit';
-import get from 'lodash-es/get';
 import { property, query, state } from 'lit/decorators.js';
 import { perNextTick } from '../lib/decorators/per-tick';
 import { throttle } from '../lib/decorators/throttle';
@@ -8,7 +7,6 @@ import customScrollbarCSS from '../shared/customized-scrollbar';
 import { resetCSS } from '../shared/reset-css';
 import { JinaQABotController } from './controller';
 import { ANSWER_RENDER_TEMPLATE, getLocalStorageKey, QAPair } from './shared';
-import type { Document as JinaDocument } from '../lib/jina-document-array';
 import masterStyle from './style';
 import {
     discussionIcon, downArrow, paperPlane,
@@ -233,13 +231,13 @@ export class QaBot extends LitElement {
 
             case 'project':
             case 'version': {
-                this.qaControl?.getProject().finally(() => {
+                this.qaControl?.getProject(...args).finally(() => {
                     this.scrollDialogToBottom();
                 });
                 break;
             }
             case 'status': {
-                this.qaControl?.getStatus().finally(() => {
+                this.qaControl?.getStatus(...args).finally(() => {
                     this.scrollDialogToBottom();
                 });
                 break;
