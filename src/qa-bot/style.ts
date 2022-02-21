@@ -5,13 +5,12 @@ export const masterStyle = css`
     :host {
         --qabot-color-shadow: #0000000d;
         --qabot-color-background: #fff;
-        --qabot-color-padding: #f8f9fb;
+        --qabot-color-border: rgba(0, 0, 0, 0.15);
 
         --qabot-color-primary: #000;
         --qabot-color-action: #009191;
-        --qabot-color-action-secondary: #F2F8F8;
+        --qabot-color-action-secondary: rgba(0, 145, 145, 0.05);
         --qabot-color-action-contrast: #fff;
-        --qabot-color-dimmed: #eeebee;
         --qabot-color-muted: #646776;
 
         --qabot-size-text-primary: 0.75em;
@@ -24,26 +23,26 @@ export const masterStyle = css`
 
     :host([theme='dark']){
       --qabot-color-shadow: #0000000d;
-      --qabot-color-background: #18181a;
-      --qabot-color-padding: #1e2124;
+      --qabot-color-background: #181818;
+      --qabot-color-border: rgba(0, 0, 0, 0.25);
 
-      --qabot-color-primary: #ffffffcc;
-      --qabot-color-action: #fbcb67;
-      --qabot-color-action-contrast: #202020;
-      --qabot-color-dimmed: #303335;
+      --qabot-color-primary: #ffffff;
+      --qabot-color-action: #FBCB67;
+      --qabot-color-action-secondary: rgba(251, 203, 103, 0.1);
+      --qabot-color-action-contrast: #181818;
       --qabot-color-muted: #81868d;
     }
 
     @media (prefers-color-scheme: dark) {
         :host([theme='auto']){
             --qabot-color-shadow: #0000000d;
-            --qabot-color-background: #18181a;
-            --qabot-color-padding: #1e2124;
+            --qabot-color-background: #181818;
+            --qabot-color-border: rgba(0, 0, 0, 0.25);
 
-            --qabot-color-primary: #ffffffcc;
-            --qabot-color-action: #fbcb67;
-            --qabot-color-action-contrast: #202020;
-            --qabot-color-dimmed: #303335;
+            --qabot-color-primary: #ffffff;
+            --qabot-color-action: #FBCB67;
+            --qabot-color-action-secondary: rgba(251, 203, 103, 0.1);
+            --qabot-color-action-contrast: #181818;
             --qabot-color-muted: #81868d;
         }
     }
@@ -52,7 +51,6 @@ export const masterStyle = css`
         font-size: 1rem;
         width: 22.5em;
         height: 100%;
-        transition: transform 0.15s ease-in-out, max-height 0.15s ease-in-out;
         max-height: 80%;
         position: absolute;
         bottom: 1.25em;
@@ -62,24 +60,31 @@ export const masterStyle = css`
         max-height: 3.75em;
     }
 
-    .default-qabot {
+    .qabot.default {
         width: 3.75em;
         height: 3.75em;
         border-radius: 50%;
         background-color: var(--qabot-color-action);
         text-align: center;
+        box-shadow: 0 0.125em 0.9375em 0.0625em var(--qabot-color-border);
+        opacity: 0;
+        transform-origin: inherit;
+        animation: 0.3s ease-in-out 0s forwards running slideIn;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
-    .default-qabot svg {
+    .qabot.default svg {
         width: 2.5em;
         height: 2em;
     }
 
-    .default-qabot svg rect[fill], .default-qabot svg circle[fill], .default-qabot svg path[fill] {
+    .qabot.default svg rect[fill], .qabot.default svg circle[fill], .qabot.default svg path[fill] {
         fill: var(--qabot-color-action-contrast);
     }
 
-    .default-qabot svg rect[stroke] {
+    .qabot.default svg rect[stroke] {
         stroke: var(--qabot-color-action-contrast);
     }
 
@@ -87,32 +92,63 @@ export const masterStyle = css`
         opacity: 0.8;
     }
 
-    .qabot {
-        position: relative;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-    }
-
     .qabot[busy] {
         cursor: wait;
     }
 
+    .qabot:not([visible]) {
+        display: none;
+        opacity: 0;
+    }
+
+    :host([animation-origin='left-bottom']) .qabot {
+        transform-origin: left bottom;
+    }
+
+    :host([animation-origin='right-bottom']) .qabot {
+        transform-origin: right bottom;
+    }
+
+    :host([animation-origin='left-top']) .qabot {
+        transform-origin: left top;
+    }
+
+    :host([animation-origin='right-top']) .qabot {
+        transform-origin: right top;
+    }
+
+    :host([animation-origin='center']) .qabot {
+        transform-origin: center center;
+    }
+
     .card {
-        box-shadow: 0 0.125em 0.9375em 0.0625em var(--qabot-color-shadow), 0 0 0.0625em rgba(0, 0, 0, 0.15);
+        box-shadow: 0 0.125em 0.9375em 0.0625em var(--qabot-color-border);
         box-sizing: border-box;
         background-clip: border-box;
         background-color: var(--qabot-color-background);
-        border: 1px solid var(--qabot-color-padding);
         border-radius: var(--qabot-size-border-radius-primary);
         color: var(--qabot-color-primary);
         fill: var(--qabot-color-primary);
-        display: flex;
+        display: none;
         flex-direction: column;
         min-width: 0;
         position: relative;
         word-wrap: break-word;
         box-sizing: border-box;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        transition: all .3s ease-out;
+    }
+
+    .card[visible]:not([closing]) {
+        display: flex;
+        animation: 0.3s ease-in-out 0.1s forwards running slideIn;
+    }
+    .card[closing][visible] {
+        display: flex;
+        animation: 0.3s ease-in-out 0s forwards running slideOut;
     }
 
     .card .card__header {
@@ -126,7 +162,7 @@ export const masterStyle = css`
         background-color: var(--qabot-color-action);
         color: var(--qabot-color-action-contrast);
 
-        border-bottom: 1px solid var(--qabot-color-padding);
+        border-bottom: 1px solid var(--qabot-color-border);
 
         display: flex;
         font-weight: normal;
@@ -166,6 +202,10 @@ export const masterStyle = css`
         border-radius: 50%;
         background-color: var(--qabot-color-action-contrast);
     }
+    .card .card__title .avatar svg {
+        width: calc(100% - 0.75em);
+        height: calc(100% - 1.375em);
+    }
 
     .card .card__content {
         height: calc(100% - var(--qabot-card-header-height));
@@ -193,15 +233,15 @@ export const masterStyle = css`
         display: flex;
         position: relative;
         line-height: var(--qabot-size-line-height);
-        border-top: 1px solid var(--qabot-color-action-secondary);
+        border-top: 1px solid var(--qabot-color-border);
     }
 
     .qabot__control button {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         justify-content: center;
         position: absolute;
-        padding: 0.5em;
+        padding: 1em 0.5em 0;
         border: none;
         right: 0;
         border-left: none;
@@ -210,14 +250,22 @@ export const masterStyle = css`
         color: var(--qabot-color-action);
         fill: var(--qabot-color-action);
         background-color: var(--qabot-color-action-contrast);
-
-        transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
     }
 
-    .qabot__control button:not(:disabled):hover {
-        color: var(--qabot-color-action-contrast);
-        fill: var(--qabot-color-action-contrast);
-        background-color: var(--qabot-color-action);
+    .qabot__control button [fill] {
+        fill: var(--qabot-color-primary);
+        fill-opacity: 0.2;
+    }
+
+    .qabot__control button:not(:disabled):hover [fill] {
+        fill: var(--qabot-color-action);
+        fill-opacity: 1;
+        filter: brightness(0.85);
+    }
+
+    .qabot__control button[active]:not(:disabled) [fill] {
+        fill: var(--qabot-color-action);
+        fill-opacity: 1;
     }
 
     .qabot__control *:disabled {
@@ -235,7 +283,6 @@ export const masterStyle = css`
         overflow-y: scroll;
         overflow-y: overlay;
         scrollbar-width: none;
-        transition: box-shadow 0.2s ease-in-out;
     }
 
     .qabot__control textarea::placeholder {
@@ -293,6 +340,11 @@ export const masterStyle = css`
         cursor: pointer;
     }
 
+    .answer-hint .answer-hint__content .question button[key] {
+        width: 100%;
+        height: 100%;
+    }
+
     .answer-hint .answer-hint__content .question:hover {
         background-color: var(--qabot-color-action);
         color: var(--qabot-color-action-contrast);
@@ -311,9 +363,9 @@ export const masterStyle = css`
         justify-content: center;
     }
 
-    .avatar svg {
-        width: calc(100% - 0.5em);
-        height: calc(100% - 0.5em);
+    .card__content .avatar svg {
+        width: calc(100% - 0.875em);
+        height: calc(100% - 0.875em);
     }
 
     .avatar img {
@@ -340,6 +392,12 @@ export const masterStyle = css`
     .qa-pair .qa-row.answer {
         display: flex;
         align-items: flex-end;
+    }
+
+    .answer-hint, .qa-pair .qa-row {
+        opacity: 0;
+        transform: translateY(0.625em);
+        animation: 0.3s ease-in-out 0s forwards running slideIn;
     }
 
     .qa-pair .bubble {
@@ -392,27 +450,21 @@ export const masterStyle = css`
         border-radius: 1.15em 1.15em 0.3125em 1.15em;
     }
 
-    @keyframes blink {
-        50% {
-            fill: transparent
-        }
-    }
-
     .triple-dot {
         width: 3em;
         height: 1em;
     }
 
-    .triple-dot .dot{
-        animation: 1s blink infinite;
+    .triple-dot .dot:nth-child(1){
+        animation: 1s blinkUp infinite;
     }
 
     .triple-dot .dot:nth-child(2) {
-        animation-delay: 250ms
+        animation: 1s 250ms blinkDown infinite;
     }
 
     .triple-dot .dot:nth-child(3) {
-        animation-delay: 500ms
+        animation: 1s 500ms blinkUp infinite;
     }
 
     .qa-pair .answer .bubble .loading {
@@ -434,10 +486,7 @@ export const masterStyle = css`
     }
 
     .feedback-tooltip .thumbs .thumb {
-        color: var(--qabot-color-muted);
-        fill: var(--qabot-color-action);
         background-color: var(--qabot-color-action-secondary);
-
         cursor: pointer;
         height: 1.125em;
         width: 1.125em;
@@ -445,6 +494,11 @@ export const masterStyle = css`
         display: inline-flex;
         align-items: center;
         justify-content: center;
+    }
+
+    .feedback-tooltip .thumbs .thumb:hover {
+        transform: scale(1.2);
+        filter: brightness(0.8);
     }
 
     .feedback-tooltip .thumbs .thumb .icon {
@@ -456,9 +510,72 @@ export const masterStyle = css`
         margin-left: 0.125em;
     }
 
-    .feedback-tooltip .thumbs .thumb:hover, .feedback-tooltip .thumbs .thumb[active] {
-        color: var(--qabot-color-action);
+    .feedback-tooltip .thumbs .thumb [fill], .feedback-tooltip .thumbs .thumb[active] [fill] {
         fill: var(--qabot-color-action);
+    }
+
+    .feedback-tooltip .answer-reference {
+        cursor: pointer;
+        color: var(--qabot-color-action);
+        text-decoration: underline;
+        font-size: var(--qabot-size-text-primary);
+        margin: -0.875em 1em 1em;
+        display: block;
+    }
+
+    @keyframes slideIn {
+        0% {
+            opacity: 0;
+            transform: scale(0);
+            display: none;
+        }
+        100% {
+            opacity: 1;
+            transform: scale(1);
+            display: flex;
+        }
+    }
+
+    @keyframes slideOut {
+        0% {
+            opacity: 1;
+            transform: scale(1);
+            display: flex;
+        }
+        100% {
+            opacity: 0;
+            transform: scale(0);
+            display: none;
+        }
+    }
+
+    @keyframes blinkUp {
+        0% {
+            /* transform: translateY(0.25em); */
+            fill: var(--qabot-color-action);
+        }
+        50% {
+            fill: var(--qabot-color-action-secondary);
+            /* transform: translateY(-0.25em); */
+        }
+        100% {
+            fill: var(--qabot-color-action);
+            /* transform: translateY(0.25em); */
+        }
+    }
+    @keyframes blinkDown {
+        0% {
+            transform: translateY(-0.25em);
+            /* fill: var(--qabot-color-action); */
+        }
+        50% {
+            fill: var(--qabot-color-action-secondary);
+            /* transform: translateY(0.25em); */
+        }
+        100% {
+            fill: var(--qabot-color-action);
+            /* transform: translateY(-0.25em); */
+        }
     }
 `;
 

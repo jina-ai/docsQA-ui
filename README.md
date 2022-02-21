@@ -21,8 +21,9 @@
     open
     site="https://docs.jina.ai" 
     target="_blank"
-    avatar="https://docs.jina.ai/_static/logo-light.svg",
+    bot-avatar="https://docs.jina.ai/_static/logo-light.svg"
     greeting="You can tryout qabot easily:"
+    questions='["What is Jina1?","Does Jina support Kubernetes?2","How can I traverse a nested DocumentArray?3"]'
     >
 </qa-bot>
 ```
