@@ -66,6 +66,7 @@ export const masterStyle = css`
 
     :host(:not([open])) {
         max-height: 3.75em;
+        height: auto;
     }
 
     .qabot.default {
@@ -174,6 +175,9 @@ export const masterStyle = css`
         font-weight: normal;
         align-items: center;
         justify-content: space-between;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
     }
 
     .card .card__title {
@@ -377,7 +381,7 @@ export const masterStyle = css`
     .avatar img, .qabot.default img {
         max-height: 100%;
         max-width: 100%;
-        object-fit: contain;
+        object-fit: cover;
         border-radius: 50%;
     }
 

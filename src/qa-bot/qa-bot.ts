@@ -1,6 +1,5 @@
 import { LitElement, html, PropertyValues } from 'lit';
 import { property, query, state } from 'lit/decorators.js';
-import { styleMap, StyleInfo } from 'lit/directives/style-map.js';
 import { perNextTick } from '../lib/decorators/per-tick';
 import { throttle } from '../lib/decorators/throttle';
 import { customTextFragmentsPolyfill } from '../lib/text-fragments-polyfill';
@@ -9,7 +8,8 @@ import { resetCSS } from '../shared/reset-css';
 import { JinaQABotController } from './controller';
 import { ANSWER_RENDER_TEMPLATE, getLocalStorageKey, QAPair } from './shared';
 import masterStyle from './style';
-import { paperPlane, downArrowCycle, defaultAvatar, thumbUp, thumbUpActive, thumbDown, thumbDownActive } from './svg-icons';
+import { paperPlane, downArrowCycle, defaultAvatar,
+    thumbUp, thumbUpActive, thumbDown, thumbDownActive } from './svg-icons';
 import { AnswerRenderer, ANSWER_RENDERER_MAP } from './answer-renderers';
 
 const ABSPATHREGEXP = /^(https?:)?\/\/\S/;
@@ -18,10 +18,8 @@ const ABSPATHREGEXP = /^(https?:)?\/\/\S/;
  * QABot custom element
  * @summary WebComponent for DocsQA
  *
- * @attr botName - Customize name text in the header part
- * @attr botDescription - Customize description text in the header part
  * @attr botAvatar - Customize chatbot avatar
- * @attr greeting - Customize greeting sentence
+ * @attr headerBackground - Customize chatbot header background image
  * @attr questions - Customize question examples
  * @attr animation-origin - Set the transform origin for the animation
  * @attr server - REQUIRED, specify the server url bot talks to.
@@ -31,27 +29,11 @@ const ABSPATHREGEXP = /^(https?:)?\/\/\S/;
  * @attr theme - Choose between preset themes, auto, `light`, or `dark`.
  */
 export class QaBot extends LitElement {
-    @property({ attribute: 'bot-name', type: String, reflect: true })
-    botName: string = 'DocsQA';
-
-    @property({ attribute: 'bot-description', type: String, reflect: true })
-    botDescription?: string = '@Jina AI';
-
     @property({ attribute: 'bot-avatar', type: String, reflect: true })
     botAvatar?: string;
 
-    @property({ attribute: 'header-style', type: Object, reflect: true })
-    headerStyle?: any = {};
-
-    @property({ type: String, reflect: true })
-    greeting?: string = 'You can ask questions about Jina. Try:';
-
-    @property({ type: Array, reflect: true })
-    questions?: Array<string> = [
-        'What is Jina?',
-        'Does Jina support Kubernetes?',
-        'How can I traverse a nested DocumentArray?'
-    ];
+    @property({ attribute: 'header-background', type: String, reflect: true })
+    headerBackground?: string;
 
     @property({ attribute: 'animation-origin', type: String, reflect: true })
     animationOrigin?: string = 'left-bottom';
@@ -98,6 +80,29 @@ export class QaBot extends LitElement {
 
     @query('.qabot__control textarea')
     protected textarea?: HTMLTextAreaElement;
+
+    @query('[slot="name"]')
+    protected botName?: HTMLElement;
+
+    @query('[slot="description"]')
+    protected botDescription?: HTMLElement;
+
+    @query('[slot="greeting"]')
+    protected greeting?: HTMLElement;
+
+    @query('[slot="questions"]')
+    protected questions?: HTMLElement;
+
+    private defaultInfo = {
+        name: 'DocsQA',
+        description: '@Jina AI',
+        greeting: 'You can ask questions about Jina. Try:',
+        questions: [
+                'What is Jina?',
+                'Does Jina support Kubernetes?',
+                'How can I traverse a nested DocumentArray?'
+        ]
+    };
 
     debugEnabled?: boolean = false;
 
@@ -497,8 +502,8 @@ export class QaBot extends LitElement {
         <div class="answer-hint" tabindex="0">
             <div class="avatar">${this.getAvatar()}</div>
             <dl class="answer-hint__content">
-            <dt class="greeting">${this.greeting}</dt>
-            ${this.questions?.map((item, index) => html`<dd class="question"><button key="${index}" @click="${this.onClickQuestion}">${item}</button></dd>`)}
+            <dt class="greeting">${this.greeting?.innerText || this.defaultInfo.greeting}</dt>
+            ${this.defaultInfo.questions.map((item, index) => html`<dd class="question"><button key="${index}" @click="${this.onClickQuestion}">${item}</button></dd>`)}
             </dl>
         </div>
          <div class="answer-dialog">
@@ -509,7 +514,7 @@ export class QaBot extends LitElement {
 
     protected onClickQuestion(e: Event) {
         const index = Number((e.target as Element).getAttribute('key')!);
-        this.textarea!.value = this.questions?.[index] || '';
+        this.textarea!.value = this.defaultInfo.questions[index];
         this.submitQuestion();
     }
 
@@ -520,6 +525,10 @@ export class QaBot extends LitElement {
             `;
         }
         return defaultAvatar;
+    }
+
+    protected getHeaderBackground() {
+        return this.headerBackground ? `background-image: url(${this.headerBackground})` : ''
     }
 
     protected onInputQuestion() {
@@ -534,14 +543,20 @@ export class QaBot extends LitElement {
 
     override render() {
         return html`
-        <button ?visible="${!this.open}" title="${this.botName}" class="default qabot" @click="${this.toggleOpen}">${this.getAvatar()}</button>
+        <div class="slots" style="display: none">
+            <slot name="name"></slot>
+            <slot name="description"></slot>
+            <slot name="greeting"></slot>
+            <slot name="questions"></slot>
+        </div>
+        <button ?visible="${!this.open}" title="${this.defaultInfo.name}" class="default qabot" @click="${this.toggleOpen}">${this.getAvatar()}</button>
         <div class="qabot card" ?busy="${this.busy}" ?visible="${this.open}" ?closing="${this.closing}">
-            <button class="card__header" @click="${this.toggleOpen}" style="${styleMap(this.headerStyle as StyleInfo)}">
+            <button class="card__header" @click="${this.toggleOpen}" style="${this.getHeaderBackground()}">
                 <span class="card__title">
                     <div class="icon avatar">${this.getAvatar()}</div>
                     <span class="card__title__content">
-                        <span class="name">${this.botName}</span>
-                        <span class="description">${this.botDescription}</span>
+                        <span class="name">${this.botName?.innerText || this.defaultInfo.name}</span>
+                        <span class="description">${this.botDescription?.innerText || this.defaultInfo.description}</span>
                     </span>
                 </span>
                 <i class="icon arrow-down">${downArrowCycle}</i>
