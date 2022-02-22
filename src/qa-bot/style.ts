@@ -5,7 +5,7 @@ export const masterStyle = css`
     :host {
         --qabot-color-shadow: #0000000d;
         --qabot-color-background: #fff;
-        --qabot-color-border: rgba(0, 0, 0, 0.15);
+        --qabot-color-border: rgba(153, 153, 153, 0.25);
 
         --qabot-color-primary: #000;
         --qabot-color-action: #009191;
@@ -18,32 +18,40 @@ export const masterStyle = css`
         --qabot-size-text-title: 0.875em;
         --qabot-size-border-radius-primary: 1.25em;
 
+        --qabot-color-card-header-background: #009191;
+        --qabot-color-card-header-color: #fff;
         --qabot-card-header-height: calc(var(--qabot-size-text-title) + 4.5em);
     }
 
     :host([theme='dark']){
       --qabot-color-shadow: #0000000d;
       --qabot-color-background: #181818;
-      --qabot-color-border: rgba(0, 0, 0, 0.25);
+      --qabot-color-border: rgba(153, 153, 153, 0.25);
 
       --qabot-color-primary: #ffffff;
       --qabot-color-action: #FBCB67;
       --qabot-color-action-secondary: rgba(251, 203, 103, 0.1);
       --qabot-color-action-contrast: #181818;
       --qabot-color-muted: #81868d;
+
+      --qabot-color-card-header-background: rgba(255, 255, 255, 0.1);;
+      --qabot-color-card-header-color: #fff;
     }
 
     @media (prefers-color-scheme: dark) {
         :host([theme='auto']){
             --qabot-color-shadow: #0000000d;
             --qabot-color-background: #181818;
-            --qabot-color-border: rgba(0, 0, 0, 0.25);
+            --qabot-color-border: rgba(153, 153, 153, 0.25);
 
             --qabot-color-primary: #ffffff;
             --qabot-color-action: #FBCB67;
             --qabot-color-action-secondary: rgba(251, 203, 103, 0.1);
             --qabot-color-action-contrast: #181818;
             --qabot-color-muted: #81868d;
+
+            --qabot-color-card-header-background: rgba(255, 255, 255, 0.1);;
+            --qabot-color-card-header-color: #fff;
         }
     }
 
@@ -159,10 +167,8 @@ export const masterStyle = css`
         cursor: pointer;
         user-select: none;
 
-        background-color: var(--qabot-color-action);
-        color: var(--qabot-color-action-contrast);
-
-        border-bottom: 1px solid var(--qabot-color-border);
+        background-color: var(--qabot-color-card-header-background);
+        color: var(--qabot-color-card-header-color);
 
         display: flex;
         font-weight: normal;
@@ -241,11 +247,12 @@ export const masterStyle = css`
         align-items: flex-start;
         justify-content: center;
         position: absolute;
-        padding: 1em 0.5em 0;
+        padding-top: 1em;
         border: none;
         right: 0;
         border-left: none;
         height: 100%;
+        width: 3.25em;
         cursor: pointer;
         color: var(--qabot-color-action);
         fill: var(--qabot-color-action);
@@ -273,15 +280,14 @@ export const masterStyle = css`
     }
 
     .qabot__control textarea {
-        width: 100%;
-        padding: 1.25em 1em;
+        width: calc(100% - 3.25rem);
+        padding: 1.25em 0em 1.25em 1em;
 
         border-right: none;
         font-size: var(--qabot-size-text-primary);
         resize: none;
 
         overflow-y: scroll;
-        overflow-y: overlay;
         scrollbar-width: none;
     }
 
@@ -368,10 +374,11 @@ export const masterStyle = css`
         height: calc(100% - 0.875em);
     }
 
-    .avatar img {
-        height: 100%;
-        width: 100%;
+    .avatar img, .qabot.default img {
+        max-height: 100%;
+        max-width: 100%;
         object-fit: contain;
+        border-radius: 50%;
     }
 
     .answer-dialog {
@@ -394,11 +401,11 @@ export const masterStyle = css`
         align-items: flex-end;
     }
 
-    .answer-hint, .qa-pair .qa-row {
+    /* .answer-hint, .qa-pair .qa-row {
         opacity: 0;
         transform: translateY(0.625em);
         animation: 0.3s ease-in-out 0s forwards running slideIn;
-    }
+    } */
 
     .qa-pair .bubble {
         display: inline-block;
@@ -455,16 +462,22 @@ export const masterStyle = css`
         height: 1em;
     }
 
-    .triple-dot .dot:nth-child(1){
-        animation: 1s blinkUp infinite;
+    .triple-dot .dot {
+        height: 0.375em;
+        width: 0.375em;
+        border-radius: 50%;
+        margin-left: 0.375em;
+        transform-origin: center, center;
+        animation: scaling 1.5s ease-in-out infinite;
+        background-color: var(--qabot-color-action);
     }
 
     .triple-dot .dot:nth-child(2) {
-        animation: 1s 250ms blinkDown infinite;
+        animation-delay: 250ms;
     }
 
     .triple-dot .dot:nth-child(3) {
-        animation: 1s 500ms blinkUp infinite;
+       animation-delay: 500ms;
     }
 
     .qa-pair .answer .bubble .loading {
@@ -548,33 +561,18 @@ export const masterStyle = css`
             display: none;
         }
     }
-
-    @keyframes blinkUp {
+    @keyframes scaling {
         0% {
-            /* transform: translateY(0.25em); */
-            fill: var(--qabot-color-action);
+            opacity: 0.5;
+            transform: scale(0.5);
         }
         50% {
-            fill: var(--qabot-color-action-secondary);
-            /* transform: translateY(-0.25em); */
+            opacity: 1;
+            transform: scale(1.5);
         }
         100% {
-            fill: var(--qabot-color-action);
-            /* transform: translateY(0.25em); */
-        }
-    }
-    @keyframes blinkDown {
-        0% {
-            transform: translateY(-0.25em);
-            /* fill: var(--qabot-color-action); */
-        }
-        50% {
-            fill: var(--qabot-color-action-secondary);
-            /* transform: translateY(0.25em); */
-        }
-        100% {
-            fill: var(--qabot-color-action);
-            /* transform: translateY(-0.25em); */
+            opacity: 0.5;
+            transform: scale(0.5);
         }
     }
 `;

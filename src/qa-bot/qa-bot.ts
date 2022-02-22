@@ -1,5 +1,6 @@
 import { LitElement, html, PropertyValues } from 'lit';
 import { property, query, state } from 'lit/decorators.js';
+import { styleMap, StyleInfo } from 'lit/directives/style-map.js';
 import { perNextTick } from '../lib/decorators/per-tick';
 import { throttle } from '../lib/decorators/throttle';
 import { customTextFragmentsPolyfill } from '../lib/text-fragments-polyfill';
@@ -8,7 +9,7 @@ import { resetCSS } from '../shared/reset-css';
 import { JinaQABotController } from './controller';
 import { ANSWER_RENDER_TEMPLATE, getLocalStorageKey, QAPair } from './shared';
 import masterStyle from './style';
-import { paperPlane, tripleDot, downArrowCycle, defaultAvatar, thumbUp, thumbUpActive, thumbDown, thumbDownActive } from './svg-icons';
+import { paperPlane, downArrowCycle, defaultAvatar, thumbUp, thumbUpActive, thumbDown, thumbDownActive } from './svg-icons';
 import { AnswerRenderer, ANSWER_RENDERER_MAP } from './answer-renderers';
 
 const ABSPATHREGEXP = /^(https?:)?\/\/\S/;
@@ -38,6 +39,9 @@ export class QaBot extends LitElement {
 
     @property({ attribute: 'bot-avatar', type: String, reflect: true })
     botAvatar?: string;
+
+    @property({ attribute: 'header-style', type: Object, reflect: true })
+    headerStyle?: any = {};
 
     @property({ type: String, reflect: true })
     greeting?: string = 'You can ask questions about Jina. Try:';
@@ -154,7 +158,6 @@ export class QaBot extends LitElement {
     }
 
     protected onTextAreaInput(event: KeyboardEvent) {
-        this.typing = !!(this.textarea?.value);
         if (event.key !== 'Enter') {
             return;
         }
@@ -481,7 +484,7 @@ export class QaBot extends LitElement {
 
         if (!qaPair.answer) {
             return html`
-                <div class="talktext"><i class="icon loading triple-dot">${tripleDot}</i></div>`;
+                <div class="talktext"><div class="icon loading triple-dot">${[1, 2, 3].map(() => html`<span class="dot"></span>`)}</div></div>`;
         }
 
         const renderer = this.answerRenderer[qaPair.useTemplate!] || this.answerRenderer.text;
@@ -522,9 +525,10 @@ export class QaBot extends LitElement {
     protected onInputQuestion() {
         const content = this.textarea?.value;
         this.typing = !!content;
-        if (content) {
-            const lineBreaks = (content.match(/\n/g) || []).length;
-            this.textarea!.style.height = (4.15 + 0.75 * lineBreaks) + 'em';
+        const lineBreaks = (content?.match(/\n/g) || []).length;
+        if (lineBreaks <= 10) {
+            this.textarea?.setAttribute('style', 'height: auto');
+            this.textarea?.setAttribute('style', `height: ${this.textarea?.scrollHeight.toString()}px`);
         }
     }
 
@@ -532,7 +536,7 @@ export class QaBot extends LitElement {
         return html`
         <button ?visible="${!this.open}" title="${this.botName}" class="default qabot" @click="${this.toggleOpen}">${this.getAvatar()}</button>
         <div class="qabot card" ?busy="${this.busy}" ?visible="${this.open}" ?closing="${this.closing}">
-            <button class="card__header" @click="${this.toggleOpen}">
+            <button class="card__header" @click="${this.toggleOpen}" style="${styleMap(this.headerStyle as StyleInfo)}">
                 <span class="card__title">
                     <div class="icon avatar">${this.getAvatar()}</div>
                     <span class="card__title__content">
