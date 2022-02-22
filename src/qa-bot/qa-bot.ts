@@ -93,7 +93,7 @@ export class QaBot extends LitElement {
     @query('[slot="questions"]')
     protected questions?: HTMLElement;
 
-    private defaultInfo = {
+    preferences = {
         name: 'DocsQA',
         description: '@Jina AI',
         greeting: 'You can ask questions about Jina. Try:',
@@ -497,13 +497,25 @@ export class QaBot extends LitElement {
         return renderer.call(this, qaPair);
     }
 
+    loadPreferences() {
+        if (this.greeting?.innerText) {
+            this.preferences.greeting = this.greeting.innerText;
+        }
+        if (this.botName?.innerText) {
+            this.preferences.name = this.botName.innerText;
+        }
+        if (this.botDescription?.innerText) {
+            this.preferences.description = this.botDescription.innerText;
+        }
+    }
+
     protected getAnswerBlock() {
         return html`
         <div class="answer-hint" tabindex="0">
             <div class="avatar">${this.getAvatar()}</div>
             <dl class="answer-hint__content">
-            <dt class="greeting">${this.greeting?.innerText || this.defaultInfo.greeting}</dt>
-            ${this.defaultInfo.questions.map((item, index) => html`<dd class="question"><button key="${index}" @click="${this.onClickQuestion}">${item}</button></dd>`)}
+            <dt class="greeting">${this.preferences.greeting}</dt>
+            ${this.preferences.questions.map((item, index) => html`<dd class="question"><button key="${index}" @click="${this.onClickQuestion}">${item}</button></dd>`)}
             </dl>
         </div>
          <div class="answer-dialog">
@@ -514,7 +526,7 @@ export class QaBot extends LitElement {
 
     protected onClickQuestion(e: Event) {
         const index = Number((e.target as Element).getAttribute('key')!);
-        this.textarea!.value = this.defaultInfo.questions[index];
+        this.textarea!.value = this.preferences.questions[index];
         this.submitQuestion();
     }
 
@@ -528,7 +540,7 @@ export class QaBot extends LitElement {
     }
 
     protected getHeaderBackground() {
-        return this.headerBackground ? `background-image: url(${this.headerBackground})` : ''
+        return this.headerBackground ? `background-image: url(${this.headerBackground})` : '';
     }
 
     protected onInputQuestion() {
@@ -549,14 +561,14 @@ export class QaBot extends LitElement {
             <slot name="greeting"></slot>
             <slot name="questions"></slot>
         </div>
-        <button ?visible="${!this.open}" title="${this.defaultInfo.name}" class="default qabot" @click="${this.toggleOpen}">${this.getAvatar()}</button>
+        <button ?visible="${!this.open}" title="${this.preferences.name}" class="qabot widget" @click="${this.toggleOpen}">${this.getAvatar()}</button>
         <div class="qabot card" ?busy="${this.busy}" ?visible="${this.open}" ?closing="${this.closing}">
             <button class="card__header" @click="${this.toggleOpen}" style="${this.getHeaderBackground()}">
                 <span class="card__title">
                     <div class="icon avatar">${this.getAvatar()}</div>
                     <span class="card__title__content">
-                        <span class="name">${this.botName?.innerText || this.defaultInfo.name}</span>
-                        <span class="description">${this.botDescription?.innerText || this.defaultInfo.description}</span>
+                        <span class="name">${this.preferences.name}</span>
+                        <span class="description">${this.preferences.description}</span>
                     </span>
                 </span>
                 <i class="icon arrow-down">${downArrowCycle}</i>

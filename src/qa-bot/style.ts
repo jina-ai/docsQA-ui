@@ -69,7 +69,7 @@ export const masterStyle = css`
         height: auto;
     }
 
-    .qabot.default {
+    .qabot.widget {
         width: 3.75em;
         height: 3.75em;
         border-radius: 50%;
@@ -84,16 +84,16 @@ export const masterStyle = css`
         justify-content: center;
     }
 
-    .qabot.default svg {
+    .qabot.widget svg {
         width: 2.5em;
         height: 2em;
     }
 
-    .qabot.default svg rect[fill], .qabot.default svg circle[fill], .qabot.default svg path[fill] {
+    .qabot.widget [fill]:not([fill='none']) {
         fill: var(--qabot-color-action-contrast);
     }
 
-    .qabot.default svg rect[stroke] {
+    .qabot.widget svg [stroke] {
         stroke: var(--qabot-color-action-contrast);
     }
 
@@ -378,7 +378,7 @@ export const masterStyle = css`
         height: calc(100% - 0.875em);
     }
 
-    .avatar img, .qabot.default img {
+    .avatar img, .qabot.widget img {
         max-height: 100%;
         max-width: 100%;
         object-fit: cover;
