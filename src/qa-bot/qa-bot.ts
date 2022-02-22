@@ -528,7 +528,7 @@ export class QaBot extends LitElement {
     }
 
     protected getHeaderBackground() {
-        return this.headerBackground ? `background-image: url(${this.headerBackground})` : ''
+        return this.headerBackground ? `background-image: url(${this.headerBackground})` : '';
     }
 
     protected onInputQuestion() {

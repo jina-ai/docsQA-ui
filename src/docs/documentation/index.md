@@ -26,7 +26,7 @@ You are free to add any sizing/positioning css to the element.
     style="
         position: fixed; 
         left: 20rem; 
-        width: 20rem; 
+        width: 22rem; 
         max-height: 50vh;
         "
 ></qa-bot>
