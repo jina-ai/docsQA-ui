@@ -42,20 +42,24 @@ title: <qa-bot> ⌲ Home
     open
     site="https://docs.jina.ai" 
     target="_blank">
-    <dt>You can tryout qabot easily:</dt>
-    <dd>What is qabot?</dd>
-    <dd>Does qabot support Vue/React/Angular?</dd>
-    <dd>What are the basic concepts in qabot?</dd>
+    <dl slot="example">
+        <dt>You can tryout qabot easily:</dt>
+        <dd>What is qabot?</dd>
+        <dd>Does qabot support Vue/React/Angular?</dd>
+        <dd>What are the basic concepts in qabot?</dd>
+    </dl>
 </qa-bot>
 ```
 
   </div>
   <div class="bot-container">
         <qa-bot label="Try custom title ✨" server="https://jina-ai-jina.docsqa.jina.ai" site="https://docs.jina.ai" target="_blank" open>
-            <dt>You can tryout qabot easily:</dt>
-            <dd>What is qabot?</dd>
-            <dd>Does qabot support Vue/React/Angular?</dd>
-            <dd>What are the basic concepts in qabot?</dd>
+            <dl slot="example">
+                <dt>You can tryout qabot easily:</dt>
+                <dd>What is qabot?</dd>
+                <dd>Does qabot support Vue/React/Angular?</dd>
+                <dd>What are the basic concepts in qabot?</dd>
+            </dl>
         </qa-bot>
   </div>
 </section>

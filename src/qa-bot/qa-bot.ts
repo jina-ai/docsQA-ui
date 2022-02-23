@@ -1,5 +1,5 @@
 import { LitElement, html, PropertyValues } from 'lit';
-import { property, query, state } from 'lit/decorators.js';
+import { property, query, queryAssignedElements, state } from 'lit/decorators.js';
 import { perNextTick } from '../lib/decorators/per-tick';
 import { throttle } from '../lib/decorators/throttle';
 import { customTextFragmentsPolyfill } from '../lib/text-fragments-polyfill';
@@ -23,8 +23,7 @@ const ABSPATHREGEXP = /^(https?:)?\/\/\S/;
  * @summary WebComponent for DocsQA
  *
  * @attr botAvatar - Customize chatbot avatar
- * @attr headerBackground - Customize chatbot header background image
- * @attr questions - Customize question examples
+ * @attr headerBackground - Customize chatbot header background image with url
  * @attr animation-origin - Set the transform origin for the animation
  * @attr server - REQUIRED, specify the server url bot talks to.
  * @attr site - Specify site base location the links refer to, if not relative to current location.
@@ -60,9 +59,6 @@ export class QaBot extends LitElement {
     @property({ type: String, reflect: true })
     theme?: 'auto' | 'dark' | 'light' | string = 'auto';
 
-    @property({ attribute: 'animate-by', type: String, reflect: true })
-    animateBy?: 'position' | 'height' = 'height';
-
     @property({ attribute: 'powered-by-icon-src', type: String, reflect: true })
     poweredByIconSrc?: string;
 
@@ -85,17 +81,14 @@ export class QaBot extends LitElement {
     @query('.qabot__control textarea')
     protected textarea?: HTMLTextAreaElement;
 
-    @query('[slot="name"]')
-    protected botName?: HTMLElement;
+    @queryAssignedElements({ slot: 'name' })
+    protected slotName?: Array<HTMLElement>;
 
-    @query('[slot="description"]')
-    protected botDescription?: HTMLElement;
+    @queryAssignedElements({ slot: 'description' })
+    protected slotDescription?: Array<HTMLElement>;
 
-    @query('[slot="greeting"]')
-    protected greeting?: HTMLElement;
-
-    @query('[slot="questions"]')
-    protected questions?: HTMLElement;
+    @queryAssignedElements()
+    protected slotDefault?: Array<HTMLElement>;
 
     preferences = {
         name: 'DocsQA',
@@ -517,18 +510,37 @@ export class QaBot extends LitElement {
     }
 
     loadPreferences() {
-        if (this.greeting?.innerText) {
-            this.preferences.greeting = this.greeting.innerText;
+
+        if (this.slotName?.[0]?.innerText) {
+            this.preferences.name = this.slotName[0].innerText;
+        } else if (this.title) {
+            this.preferences.name = this.title;
         }
-        if (this.botName?.innerText) {
-            this.preferences.name = this.botName.innerText;
+
+        if (this.slotDescription?.[0]?.innerText) {
+            this.preferences.description = this.slotDescription[0].innerText;
         }
-        if (this.botDescription?.innerText) {
-            this.preferences.description = this.botDescription.innerText;
+
+        if (this.slotDefault?.[0]) {
+            const slotDefault = this.slotDefault[0];
+            const dl = slotDefault.querySelector('dl');
+            const dt = dl?.querySelector('dt');
+            const dds = dl?.querySelectorAll('dd');
+
+            if (dt?.innerText) {
+                this.preferences.greeting = dt.innerText.trim();
+            }
+
+            if (dds?.length) {
+                this.preferences.questions = Array.from(dds)
+                    .filter((x) => Boolean(x.innerText.trim()))
+                    .map((x) => x.innerText);
+            }
         }
     }
 
     protected getAnswerBlock() {
+
         return html`
         <div class="answer-hint" tabindex="0">
             <div class="avatar">${this.getAvatar()}</div>
@@ -545,8 +557,8 @@ export class QaBot extends LitElement {
     }
 
     protected onClickQuestion(e: Event) {
-        const index = Number((e.target as Element).getAttribute('key')!);
-        this.textarea!.value = this.preferences.questions[index];
+        const text = (e.target as HTMLElement).innerText;
+        this.textarea!.value = text.trim();
         this.submitQuestion();
     }
 
@@ -578,8 +590,7 @@ export class QaBot extends LitElement {
         <div class="slots" style="display: none">
             <slot name="name"></slot>
             <slot name="description"></slot>
-            <slot name="greeting"></slot>
-            <slot name="questions"></slot>
+            <slot name="example"></slot>
         </div>
         <button ?visible="${!this.open}" title="${this.preferences.name}" class="qabot widget"
             @click="${this.toggleOpen}">${this.getAvatar()}</button>
@@ -606,7 +617,7 @@ export class QaBot extends LitElement {
                         <i class="icon icon-plane">${paperPlane}</i>
                     </button>
                     ${this.poweredByIconSrc ? html`<div class="powered-by"><i class="icon"><img src="${this.poweredByIconSrc}"
-                                alt="powered-by"></i></div>` : ''}
+                                alt="powered-by" class="powered-by-img" /></i></div>` : ''}
                 </div>
             </div>
         </div>
