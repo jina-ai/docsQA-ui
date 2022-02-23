@@ -3,6 +3,7 @@ import get from 'lodash-es/get';
 import { perNextTick } from '../lib/decorators/per-tick';
 import { serialOperation } from '../lib/decorators/serial-op';
 import { JinaDocBotRPC } from '../lib/jina-docbot-rpc';
+import { generateUUID } from '../lib/uuid';
 import { AnswerProcessingPlugin, ANSWER_PROCESSING_PLUGINS } from './plugins';
 import { ANSWER_RENDER_TEMPLATE, getLocalStorageKey, QAPair } from './shared';
 
@@ -23,14 +24,19 @@ export class JinaQABotController implements ReactiveController {
 
     protected storageEventListener?: (storageEvent: StorageEvent) => void;
 
+    clientId: string;
+
     constructor(
         protected host: ReactiveControllerHost,
         public serverUri: string,
         channel?: string,
     ) {
         this.qaPairs = [];
-        this.rpc = new JinaDocBotRPC(serverUri);
         this.channel = getLocalStorageKey(channel);
+        const clientIdStorageKey = getLocalStorageKey(undefined, 'clientId');
+        this.clientId = localStorage.getItem(clientIdStorageKey) || generateUUID();
+        localStorage.setItem(clientIdStorageKey, this.clientId);
+        this.rpc = new JinaDocBotRPC(serverUri, this.clientId);
 
         host.addController(this);
     }
@@ -190,7 +196,7 @@ export class JinaQABotController implements ReactiveController {
             const result = r.data;
 
             qaPair.requestId = result.requestId;
-            qaPair.STATUS = get(result, 'data.docs[0].tags.STATUS');
+            qaPair.STATUS = result.STATUS;
 
             for (const plugin of this.answerPlugins) {
                 plugin.call(result, qaPair);
@@ -200,7 +206,8 @@ export class JinaQABotController implements ReactiveController {
                 type: 'question-answered',
                 question: mangledText,
                 qaPair,
-                document: get(r, 'data.data.docs[0]'),
+                clientId: this.clientId,
+                document: get(result, 'matches[0]'),
             });
 
             this.saveQaPairs();
@@ -208,7 +215,11 @@ export class JinaQABotController implements ReactiveController {
             return qaPair;
         } catch (e: any) {
             qaPair.error = e;
-
+            this.dispatchEvent('debug', {
+                type: 'error',
+                clientId: this.clientId,
+                err: e
+            });
             throw e;
         } finally {
             this.ready = true;
@@ -339,7 +350,7 @@ export class JinaQABotController implements ReactiveController {
 
             qaPair.answer = {
                 text: (keys.length ? infoPairs.filter(([k]) => keys.includes(k)) : infoPairs).map(([k, v]) => `${k}: ${v}`).join('\n'),
-                uri: `https://apidocsqa.jina.ai/projects?metadata=true&host=${this.serverUri}`,
+                uri: `https://apidocsqa.jina.ai/projects?metadata=true&host=${this.rpc.baseURL.origin}`,
             };
 
         } catch (err: any) {

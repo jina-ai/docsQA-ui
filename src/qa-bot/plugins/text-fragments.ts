@@ -36,7 +36,7 @@ export function transformAnswerUriAddTextFragments(this: DocQAAnswer, _qaPair: Q
 
     for (const match of this.matches) {
 
-        const paragraph: string = get(match, 'tags.paragraph');
+        const paragraph: string = get(match, 'tags.paragraph', '');
 
         if (!paragraph) {
             continue;
@@ -47,7 +47,7 @@ export function transformAnswerUriAddTextFragments(this: DocQAAnswer, _qaPair: Q
         const spanStart = get(match, 'tags.span_start');
         const spanEnd = get(match, 'tags.span_end');
 
-        let answerText = match.text;
+        let answerText = match.text || '';
         if (Number.isInteger(spanStart) && Number.isInteger(spanEnd)) {
             answerText = paragraph.slice(spanStart, spanEnd);
         }

@@ -192,6 +192,11 @@ export class QaBot extends LitElement {
                     return;
                 }
 
+                if (detail.type === 'error') {
+                    console.error(detail.err);
+                    return;
+                }
+
             };
         }
 

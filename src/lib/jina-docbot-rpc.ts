@@ -2,12 +2,30 @@ import get from 'lodash-es/get';
 import { HTTPService } from './http-service';
 import { DocumentArray, Document } from './jina-document-array';
 
-export interface JinaServerEnvelope<T = any> {
-    data: {
-        docs: T;
-        groundtruths: unknown[];
-    };
-    requestId: string;
+export interface JinaServerEnvelope<T = DocumentArray> {
+    data: T;
+    header: {
+        execEndpoint: string;
+        requestId: string;
+        status?: {
+            code: number;
+            description: string;
+            exception?: {
+                name: string;
+                executor?: string;
+                args?: string;
+                stacks?: string[];
+            };
+        };
+        targetExecutor: string;
+    },
+    parameters: unknown;
+    routes: Array<{
+        startTime: string;
+        endTime: string;
+        executor: string;
+        status?: unknown;
+    }>;
 }
 
 export enum DOCQA_ANSWER_STATUS {
@@ -23,9 +41,16 @@ export interface DocQAAnswer {
     [k: string]: any;
 }
 
+export class UpstreamError extends Error {
+    constructor(msg: string, public detail: any) {
+        super(msg);
+        Object.assign(this, detail);
+        this.name = 'UpstreamError';
+    }
+}
 export class JinaDocBotRPC extends HTTPService {
 
-    constructor(serverUri: string) {
+    constructor(serverUri: string, protected clientId: string) {
         super(serverUri);
     }
 
@@ -33,14 +58,24 @@ export class JinaDocBotRPC extends HTTPService {
         const result = await this.postJson<
             JinaServerEnvelope<DocumentArray> &
             DocQAAnswer
-        >('/search', { data: [{ text }] });
+        >('/search', { data: [{ text }], parameters: { client_id: this.clientId } });
+
+        const status = get(result.data, 'header.status');
+
+        if (status) {
+            if (status.description) {
+                throw new UpstreamError(status.description, status.exception);
+            }
+        }
 
         result.data = {
             ...result.data,
-            STATUS: get(result.data, 'data.docs[0].tags.STATUS') || -1 as DOCQA_ANSWER_STATUS,
-            answer: get(result.data, 'data.docs[0].matches[0]') as Document,
-            matches: get(result.data, 'data.docs[0].matches') as Document[]
+            STATUS: get(result.data, 'data[0].tags.STATUS', -1) as DOCQA_ANSWER_STATUS,
+            answer: get(result.data, 'data[0].matches[0]') as Document,
+            matches: get(result.data, 'data[0].matches') || [] as Document[],
+            requestId: get(result.data, 'header.requestId')
         };
+
         return result;
     }
 
@@ -50,7 +85,7 @@ export class JinaDocBotRPC extends HTTPService {
         answer_uri?: string;
         thumbup?: boolean | null;
     }) {
-        return this.postJson('/slack', { data: [], parameters: options });
+        return this.postJson('/slack', { data: [], parameters: { ...options, client_id: this.clientId } });
     }
 
     getStatus() {

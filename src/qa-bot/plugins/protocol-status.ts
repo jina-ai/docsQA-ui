@@ -22,7 +22,7 @@ export function mangleAnswerByStatus(this: DocQAAnswer, qaPair: QAPair) {
             const spanStart = get(match, 'tags.span_start');
             const spanEnd = get(match, 'tags.span_end');
 
-            let answerText = match.text;
+            let answerText = match.text || '';
             if (Number.isInteger(spanStart) && Number.isInteger(spanEnd)) {
                 answerText = paragraph.slice(spanStart, spanEnd);
             }

@@ -32,25 +32,25 @@ export interface NamedScore {
 
 export interface Document {
     id: string;
-    granularity: number;
-    adjacency: number;
-    parentId: string;
+    granularity?: number;
+    adjacency?: number;
+    parentId?: string;
     buffer?: string;
     blob?: NDArray;
-    text: string;
+    text?: string;
     graph?: Graph;
-    chunks: Document[];
-    weight: number;
-    matches: Document[];
-    uri: string;
-    mimeType: string;
-    tags: { [k: string]: any; };
-    location: number[];
-    offset: number;
+    chunks?: Document[];
+    weight?: number;
+    matches?: Document[];
+    uri?: string;
+    mimeType?: string;
+    tags?: { [k: string]: any; };
+    location?: number[];
+    offset?: number;
     embedding?: NDArray;
-    scores: { [k: string]: NamedScore; };
-    modality: string;
-    evaluations: { [k: string]: NamedScore; };
+    scores?: { [k: string]: NamedScore; };
+    modality?: string;
+    evaluations?: { [k: string]: NamedScore; };
 }
 
 export interface DocumentArray<T extends Document = Document> extends Array<T> { }

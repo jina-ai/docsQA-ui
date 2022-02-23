@@ -8,7 +8,7 @@ export function transformAnswerUriFixUri(this: DocQAAnswer, _qaPair: QAPair) {
     for (const match of this.matches) {
         let parsedUri;
         try {
-            parsedUri = new URL(match.uri, window.location.href);
+            parsedUri = new URL(match.uri || '', window.location.href);
         } catch (err) {
             // Try to fix the uri.
             parsedUri = new URL(`${window.location.href}${match.uri}`);
