@@ -8,9 +8,13 @@ import { resetCSS } from '../shared/reset-css';
 import { JinaQABotController } from './controller';
 import { ANSWER_RENDER_TEMPLATE, getLocalStorageKey, QAPair } from './shared';
 import masterStyle from './style';
-import { paperPlane, downArrowCycle, defaultAvatar,
-    thumbUp, thumbUpActive, thumbDown, thumbDownActive } from './svg-icons';
+import {
+    paperPlane, downArrowCycle, defaultAvatar,
+    thumbUp, thumbUpActive, thumbDown, thumbDownActive
+} from './svg-icons';
 import { AnswerRenderer, ANSWER_RENDERER_MAP } from './answer-renderers';
+import { delay } from '../lib/timeout';
+import { runOnce } from '../lib/decorators/once';
 
 const ABSPATHREGEXP = /^(https?:)?\/\/\S/;
 
@@ -35,8 +39,8 @@ export class QaBot extends LitElement {
     @property({ attribute: 'header-background', type: String, reflect: true })
     headerBackground?: string;
 
-    @property({ attribute: 'animation-origin', type: String, reflect: true })
-    animationOrigin?: string = 'left-bottom';
+    @property({ attribute: 'orientation', type: String, reflect: true })
+    orientation: 'bottom-left' | 'bottom-right' | 'top-left' | 'top-right' | 'center' = 'bottom-right';
 
     @property({ type: String })
     server?: string;
@@ -98,9 +102,9 @@ export class QaBot extends LitElement {
         description: '@Jina AI',
         greeting: 'You can ask questions about Jina. Try:',
         questions: [
-                'What is Jina?',
-                'Does Jina support Kubernetes?',
-                'How can I traverse a nested DocumentArray?'
+            'What is Jina?',
+            'Does Jina support Kubernetes?',
+            'How can I traverse a nested DocumentArray?'
         ]
     };
 
@@ -147,7 +151,15 @@ export class QaBot extends LitElement {
                 this.scrollDialogToBottom();
             }
         }
+        if (changedProps.has('open')) {
+            this.scrollDialogToBottomForTheVeryFirstTime();
+        }
         super.update(changedProps);
+    }
+
+    @runOnce()
+    scrollDialogToBottomForTheVeryFirstTime() {
+        return this.scrollDialogToBottom();
     }
 
     override updated() {
@@ -404,15 +416,15 @@ export class QaBot extends LitElement {
         });
     }
 
-    toggleOpen() {
+    @throttle()
+    async toggleOpen() {
         this.closing = !!this.open;
         if (this.open) {
-            setTimeout(() => {
-                this.open = false;
-                this.textarea?.focus();
-            }, 300);
+            await delay(300);
+            this.open = false;
         } else {
             this.open = true;
+            this.textarea?.focus();
         }
     }
 
@@ -494,7 +506,9 @@ export class QaBot extends LitElement {
 
         if (!qaPair.answer) {
             return html`
-                <div class="talktext"><div class="icon loading triple-dot">${[1, 2, 3].map(() => html`<span class="dot"></span>`)}</div></div>`;
+                <div class="talktext">
+                    <div class="icon loading triple-dot">${[1, 2, 3].map(() => html`<span class="dot"></span>`)}</div>
+                </div>`;
         }
 
         const renderer = this.answerRenderer[qaPair.useTemplate!] || this.answerRenderer.text;
@@ -519,11 +533,12 @@ export class QaBot extends LitElement {
         <div class="answer-hint" tabindex="0">
             <div class="avatar">${this.getAvatar()}</div>
             <dl class="answer-hint__content">
-            <dt class="greeting">${this.preferences.greeting}</dt>
-            ${this.preferences.questions.map((item, index) => html`<dd class="question"><button key="${index}" @click="${this.onClickQuestion}">${item}</button></dd>`)}
+                <dt class="greeting">${this.preferences.greeting}</dt>
+                ${this.preferences.questions.map((item, index) => html`<dd class="question"><button key="${index}"
+                        @click="${this.onClickQuestion}">${item}</button></dd>`)}
             </dl>
         </div>
-         <div class="answer-dialog">
+        <div class="answer-dialog">
             ${this.qaControl?.qaPairs.map((qa) => this.getSingleQAComp(qa))}
         </div>
         `;
@@ -566,9 +581,10 @@ export class QaBot extends LitElement {
             <slot name="greeting"></slot>
             <slot name="questions"></slot>
         </div>
-        <button ?visible="${!this.open}" title="${this.preferences.name}" class="qabot widget" @click="${this.toggleOpen}">${this.getAvatar()}</button>
+        <button ?visible="${!this.open}" title="${this.preferences.name}" class="qabot widget"
+            @click="${this.toggleOpen}">${this.getAvatar()}</button>
         <div class="qabot card" ?busy="${this.busy}" ?visible="${this.open}" ?closing="${this.closing}">
-            <button class="card__header" @click="${this.toggleOpen}" style="${this.getHeaderBackground()}">
+            <button class="card__header" @click="${this.toggleOpen}" style="xxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
                 <span class="card__title">
                     <div class="icon avatar">${this.getAvatar()}</div>
                     <span class="card__title__content">
@@ -584,8 +600,8 @@ export class QaBot extends LitElement {
                 </div>
                 <div class="qabot__control">
                     <textarea maxlength="200" rows="1" tabindex="0" ?disabled="${this.busy}" @keypress="${this.onTextAreaInput}"
-                    @input="${this.onInputQuestion}"
-                    placeholder="${this.server ? 'Type your question here...' : 'Waiting for server configuration...'}"></textarea>
+                        @input="${this.onInputQuestion}"
+                        placeholder="${this.server ? 'Type your question here...' : 'Waiting for server configuration...'}"></textarea>
                     <button title="Submit" ?disabled="${this.busy}" ?active="${this.typing}" @click="${this.submitQuestion}">
                         <i class="icon icon-plane">${paperPlane}</i>
                     </button>

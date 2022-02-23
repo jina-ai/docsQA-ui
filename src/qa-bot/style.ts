@@ -60,14 +60,48 @@ export const masterStyle = css`
         width: 22.5em;
         height: 100%;
         max-height: 80%;
-        position: absolute;
+        position: fixed;
         bottom: 1.25em;
+        right: 1.25em;
     }
 
     :host(:not([open])) {
         max-height: 3.75em;
         height: auto;
+        width: auto;
     }
+    :host([orientation='bottom-left']) {
+        right: unset;
+        top: unset;
+        bottom: 1.25em;
+        left: 1.25em;
+    }
+    :host([orientation='bottom-right']) {
+        top: unset;
+        bottom: 1.25em;
+        right: 1.25em;
+        left: unset
+    }
+    :host([orientation='top-right']) {
+        top: 1.25em;
+        bottom: unset;
+        right: 1.25em;
+        left: unset
+    }
+    :host([orientation='top-left']) {
+        top: 1.25em;
+        bottom: unset;
+        right: unset;
+        left: 1.25em;
+    }
+    :host([orientation='center']) {
+        top: 50vh;
+        bottom: unset;
+        right: unset;
+        left: 50vw;
+        transform: translate(-50%, -50%);
+    }
+
 
     .qabot.widget {
         width: 3.75em;
@@ -110,23 +144,23 @@ export const masterStyle = css`
         opacity: 0;
     }
 
-    :host([animation-origin='left-bottom']) .qabot {
+    :host([orientation='bottom-left']) .qabot {
         transform-origin: left bottom;
     }
 
-    :host([animation-origin='right-bottom']) .qabot {
+    :host([orientation='bottom-right']) .qabot {
         transform-origin: right bottom;
     }
 
-    :host([animation-origin='left-top']) .qabot {
+    :host([orientation='top-left']) .qabot {
         transform-origin: left top;
     }
 
-    :host([animation-origin='right-top']) .qabot {
+    :host([orientation='top-right']) .qabot {
         transform-origin: right top;
     }
 
-    :host([animation-origin='center']) .qabot {
+    :host([orientation='center']) .qabot {
         transform-origin: center center;
     }
 
@@ -284,8 +318,8 @@ export const masterStyle = css`
     }
 
     .qabot__control textarea {
-        width: calc(100% - 3.25rem);
-        padding: 1.25em 0em 1.25em 1em;
+        width: calc(100% - 4em);
+        padding: 1.25em 0 1.25em 1em;
 
         border-right: none;
         font-size: var(--qabot-size-text-primary);
