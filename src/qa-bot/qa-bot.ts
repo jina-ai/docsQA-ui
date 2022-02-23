@@ -38,6 +38,9 @@ export class QaBot extends LitElement {
     botAvatar?: string;
 
     @property({ type: String, reflect: true })
+    override title!: string;
+
+    @property({ type: String, reflect: true })
     description?: string;
 
     @property({ attribute: 'header-background-src', type: String, reflect: true })
@@ -157,6 +160,9 @@ export class QaBot extends LitElement {
         }
         if (changedProps.has('open')) {
             this.scrollDialogToBottomForTheVeryFirstTime();
+        }
+        if (changedProps.has('title')) {
+            this.preferences.name = this.title;
         }
         super.update(changedProps);
     }
