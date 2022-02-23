@@ -12,7 +12,7 @@ all you need to do is fill in the `server` address.
 Then you are good to go.
 ```html
 <qa-bot
-    server="https://jina-ai-jina-docsqa.jina.ai"    
+    server="https://jina-ai-jina.docsqa.jina.ai"    
 ></qa-bot>
 
 <script src="https://cdn.jsdelivr.net/npm/qabot"></script>
@@ -22,7 +22,7 @@ Then you are good to go.
 You are free to add any sizing/positioning css to the element.
 ```html
 <qa-bot
-    server="https://jina-ai-jina-docsqa.jina.ai"    
+    server="https://jina-ai-jina.docsqa.jina.ai"    
     style="
         position: fixed; 
         left: 2rem; 
@@ -58,7 +58,7 @@ Or you can put the `<script>` tag before any `<doc-bot>`, or in the `head` secti
     qa-bot:not(:defined) { display: none; }
 </style>
 <qa-bot
-    server="https://jina-ai-jina-docsqa.jina.ai"    
+    server="https://jina-ai-jina.docsqa.jina.ai"    
     style="
         position: fixed; 
         left: 2rem; 

@@ -10,7 +10,7 @@ sort: 1
 `<qa-bot>` comes with a default title `Ask our docs!`. To customize this text, set the `label` attribute.
 ```html
 <qa-bot
-    server="https://jina-ai-jina-docsqa.jina.ai"
+    server="https://jina-ai-jina.docsqa.jina.ai"
     label="Custom title ✨"
 ></qa-bot>
 ```
@@ -20,7 +20,7 @@ You can customize the base URL of the reference link by setting the `site` attri
 If left blank, the reference links will be treated relative to current location. 
 ```html
 <qa-bot
-    server="https://jina-ai-jina-docsqa.jina.ai"
+    server="https://jina-ai-jina.docsqa.jina.ai"
     site="https://docs.jina.ai"
 ></qa-bot>
 ```
@@ -31,7 +31,7 @@ By default the reference links open to `_self`. You can override this behavior b
 For example `target="_blank"` will open the reference links in a new tab.
 ```html
 <qa-bot
-    server="https://jina-ai-jina-docsqa.jina.ai"
+    server="https://jina-ai-jina.docsqa.jina.ai"
     site="https://docs.jina.ai"
     target="_blank"
 ></qa-bot>
@@ -42,7 +42,7 @@ By default the chat box is collapsed after load. If you want it to be open by de
 
 ```html
 <qa-bot
-    server="https://jina-ai-jina-docsqa.jina.ai"
+    server="https://jina-ai-jina.docsqa.jina.ai"
     site="https://docs.jina.ai"
     open
 ></qa-bot>
@@ -53,7 +53,7 @@ When you open the `<doc-bot>`, you will find a short intro headline and a set of
 These were intended to be customized by the users to fit their own needs.
 ```html
 <qa-bot
-    server="https://jina-ai-jina-docsqa.jina.ai"    
+    server="https://jina-ai-jina.docsqa.jina.ai"    
     style="position: fixed; width: 26em; max-height: 20rem;"
 >
     <dt>You can tryout qabot easily:</dt>
@@ -65,7 +65,7 @@ These were intended to be customized by the users to fit their own needs.
 Note that although `<doc-bot>` comes with some simple styling for slotted elements, It's up to the users to style them as expected.
 
 ```html
-<qa-bot server="https://jina-ai-jina-docsqa.jina.ai">
+<qa-bot server="https://jina-ai-jina.docsqa.jina.ai">
     <dt>You can tryout qabot easily:</dt>
     <dd>What is qabot?</dd>
     <dd>Does qabot support Vue/React/Angular?</dd>
@@ -92,13 +92,13 @@ If you intend to have `<doc-bot>` fixed at the bottom of the page, you can set `
 
 ```html
 <qa-bot
-    server="https://jina-ai-jina-docsqa.jina.ai"
+    server="https://jina-ai-jina.docsqa.jina.ai"
     site="https://docs.jina.ai"
     animate-by="position"
 ></qa-bot>
 ```
 
-<qa-bot server="https://jina-ai-jina-docsqa.jina.ai" label="Ask me about Jina ✨" site="https://docs.jina.ai" open animate-by="position">
+<qa-bot server="https://jina-ai-jina.docsqa.jina.ai" label="Ask me about Jina ✨" site="https://docs.jina.ai" open animate-by="position">
     <dt>You can tryout qabot easily:</dt>
     <dd>What is qabot?</dd>
     <dd>Does qabot support Vue/React/Angular?</dd>
