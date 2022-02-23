@@ -1,11 +1,29 @@
 import { HTTPService } from './http-service';
 import { DocumentArray, Document } from './jina-document-array';
-export interface JinaServerEnvelope<T = any> {
-    data: {
-        docs: T;
-        groundtruths: unknown[];
+export interface JinaServerEnvelope<T = DocumentArray> {
+    data: T;
+    header: {
+        execEndpoint: string;
+        requestId: string;
+        status?: {
+            code: number;
+            description: string;
+            exception?: {
+                name: string;
+                executor?: string;
+                args?: string;
+                stacks?: string[];
+            };
+        };
+        targetExecutor: string;
     };
-    requestId: string;
+    parameters: unknown;
+    routes: Array<{
+        startTime: string;
+        endTime: string;
+        executor: string;
+        status?: unknown;
+    }>;
 }
 export declare enum DOCQA_ANSWER_STATUS {
     UNKNOWN = -1,
@@ -18,8 +36,13 @@ export interface DocQAAnswer {
     matches: Document[];
     [k: string]: any;
 }
+export declare class UpstreamError extends Error {
+    detail: any;
+    constructor(msg: string, detail: any);
+}
 export declare class JinaDocBotRPC extends HTTPService {
-    constructor(serverUri: string);
+    protected clientId: string;
+    constructor(serverUri: string, clientId: string);
     askQuestion(text: string): Promise<Response & {
         data: JinaServerEnvelope<DocumentArray<Document>> & DocQAAnswer;
     } & {

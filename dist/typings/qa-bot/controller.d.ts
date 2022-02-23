@@ -13,6 +13,7 @@ export declare class JinaQABotController implements ReactiveController {
     qaPairToFocus?: string;
     answerPlugins: AnswerProcessingPlugin[];
     protected storageEventListener?: (storageEvent: StorageEvent) => void;
+    clientId: string;
     constructor(host: ReactiveControllerHost, serverUri: string, channel?: string);
     loadQaPairs(localData?: string): void;
     saveQaPairs(): void;
