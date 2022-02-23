@@ -22,20 +22,25 @@ const ABSPATHREGEXP = /^(https?:)?\/\/\S/;
  * QABot custom element
  * @summary WebComponent for DocsQA
  *
- * @attr botAvatar - Customize chatbot avatar
- * @attr headerBackground - Customize chatbot header background image with url
+ * @attr avatar-src - Customize chatbot avatar
+ * @attr header-background-src - Customize chatbot header background image with url
  * @attr animation-origin - Set the transform origin for the animation
  * @attr server - REQUIRED, specify the server url bot talks to.
  * @attr site - Specify site base location the links refer to, if not relative to current location.
  * @attr target - Specify <a target=""> of reference links.
  * @attr open - Set the chat-bot expanded or collapsed.
  * @attr theme - Choose between preset themes, auto, `light`, or `dark`.
+ * @attr title - Title of the bot.
+ * @attr description - Description of the bot.
  */
 export class QaBot extends LitElement {
-    @property({ attribute: 'bot-avatar', type: String, reflect: true })
+    @property({ attribute: 'avatar-src', type: String, reflect: true })
     botAvatar?: string;
 
-    @property({ attribute: 'header-background', type: String, reflect: true })
+    @property({ type: String, reflect: true })
+    description?: string;
+
+    @property({ attribute: 'header-background-src', type: String, reflect: true })
     headerBackground?: string;
 
     @property({ attribute: 'orientation', type: String, reflect: true })
@@ -87,17 +92,17 @@ export class QaBot extends LitElement {
     @queryAssignedElements({ slot: 'description' })
     protected slotDescription?: Array<HTMLElement>;
 
-    @queryAssignedElements()
-    protected slotDefault?: Array<HTMLElement>;
+    @queryAssignedElements({ selector: 'dl' })
+    protected slotGreetings?: Array<HTMLElement>;
 
     preferences = {
         name: 'DocsQA',
         description: '@Jina AI',
-        greeting: 'You can ask questions about Jina. Try:',
+        greeting: 'You should define custom questions inside <qa-bot>. Try:',
         questions: [
-            'What is Jina?',
-            'Does Jina support Kubernetes?',
-            'How can I traverse a nested DocumentArray?'
+            'Create a <dl> block',
+            'Set title using <dt>',
+            'Set questions using <dd>'
         ]
     };
 
@@ -118,13 +123,17 @@ export class QaBot extends LitElement {
             this.debugEnabled = false;
         }
 
+
         if (this.debugEnabled) {
             this.setupDebugEventListener();
         }
 
         customTextFragmentsPolyfill();
+
+        this.loadPreferences();
         if (document.readyState !== 'complete') {
             document.addEventListener('DOMContentLoaded', () => {
+                this.loadPreferences();
                 this.requestUpdate();
             }, { once: true });
         }
@@ -139,6 +148,8 @@ export class QaBot extends LitElement {
     override update(changedProps: PropertyValues) {
         if (changedProps.has('server') && this.server) {
             this.qaControl = new JinaQABotController(this, this.server, this.channel);
+
+            this.loadPreferences();
 
             if (this.qaControl.qaPairs.length) {
                 this.scrollDialogToBottom();
@@ -510,20 +521,19 @@ export class QaBot extends LitElement {
     }
 
     loadPreferences() {
-
         if (this.slotName?.[0]?.innerText) {
             this.preferences.name = this.slotName[0].innerText;
-        } else if (this.title) {
+        } else if (this.title !== undefined) {
             this.preferences.name = this.title;
         }
 
         if (this.slotDescription?.[0]?.innerText) {
             this.preferences.description = this.slotDescription[0].innerText;
+        } else if (this.description !== undefined) {
+            this.preferences.description = this.description;
         }
-
-        if (this.slotDefault?.[0]) {
-            const slotDefault = this.slotDefault[0];
-            const dl = slotDefault.querySelector('dl');
+        if (this.slotGreetings?.length) {
+            const dl = this.slotGreetings[0];
             const dt = dl?.querySelector('dt');
             const dds = dl?.querySelectorAll('dd');
 
@@ -534,7 +544,7 @@ export class QaBot extends LitElement {
             if (dds?.length) {
                 this.preferences.questions = Array.from(dds)
                     .filter((x) => Boolean(x.innerText.trim()))
-                    .map((x) => x.innerText);
+                    .map((x) => x.innerText.trim());
             }
         }
     }
@@ -588,14 +598,14 @@ export class QaBot extends LitElement {
     override render() {
         return html`
         <div class="slots" style="display: none">
+            <slot></slot>
             <slot name="name"></slot>
             <slot name="description"></slot>
-            <slot name="example"></slot>
         </div>
         <button ?visible="${!this.open}" title="${this.preferences.name}" class="qabot widget"
             @click="${this.toggleOpen}">${this.getAvatar()}</button>
         <div class="qabot card" ?busy="${this.busy}" ?visible="${this.open}" ?closing="${this.closing}">
-            <button class="card__header" @click="${this.toggleOpen}" style="xxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
+            <button class="card__header" @click="${this.toggleOpen}">
                 <span class="card__title">
                     <div class="icon avatar">${this.getAvatar()}</div>
                     <span class="card__title__content">
