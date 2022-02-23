@@ -521,9 +521,9 @@ export class QaBot extends LitElement {
     }
 
     loadPreferences() {
-        if (this.slotName?.[0]?.innerText) {
-            this.preferences.name = this.slotName[0].innerText;
-        } else if (this.title !== undefined) {
+        if (this.slotName?.[0]?.innerText.trim()) {
+            this.preferences.name = this.slotName[0].innerText.trim();
+        } else if (this.title) {
             this.preferences.name = this.title;
         }
 
