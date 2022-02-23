@@ -16,7 +16,7 @@
 
 ```html
 <qa-bot 
-    server="https://jina-ai-jina-docsqa.jina.ai" 
+    server="https://jina-ai-jina.docsqa.jina.ai" 
     open
     site="https://docs.jina.ai" 
     target="_blank"
