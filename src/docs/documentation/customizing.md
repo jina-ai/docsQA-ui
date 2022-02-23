@@ -75,36 +75,13 @@ These were intended to be customized by the users to fit their own needs.
     server="https://jina-ai-jina.docsqa.jina.ai"    
     style="position: fixed; width: 26em; max-height: 20rem;"
 >
-  <dl slot="hint">
+  <dl slot="example">
     <dt>You can tryout qabot easily:</dt>
     <dd>What is qabot?</dd>
     <dd>Does qabot support Vue/React/Angular?</dd>
     <dd>What are the basic concepts in qabot?</dd>
   </dl>
 </qa-bot>
-```
-Note that although `<doc-bot>` comes with some simple styling for slotted elements, It's up to the users to style them as expected.
-
-```html
-<qa-bot server="https://jina-ai-jina.docsqa.jina.ai">
-    <dt>You can tryout qabot easily:</dt>
-    <dd>What is qabot?</dd>
-    <dd>Does qabot support Vue/React/Angular?</dd>
-    <dd>What are the basic concepts in qabot?</dd>
-</qa-bot>
-<style>
-    qa-bot dt {
-        font-size: 1.25rem;
-        color: cyan;
-    }
-    qa-bot {
-        position: fixed; 
-        left: 2rem; 
-        width: 22rem; 
-        max-height: 30rem;
-    }
-    qa-bot:not(:defined) { display: none; }
-</style>
 ```
 ## Choose animation implementation
 By default the slide-up/slide-down animation is implemented by transitioning `max-height` of the element.
@@ -125,12 +102,6 @@ If you intend to have `<doc-bot>` fixed at the left bottom of the page, you can 
     open
     animation-origin="left-bottom"  
     header-background="https://jina.ai/assets/images/backgrounds/docarray.png">
-  <dl slot="hint">
-    <dt>You can tryout qabot easily:</dt>
-    <dd>What is qabot?</dd>
-    <dd>Does qabot support Vue/React/Angular?</dd>
-    <dd>What are the basic concepts in qabot?</dd>
-  </dl>
 </qa-bot>
 
 <style>

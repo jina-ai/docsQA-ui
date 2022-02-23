@@ -83,12 +83,8 @@ export class QaBot extends LitElement {
     @queryAssignedElements({ slot: 'description' })
     protected botDescription?: Array<HTMLElement>;
 
-    @queryAssignedElements({ slot: 'hint' })
+    @queryAssignedElements({ slot: 'example' })
     protected hint?: Array<HTMLElement>;
-
-    @state()
-    private __greeting = this.hint?.[0]?.innerHTML;
-    // private __questions = this.hint?.[0]?.querySelectorAll('dd').map((item HTMLElement) => item.innerText);
 
     private __defaultInfo = {
         name: 'DocsQA',
@@ -553,7 +549,7 @@ export class QaBot extends LitElement {
         <div class="slots" style="display: none">
             <slot name="name"></slot>
             <slot name="description"></slot>
-            <slot name="hint"></slot>
+            <slot name="example"></slot>
         </div>
         <button ?visible="${!this.open}" title="${this.__defaultInfo.name}" class="default qabot" @click="${this.toggleOpen}">${this.getAvatar()}</button>
         <div class="qabot card" ?busy="${this.busy}" ?visible="${this.open}" ?closing="${this.closing}">
