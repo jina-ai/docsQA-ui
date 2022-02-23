@@ -45,7 +45,7 @@ export class UpstreamError extends Error {
     constructor(msg: string, public detail: any) {
         super(msg);
         Object.assign(this, detail);
-        this.name = this.constructor.name;
+        this.name = 'UpstreamError';
     }
 }
 export class JinaDocBotRPC extends HTTPService {
