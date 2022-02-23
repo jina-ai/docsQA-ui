@@ -1,5 +1,5 @@
 import { LitElement, html, PropertyValues } from 'lit';
-import { property, query, state } from 'lit/decorators.js';
+import { property, query, queryAssignedElements, state } from 'lit/decorators.js';
 import { perNextTick } from '../lib/decorators/per-tick';
 import { throttle } from '../lib/decorators/throttle';
 import { customTextFragmentsPolyfill } from '../lib/text-fragments-polyfill';
@@ -19,8 +19,7 @@ const ABSPATHREGEXP = /^(https?:)?\/\/\S/;
  * @summary WebComponent for DocsQA
  *
  * @attr botAvatar - Customize chatbot avatar
- * @attr headerBackground - Customize chatbot header background image
- * @attr questions - Customize question examples
+ * @attr headerBackground - Customize chatbot header background image with url
  * @attr animation-origin - Set the transform origin for the animation
  * @attr server - REQUIRED, specify the server url bot talks to.
  * @attr site - Specify site base location the links refer to, if not relative to current location.
@@ -56,9 +55,6 @@ export class QaBot extends LitElement {
     @property({ type: String, reflect: true })
     theme?: 'auto' | 'dark' | 'light' | string = 'auto';
 
-    @property({ attribute: 'animate-by', type: String, reflect: true })
-    animateBy?: 'position' | 'height' = 'height';
-
     @property({ attribute: 'powered-by-icon-src', type: String, reflect: true })
     poweredByIconSrc?: string;
 
@@ -81,19 +77,20 @@ export class QaBot extends LitElement {
     @query('.qabot__control textarea')
     protected textarea?: HTMLTextAreaElement;
 
-    @query('[slot="name"]')
-    protected botName?: HTMLElement;
+    @queryAssignedElements({ slot: 'name' })
+    protected botName?: Array<HTMLElement>;
 
-    @query('[slot="description"]')
-    protected botDescription?: HTMLElement;
+    @queryAssignedElements({ slot: 'description' })
+    protected botDescription?: Array<HTMLElement>;
 
-    @query('[slot="greeting"]')
-    protected greeting?: HTMLElement;
+    @queryAssignedElements({ slot: 'hint' })
+    protected hint?: Array<HTMLElement>;
 
-    @query('[slot="questions"]')
-    protected questions?: HTMLElement;
+    @state()
+    private __greeting = this.hint?.[0]?.innerHTML;
+    // private __questions = this.hint?.[0]?.querySelectorAll('dd').map((item HTMLElement) => item.innerText);
 
-    private defaultInfo = {
+    private __defaultInfo = {
         name: 'DocsQA',
         description: '@Jina AI',
         greeting: 'You can ask questions about Jina. Try:',
@@ -503,12 +500,17 @@ export class QaBot extends LitElement {
     }
 
     protected getAnswerBlock() {
+        const greeting = this.hint?.[0]?.querySelector('dt')?.innerText;
+        const questions: Array<string> = [];
+        this.hint?.[0]?.querySelectorAll('dd')?.forEach((item) => {
+            questions.push(item.innerText);
+        });
         return html`
         <div class="answer-hint" tabindex="0">
             <div class="avatar">${this.getAvatar()}</div>
             <dl class="answer-hint__content">
-            <dt class="greeting">${this.greeting?.innerText || this.defaultInfo.greeting}</dt>
-            ${this.defaultInfo.questions.map((item, index) => html`<dd class="question"><button key="${index}" @click="${this.onClickQuestion}">${item}</button></dd>`)}
+                <dt class="greeting">${greeting || this.__defaultInfo.greeting}</dt>
+                ${(questions.length > 0 ? questions : this.__defaultInfo.questions).map((item, index) => html`<dd class="question"><button key="${index}" @click="${this.onClickQuestion}">${item}</button></dd>`)}
             </dl>
         </div>
          <div class="answer-dialog">
@@ -518,8 +520,8 @@ export class QaBot extends LitElement {
     }
 
     protected onClickQuestion(e: Event) {
-        const index = Number((e.target as Element).getAttribute('key')!);
-        this.textarea!.value = this.defaultInfo.questions[index];
+        const text = (e.target as HTMLElement).innerText;
+        this.textarea!.value = text;
         this.submitQuestion();
     }
 
@@ -551,17 +553,16 @@ export class QaBot extends LitElement {
         <div class="slots" style="display: none">
             <slot name="name"></slot>
             <slot name="description"></slot>
-            <slot name="greeting"></slot>
-            <slot name="questions"></slot>
+            <slot name="hint"></slot>
         </div>
-        <button ?visible="${!this.open}" title="${this.defaultInfo.name}" class="default qabot" @click="${this.toggleOpen}">${this.getAvatar()}</button>
+        <button ?visible="${!this.open}" title="${this.__defaultInfo.name}" class="default qabot" @click="${this.toggleOpen}">${this.getAvatar()}</button>
         <div class="qabot card" ?busy="${this.busy}" ?visible="${this.open}" ?closing="${this.closing}">
             <button class="card__header" @click="${this.toggleOpen}" style="${this.getHeaderBackground()}">
                 <span class="card__title">
                     <div class="icon avatar">${this.getAvatar()}</div>
                     <span class="card__title__content">
-                        <span class="name">${this.botName?.innerText || this.defaultInfo.name}</span>
-                        <span class="description">${this.botDescription?.innerText || this.defaultInfo.description}</span>
+                        <span class="name">${this.botName?.[0]?.innerText || this.__defaultInfo.name}</span>
+                        <span class="description">${this.botDescription?.[0]?.innerText || this.__defaultInfo.description}</span>
                     </span>
                 </span>
                 <i class="icon arrow-down">${downArrowCycle}</i>
@@ -578,7 +579,7 @@ export class QaBot extends LitElement {
                         <i class="icon icon-plane">${paperPlane}</i>
                     </button>
                     ${this.poweredByIconSrc ? html`<div class="powered-by"><i class="icon"><img src="${this.poweredByIconSrc}"
-                                alt="powered-by"></i></div>` : ''}
+                                alt="powered-by" class="powered-by-img" /></i></div>` : ''}
                 </div>
             </div>
         </div>

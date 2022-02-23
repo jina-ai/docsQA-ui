@@ -34,7 +34,7 @@ export const masterStyle = css`
       --qabot-color-action-contrast: #181818;
       --qabot-color-muted: #81868d;
 
-      --qabot-color-card-header-background: rgba(255, 255, 255, 0.1);;
+      --qabot-color-card-header-background: rgba(255, 255, 255, 0.1);
       --qabot-color-card-header-color: #fff;
     }
 
@@ -50,7 +50,7 @@ export const masterStyle = css`
             --qabot-color-action-contrast: #181818;
             --qabot-color-muted: #81868d;
 
-            --qabot-color-card-header-background: rgba(255, 255, 255, 0.1);;
+            --qabot-color-card-header-background: rgba(255, 255, 255, 0.1);
             --qabot-color-card-header-color: #fff;
         }
     }
@@ -314,6 +314,10 @@ export const masterStyle = css`
     .qabot .powered-by .icon {
         width: auto;
         height: 100%;
+    }
+
+    .qabot .powered-by .icon .powered-by-img {
+        max-height: 100%;
     }
 
     .answer-hint {
