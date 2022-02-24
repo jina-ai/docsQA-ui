@@ -29,13 +29,15 @@ To do so, override the following CSS variables:
 <style>
     qabot[theme="custom"] {
         --qabot-color-shadow: #0000000d;
-        --qabot-color-background: #fff;
-        --qabot-color-padding: #f8f9fb;
-        --qabot-color-primary: #000;
-        --qabot-color-action: #009191;
-        --qabot-color-action-contrast: #fff;
-        --qabot-color-dimmed: #eeebee;
-        --qabot-color-muted: #646776;
+        --qabot-color-background: #181818;
+        --qabot-color-border: #99999940;
+        --qabot-color-primary: #ffffff;
+        --qabot-color-action: #FBCB67;
+        --qabot-color-action-secondary: #fbcb671a;
+        --qabot-color-action-contrast: #181818;
+        --qabot-color-muted: #81868d;
+        --qabot-color-card-header-background: #ffffff1a;
+        --qabot-color-card-header-color: #fff;
     }
 </style>
 ```
@@ -45,7 +47,7 @@ To do so, override the following CSS variables:
 <style>
     qa-bot {
         position: fixed; 
-        left: 2rem; 
+        left: 2rem;
     }
     qa-bot:not(:defined) { display: none; }
 </style>

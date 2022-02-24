@@ -11,7 +11,7 @@ describe('QaBot', () => {
   });
 
   it('renders its container', () => {
-    const container = element.shadowRoot!.querySelector('.qabot')!;
+    const container = element.shadowRoot!.querySelector('*')!;
     expect(container).to.exist;
   });
 

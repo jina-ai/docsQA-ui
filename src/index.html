@@ -23,14 +23,15 @@
     Jina Finetuner Docarray
     Document
   </p>
-  <qa-bot server="https://jina-ai-jina.docsqa.jina.ai" site="docs.jina.ai" target="_blank">
-
-    <dt>You can ask questions about Jina. Try:</dt>
-    <dd>What is Jina?</dd>
-    <dd>Does Jina support Kubernetes?</dd>
-    <dd>How can I traverse a nested DocumentArray?</dd>
-    <dd>What are the basic concepts in Jina?</dd>
-
+  <qa-bot server="https://jina-ai-jina.docsqa.jina.ai" theme="light" site="docs.jina.ai" target="_blank"
+    orientation="center" title="DocsQA">
+    <dl>
+      <dt>Welcome to DocsQA! Please ask any question:</dt>
+      <dd>What is Jina</dd>
+      <dd>Does Jina support Kubernetes?</dd>
+      <dd>How can I traverse a nested DocumentArray?</dd>
+    </dl>
+    <span slot="description">@@JinaAI</span>
   </qa-bot>
 
   <script type="module" src="./qabot.js"></script>

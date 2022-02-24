@@ -42,20 +42,24 @@ title: <qa-bot> ⌲ Home
     open
     site="https://docs.jina.ai" 
     target="_blank">
-    <dt>You can tryout qabot easily:</dt>
-    <dd>What is qabot?</dd>
-    <dd>Does qabot support Vue/React/Angular?</dd>
-    <dd>What are the basic concepts in qabot?</dd>
+    <dl>
+        <dt>You can tryout qabot easily:</dt>
+        <dd>What is qabot?</dd>
+        <dd>Does qabot support Vue/React/Angular?</dd>
+        <dd>What are the basic concepts in qabot?</dd>
+    </dl>
 </qa-bot>
 ```
 
   </div>
   <div class="bot-container">
         <qa-bot label="Try custom title ✨" server="https://jina-ai-jina.docsqa.jina.ai" site="https://docs.jina.ai" target="_blank" open>
-            <dt>You can tryout qabot easily:</dt>
-            <dd>What is qabot?</dd>
-            <dd>Does qabot support Vue/React/Angular?</dd>
-            <dd>What are the basic concepts in qabot?</dd>
+            <dl>
+                <dt>You can tryout qabot easily:</dt>
+                <dd>What is qabot?</dd>
+                <dd>Does qabot support Vue/React/Angular?</dd>
+                <dd>What are the basic concepts in qabot?</dd>
+            </dl>
         </qa-bot>
   </div>
 </section>
@@ -74,7 +78,7 @@ For example, the following Vue code:
         <qa-bot 
             :open="Number.isInteger(Math.floor(timer / 3) / 2)"
             :theme="Number.isInteger(Math.floor(timer / 5) / 2) ? 'light':'dark'"
-            :label="`+${timer}s`" 
+            :title="`+${timer}s`" 
             :server="server"
         ></qa-bot>
     </div>
@@ -109,7 +113,7 @@ Renders to:
     <div class="bot-container" v-bind:class="Number.isInteger(Math.floor(timer / 5) / 2) ? 'light' : 'dark'">
         <qa-bot 
             :open="Number.isInteger(Math.floor(timer / 3) / 2)" 
-            :label="` +${timer}s`" 
+            :title="` +${timer}s`" 
             :server="server"
             :theme="Number.isInteger(Math.floor(timer / 5) / 2) ? 'light':'dark'"
         ></qa-bot>

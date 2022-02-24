@@ -16,15 +16,12 @@
 
 ```html
 <qa-bot 
-    label="Try custom title ✨"
     server="https://jina-ai-jina.docsqa.jina.ai" 
     open
     site="https://docs.jina.ai" 
-    target="_blank">
-    <dt>You can tryout qabot easily:</dt>
-    <dd>What is qabot?</dd>
-    <dd>Does qabot support Vue/React/Angular?</dd>
-    <dd>What are the basic concepts in qabot?</dd>
+    target="_blank"
+    bot-avatar="https://jina.ai/assets/images/logo.svg"
+    >
 </qa-bot>
 ```
 ## Install

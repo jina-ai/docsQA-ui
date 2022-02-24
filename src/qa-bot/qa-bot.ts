@@ -1,5 +1,5 @@
 import { LitElement, html, PropertyValues } from 'lit';
-import { property, query, state } from 'lit/decorators.js';
+import { property, query, queryAssignedElements, state } from 'lit/decorators.js';
 import { perNextTick } from '../lib/decorators/per-tick';
 import { throttle } from '../lib/decorators/throttle';
 import { customTextFragmentsPolyfill } from '../lib/text-fragments-polyfill';
@@ -9,38 +9,54 @@ import { JinaQABotController } from './controller';
 import { ANSWER_RENDER_TEMPLATE, getLocalStorageKey, QAPair } from './shared';
 import masterStyle from './style';
 import {
-    discussionIcon, downArrow, paperPlane,
-    tripleDot, upArrow
+    paperPlane, downArrowCycle, defaultAvatar,
+    thumbUp, thumbUpActive, thumbDown, thumbDownActive
 } from './svg-icons';
 import { AnswerRenderer, ANSWER_RENDERER_MAP } from './answer-renderers';
+import { delay } from '../lib/timeout';
+import { runOnce } from '../lib/decorators/once';
 
 const ABSPATHREGEXP = /^(https?:)?\/\/\S/;
 
 /**
  * QABot custom element
  * @summary WebComponent for DocsQA
- * @slot - The intro headline and example questions user might define
  *
- * @attr label - Customize title text in the header part
+ * @attr avatar-src - Customize chatbot avatar url
+ * @attr header-background-src - Customize chatbot header background image with url
+ * @attr animation-origin - Set the transform origin for the animation
  * @attr server - REQUIRED, specify the server url bot talks to.
  * @attr site - Specify site base location the links refer to, if not relative to current location.
  * @attr target - Specify <a target=""> of reference links.
  * @attr open - Set the chat-bot expanded or collapsed.
  * @attr theme - Choose between preset themes, auto, `light`, or `dark`.
- * @attr animate-by - Choose slide-up/slide-down animation between `height` or `position`
+ * @attr title - Title of the bot.
+ * @attr description - Description of the bot.
+ * @attr orientation - Orientation of the bot widget and animation.
+ * @attr channel - Key for chat history storage.
+ * @attr powered-by-icon-src - Image url for `powered-by` footer.
  */
 export class QaBot extends LitElement {
+    @property({ attribute: 'avatar-src', type: String, reflect: true })
+    botAvatar?: string;
+
     @property({ type: String, reflect: true })
-    label = 'Ask our docs!';
+    override title!: string;
+
+    @property({ type: String, reflect: true })
+    description?: string;
+
+    @property({ attribute: 'header-background-src', type: String, reflect: true })
+    headerBackground?: string;
+
+    @property({ attribute: 'orientation', type: String, reflect: true })
+    orientation: 'bottom-left' | 'bottom-right' | 'top-left' | 'top-right' | 'center' = 'bottom-right';
 
     @property({ type: String })
     server?: string;
 
     @property({ type: String })
     site?: string;
-
-    @property({ attribute: 'link-to-text-fragment', type: String, reflect: true })
-    linkToTextFragment?: 'none';
 
     @property({ type: String, reflect: true })
     target?: string = '_self';
@@ -51,14 +67,8 @@ export class QaBot extends LitElement {
     @property({ type: String, reflect: true })
     theme?: 'auto' | 'dark' | 'light' | string = 'auto';
 
-    @property({ attribute: 'animate-by', type: String, reflect: true })
-    animateBy?: 'position' | 'height' = 'height';
-
     @property({ attribute: 'powered-by-icon-src', type: String, reflect: true })
     poweredByIconSrc?: string;
-
-    // @property({ type: Boolean })
-    // manual?: boolean;
 
     @property({ type: Boolean, reflect: true })
     open?: boolean;
@@ -68,10 +78,36 @@ export class QaBot extends LitElement {
         return !(this.qaControl?.ready);
     }
 
+    @state()
+    protected typing: boolean = false;
+
+    @state()
+    protected closing: boolean = false;
+
     protected qaControl?: JinaQABotController;
 
     @query('.qabot__control textarea')
     protected textarea?: HTMLTextAreaElement;
+
+    @queryAssignedElements({ slot: 'name' })
+    protected slotName?: Array<HTMLElement>;
+
+    @queryAssignedElements({ slot: 'description' })
+    protected slotDescription?: Array<HTMLElement>;
+
+    @queryAssignedElements({ selector: 'dl' })
+    protected slotGreetings?: Array<HTMLElement>;
+
+    preferences = {
+        name: 'DocsQA',
+        description: '@Jina AI',
+        greeting: 'You should define custom questions inside <qa-bot>. Try:',
+        questions: [
+            'Create a <dl> block',
+            'Set title using <dt>',
+            'Set questions using <dd>'
+        ]
+    };
 
     debugEnabled?: boolean = false;
 
@@ -90,13 +126,17 @@ export class QaBot extends LitElement {
             this.debugEnabled = false;
         }
 
+
         if (this.debugEnabled) {
             this.setupDebugEventListener();
         }
 
         customTextFragmentsPolyfill();
+
+        this.loadPreferences();
         if (document.readyState !== 'complete') {
             document.addEventListener('DOMContentLoaded', () => {
+                this.loadPreferences();
                 this.requestUpdate();
             }, { once: true });
         }
@@ -112,11 +152,24 @@ export class QaBot extends LitElement {
         if (changedProps.has('server') && this.server) {
             this.qaControl = new JinaQABotController(this, this.server, this.channel);
 
+            this.loadPreferences();
+
             if (this.qaControl.qaPairs.length) {
                 this.scrollDialogToBottom();
             }
         }
+        if (changedProps.has('open')) {
+            this.scrollDialogToBottomForTheVeryFirstTime();
+        }
+        if (changedProps.has('title')) {
+            this.preferences.name = this.title;
+        }
         super.update(changedProps);
+    }
+
+    @runOnce()
+    scrollDialogToBottomForTheVeryFirstTime() {
+        return this.scrollDialogToBottom();
     }
 
     override updated() {
@@ -373,9 +426,14 @@ export class QaBot extends LitElement {
         });
     }
 
-    toggleOpen() {
-        this.open = !this.open;
+    @throttle()
+    async toggleOpen() {
+        this.closing = !!this.open;
         if (this.open) {
+            await delay(300);
+            this.open = false;
+        } else {
+            this.open = true;
             this.textarea?.focus();
         }
     }
@@ -418,14 +476,33 @@ export class QaBot extends LitElement {
                 </div>
                 ` : ''}
                 <div class="qa-row answer">
+                    <div class="avatar">${this.getAvatar()}</div>
                     <div class="bubble">
                         ${this.renderAnswerBubble(qa)}
+                    </div>
+                    <div class="feedback-tooltip">
+                        ${this.getFeedbackTooltip(qa)}
                     </div>
                 </div>
             </div>
     `;
     }
 
+    protected getFeedbackTooltip(qa: QAPair) {
+        return html`
+        ${(qa.question && qa.answer) ? html`
+        <div class="thumbs">
+            <button class="thumb thumbup" ?active="${qa.feedback === true}" @click="${() => this.submitFeedback(qa, 'up')}">
+                <i class="icon icon-thumb-up">${qa.feedback === true ? thumbUpActive : thumbUp}</i>
+            </button>
+            <button class="thumb thumbdown" ?active="${qa.feedback === false}"
+                @click="${() => this.submitFeedback(qa, 'down')}">
+                <i class="icon icon-thumb-down">${qa.feedback === false ? thumbDownActive : thumbDown}</i>
+            </button>
+        </div>
+        ` : ''}
+        `;
+    }
     protected renderAnswerBubble(qaPair: QAPair) {
         if (qaPair.error) {
             return html`
@@ -439,7 +516,9 @@ export class QaBot extends LitElement {
 
         if (!qaPair.answer) {
             return html`
-                <div class="talktext"><i class="icon loading triple-dot">${tripleDot}</i></div>`;
+                <div class="talktext">
+                    <div class="icon loading triple-dot">${[1, 2, 3].map(() => html`<span class="dot"></span>`)}</div>
+                </div>`;
         }
 
         const renderer = this.answerRenderer[qaPair.useTemplate!] || this.answerRenderer.text;
@@ -447,57 +526,117 @@ export class QaBot extends LitElement {
         return renderer.call(this, qaPair);
     }
 
-    protected getAnswerBlock() {
-        if (!(this.qaControl?.qaPairs.length)) {
-            return html`
-            <div class="answer-hint" tabindex="0">
-                <slot>
-                    <dl>
-                        <dt>You can ask questions about Jina. Try:</dt>
-                        <dd>What is Jina?</dd>
-                        <dd>Does Jina support Kubernetes?</dd>
-                        <dd>How can I traverse a nested DocumentArray?</dd>
-                        <dd>What are the basic concepts in Jina?</dd>
-                    </dl>
-                </slot>
-            </div>
-        `;
+    loadPreferences() {
+        if (this.slotName?.[0]?.innerText.trim()) {
+            this.preferences.name = this.slotName[0].innerText.trim();
+        } else if (this.title) {
+            this.preferences.name = this.title;
         }
 
+        if (this.slotDescription?.[0]?.innerText) {
+            this.preferences.description = this.slotDescription[0].innerText;
+        } else if (this.description !== undefined) {
+            this.preferences.description = this.description;
+        }
+        if (this.slotGreetings?.length) {
+            const dl = this.slotGreetings[0];
+            const dt = dl?.querySelector('dt');
+            const dds = dl?.querySelectorAll('dd');
+
+            if (dt?.innerText) {
+                this.preferences.greeting = dt.innerText.trim();
+            }
+
+            if (dds?.length) {
+                this.preferences.questions = Array.from(dds)
+                    .filter((x) => Boolean(x.innerText.trim()))
+                    .map((x) => x.innerText.trim());
+            }
+        }
+    }
+
+    protected getAnswerBlock() {
+
         return html`
-            <div class="answer-dialog">
-                ${this.qaControl?.qaPairs.map((qa) => this.getSingleQAComp(qa))}
-            </div>
+        <div class="answer-hint" tabindex="0">
+            <div class="avatar">${this.getAvatar()}</div>
+            <dl class="answer-hint__content">
+                <dt class="greeting">${this.preferences.greeting}</dt>
+                ${this.preferences.questions.map((item, index) => html`<dd class="question"><button key="${index}"
+                        @click="${this.onClickQuestion}">${item}</button></dd>`)}
+            </dl>
+        </div>
+        <div class="answer-dialog">
+            ${this.qaControl?.qaPairs.map((qa) => this.getSingleQAComp(qa))}
+        </div>
         `;
     }
 
-    override render() {
+    protected onClickQuestion(e: Event) {
+        const text = (e.target as HTMLElement).innerText;
+        this.textarea!.value = text.trim();
+        this.submitQuestion();
+    }
 
+    protected getAvatar() {
+        if (this.botAvatar) {
+            return html`
+            <img src="${this.botAvatar}" alt="avatar" />
+            `;
+        }
+        return defaultAvatar;
+    }
+
+    protected getHeaderBackground() {
+        return this.headerBackground ? `background-image: url(${this.headerBackground})` : '';
+    }
+
+    protected onInputQuestion() {
+        const content = this.textarea?.value;
+        this.typing = !!content;
+        const lineBreaks = (content?.match(/\n/g) || []).length;
+        if (lineBreaks <= 10) {
+            this.textarea?.setAttribute('style', 'height: auto');
+            this.textarea?.setAttribute('style', `height: ${this.textarea?.scrollHeight.toString()}px`);
+        }
+    }
+
+    override render() {
         return html`
-        <div class="qabot card" ?busy="${this.busy}">
-            <button class="card__header" @click="${this.toggleOpen}">
+        <div class="slots" style="display: none">
+            <slot></slot>
+            <slot name="name"></slot>
+            <slot name="description"></slot>
+        </div>
+        <button ?visible="${!this.open}" title="${this.preferences.name}" class="qabot widget"
+            @click="${this.toggleOpen}">${this.getAvatar()}</button>
+        <div class="qabot card" ?busy="${this.busy}" ?visible="${this.open}" ?closing="${this.closing}">
+            <button class="card__header" @click="${this.toggleOpen}" style="${this.getHeaderBackground()}">
                 <span class="card__title">
-                    <i class="icon">${discussionIcon}</i>
-                    <span class="text">${this.label}</span>
+                    <div class="icon avatar">${this.getAvatar()}</div>
+                    <span class="card__title__content">
+                        <span class="name">${this.preferences.name}</span>
+                        <span class="description">${this.preferences.description}</span>
+                    </span>
                 </span>
-                <i class="icon arrow-down">${downArrow}</i>
-                <i class="icon arrow-up">${upArrow}</i>
+                <i class="icon arrow-down">${downArrowCycle}</i>
             </button>
             <div class="card__content">
                 <div class="qabot__answer-block">
                     ${this.getAnswerBlock()}
                 </div>
                 <div class="qabot__control">
-                    <textarea maxlength="100" rows="3" tabindex="0" ?disabled="${this.busy}" @keypress="${this.onTextAreaInput}"
+                    <textarea maxlength="200" rows="1" tabindex="0" ?disabled="${this.busy}" @keypress="${this.onTextAreaInput}"
+                        @input="${this.onInputQuestion}"
                         placeholder="${this.server ? 'Type your question here...' : 'Waiting for server configuration...'}"></textarea>
-                    <button title="Submit" ?disabled="${this.busy}" @click="${this.submitQuestion}">
+                    <button title="Submit" ?disabled="${this.busy}" ?active="${this.typing}" @click="${this.submitQuestion}">
                         <i class="icon icon-plane">${paperPlane}</i>
                     </button>
                     ${this.poweredByIconSrc ? html`<div class="powered-by"><i class="icon"><img src="${this.poweredByIconSrc}"
-                                alt="powered-by"></i></div>` : ''}
+                                alt="powered-by" class="powered-by-img" /></i></div>` : ''}
                 </div>
             </div>
         </div>
-    `;
+        `;
     }
 }

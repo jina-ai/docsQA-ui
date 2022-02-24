@@ -25,8 +25,8 @@ You are free to add any sizing/positioning css to the element.
     server="https://jina-ai-jina.docsqa.jina.ai"    
     style="
         position: fixed; 
-        left: 2rem; 
-        width: 18rem; 
+        left: 20rem; 
+        width: 22rem; 
         max-height: 50vh;
         "
 ></qa-bot>
@@ -61,8 +61,10 @@ Or you can put the `<script>` tag before any `<doc-bot>`, or in the `head` secti
     server="https://jina-ai-jina.docsqa.jina.ai"    
     style="
         position: fixed; 
-        left: 2rem; 
-        width: 18rem; 
+        left: 1rem; 
+        bottom: 1rem;
+        width: 22rem; 
         max-height: 50vh;
         "
-    animate-by="position"></qa-bot>
+    animate-by="position">
+    </qa-bot>
