@@ -412,6 +412,10 @@ export const masterStyle = css`
         justify-content: center;
     }
 
+    .avatar {
+        background: white;
+    }
+
     .card__content .avatar svg {
         width: calc(100% - 0.875em);
         height: calc(100% - 0.875em);
