@@ -245,7 +245,7 @@ export const masterStyle = css`
         width: 3em;
         height: 3em;
         border-radius: 50%;
-        background-color: var(--qabot-color-action-contrast);
+        background-color: white;
     }
     .card .card__title .avatar svg {
         width: calc(100% - 0.75em);
@@ -404,16 +404,12 @@ export const masterStyle = css`
         height: 1.875em;
         border-radius: 50%;
         margin-right: 0.875em;
-        background-color: var(--qabot-color-action-contrast);
+        background-color: white;
         flex-shrink: 0;
         border: 0.0625em solid var(--qabot-color-action-secondary);
         display: flex;
         align-items: center;
         justify-content: center;
-    }
-
-    .avatar {
-        background: white;
     }
 
     .card__content .avatar svg {
