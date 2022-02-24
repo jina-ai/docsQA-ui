@@ -140,7 +140,6 @@ export class QaBot extends LitElement {
                 this.requestUpdate();
             }, { once: true });
         }
-        this.themColor = this.themColor || (this.theme === 'light' ? '#009191' : '#FBCB67');
     }
 
     static override styles = [

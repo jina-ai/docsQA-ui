@@ -116,6 +116,7 @@ export const masterStyle = css`
         display: flex;
         align-items: center;
         justify-content: center;
+        cursor: pointer;
     }
 
     .qabot.widget svg {
