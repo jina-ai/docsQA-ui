@@ -3,19 +3,32 @@ import { JinaQABotController } from './controller';
 import { ANSWER_RENDER_TEMPLATE, QAPair } from './shared';
 import { AnswerRenderer } from './answer-renderers';
 export declare class QaBot extends LitElement {
-    label: string;
+    botAvatar?: string;
+    title: string;
+    description?: string;
+    headerBackground?: string;
+    orientation: 'bottom-left' | 'bottom-right' | 'top-left' | 'top-right' | 'center';
     server?: string;
     site?: string;
-    linkToTextFragment?: 'none';
     target?: string;
     channel?: string;
     theme?: 'auto' | 'dark' | 'light' | string;
-    animateBy?: 'position' | 'height';
     poweredByIconSrc?: string;
     open?: boolean;
     get busy(): boolean;
+    protected typing: boolean;
+    protected closing: boolean;
     protected qaControl?: JinaQABotController;
     protected textarea?: HTMLTextAreaElement;
+    protected slotName?: Array<HTMLElement>;
+    protected slotDescription?: Array<HTMLElement>;
+    protected slotGreetings?: Array<HTMLElement>;
+    preferences: {
+        name: string;
+        description: string;
+        greeting: string;
+        questions: string[];
+    };
     debugEnabled?: boolean;
     private __debugEventListener?;
     answerRenderer: {
@@ -24,6 +37,7 @@ export declare class QaBot extends LitElement {
     constructor();
     static styles: import("lit").CSSResult[];
     update(changedProps: PropertyValues): void;
+    scrollDialogToBottomForTheVeryFirstTime(): Promise<void>;
     updated(): void;
     protected onTextAreaInput(event: KeyboardEvent): void;
     setQaPairTargeted(qaPair?: QAPair): void;
@@ -33,10 +47,16 @@ export declare class QaBot extends LitElement {
     protected submitFeedback(qaPair: QAPair, feedback?: 'up' | 'down' | 'none'): Promise<void>;
     scrollDialogToBottom(): Promise<void>;
     scrollToAnswerByRequestId(requestId: string): Promise<void>;
-    toggleOpen(): void;
+    toggleOpen(): Promise<void>;
     protected makeReferenceLink(uri?: string): string;
     protected getSingleQAComp(qa: QAPair): import("lit-html").TemplateResult<1>;
+    protected getFeedbackTooltip(qa: QAPair): import("lit-html").TemplateResult<1>;
     protected renderAnswerBubble(qaPair: QAPair): any;
+    loadPreferences(): void;
     protected getAnswerBlock(): import("lit-html").TemplateResult<1>;
+    protected onClickQuestion(e: Event): void;
+    protected getAvatar(): import("lit-html").TemplateResult<1 | 2>;
+    protected getHeaderBackground(): string;
+    protected onInputQuestion(): void;
     render(): import("lit-html").TemplateResult<1>;
 }
