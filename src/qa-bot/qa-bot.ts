@@ -624,7 +624,7 @@ export class QaBot extends LitElement {
         <button ?visible="${!this.open}" title="${this.preferences.name}" class="qabot widget"
             @click="${this.toggleOpen}">${this.getAvatar()}</button>
         <div class="qabot card" ?busy="${this.busy}" ?visible="${this.open}" ?closing="${this.closing}">
-            <button class="card__header" @click="${this.toggleOpen}" style="xxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
+            <button class="card__header" @click="${this.toggleOpen}" style="${this.getHeaderBackground()}">
                 <span class="card__title">
                     <div class="icon avatar">${this.getAvatar()}</div>
                     <span class="card__title__content">
