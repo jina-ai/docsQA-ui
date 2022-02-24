@@ -44,9 +44,9 @@ title: <qa-bot> ⌲ Home
     target="_blank">
     <dl>
         <dt>You can tryout qabot easily:</dt>
-        <dd>What is qabot?</dd>
-        <dd>Does qabot support Vue/React/Angular?</dd>
-        <dd>What are the basic concepts in qabot?</dd>
+        <dd>What is Jina?</dd>
+        <dd>Does Jina support Kubernetes?</dd>
+        <dd>What are the basic concepts in Jina?</dd>
     </dl>
 </qa-bot>
 ```
@@ -56,9 +56,9 @@ title: <qa-bot> ⌲ Home
         <qa-bot label="Try custom title ✨" server="https://jina-ai-jina.docsqa.jina.ai" site="https://docs.jina.ai" target="_blank" open>
             <dl>
                 <dt>You can tryout qabot easily:</dt>
-                <dd>What is qabot?</dd>
-                <dd>Does qabot support Vue/React/Angular?</dd>
-                <dd>What are the basic concepts in qabot?</dd>
+                <dd>What is Jina?</dd>
+                <dd>Does Jina support Kubernetes?</dd>
+                <dd>What are the basic concepts in Jina?</dd>
             </dl>
         </qa-bot>
   </div>
