@@ -115,6 +115,8 @@ export class QaBot extends LitElement {
 
     answerRenderer: { [k in ANSWER_RENDER_TEMPLATE]: AnswerRenderer } = ANSWER_RENDERER_MAP;
 
+    private __syncOptionsRoutine: (event: Event) => void;
+
     constructor() {
         super();
 
@@ -133,13 +135,24 @@ export class QaBot extends LitElement {
 
         customTextFragmentsPolyfill();
 
+        this.__syncOptionsRoutine = () => {
+            this.loadPreferences();
+            this.requestUpdate();
+        };
+
         this.loadPreferences();
-        if (document.readyState !== 'complete') {
-            document.addEventListener('DOMContentLoaded', () => {
-                this.loadPreferences();
-                this.requestUpdate();
-            }, { once: true });
-        }
+    }
+
+    override connectedCallback() {
+        document.addEventListener('readystatechange', this.__syncOptionsRoutine);
+        super.connectedCallback();
+        this.loadPreferences();
+        this.requestUpdate();
+    }
+
+    override disconnectedCallback() {
+        document.removeEventListener('readystatechange', this.__syncOptionsRoutine);
+        super.disconnectedCallback();
     }
 
     static override styles = [
@@ -611,7 +624,7 @@ export class QaBot extends LitElement {
         <button ?visible="${!this.open}" title="${this.preferences.name}" class="qabot widget"
             @click="${this.toggleOpen}">${this.getAvatar()}</button>
         <div class="qabot card" ?busy="${this.busy}" ?visible="${this.open}" ?closing="${this.closing}">
-            <button class="card__header" @click="${this.toggleOpen}" style="${this.getHeaderBackground()}">
+            <button class="card__header" @click="${this.toggleOpen}" style="xxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
                 <span class="card__title">
                     <div class="icon avatar">${this.getAvatar()}</div>
                     <span class="card__title__content">
