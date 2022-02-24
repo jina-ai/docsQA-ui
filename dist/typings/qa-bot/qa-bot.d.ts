@@ -34,7 +34,10 @@ export declare class QaBot extends LitElement {
     answerRenderer: {
         [k in ANSWER_RENDER_TEMPLATE]: AnswerRenderer;
     };
+    private __syncOptionsRoutine;
     constructor();
+    connectedCallback(): void;
+    disconnectedCallback(): void;
     static styles: import("lit").CSSResult[];
     update(changedProps: PropertyValues): void;
     scrollDialogToBottomForTheVeryFirstTime(): Promise<void>;
