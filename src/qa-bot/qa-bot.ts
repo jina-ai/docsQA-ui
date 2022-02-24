@@ -22,7 +22,7 @@ const ABSPATHREGEXP = /^(https?:)?\/\/\S/;
  * QABot custom element
  * @summary WebComponent for DocsQA
  *
- * @attr avatar-src - Customize chatbot avatar
+ * @attr avatar-src - Customize chatbot avatar url
  * @attr header-background-src - Customize chatbot header background image with url
  * @attr animation-origin - Set the transform origin for the animation
  * @attr server - REQUIRED, specify the server url bot talks to.
@@ -32,6 +32,9 @@ const ABSPATHREGEXP = /^(https?:)?\/\/\S/;
  * @attr theme - Choose between preset themes, auto, `light`, or `dark`.
  * @attr title - Title of the bot.
  * @attr description - Description of the bot.
+ * @attr orientation - Orientation of the bot widget and animation.
+ * @attr channel - Key for chat history storage.
+ * @attr powered-by-icon-src - Image url for `powered-by` footer.
  */
 export class QaBot extends LitElement {
     @property({ attribute: 'avatar-src', type: String, reflect: true })
@@ -54,9 +57,6 @@ export class QaBot extends LitElement {
 
     @property({ type: String })
     site?: string;
-
-    @property({ attribute: 'link-to-text-fragment', type: String, reflect: true })
-    linkToTextFragment?: 'none';
 
     @property({ type: String, reflect: true })
     target?: string = '_self';
