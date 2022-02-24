@@ -1,6 +1,5 @@
 import { LitElement, html, PropertyValues } from 'lit';
 import { property, query, queryAssignedElements, state } from 'lit/decorators.js';
-import chroma from 'chroma-js';
 import { perNextTick } from '../lib/decorators/per-tick';
 import { throttle } from '../lib/decorators/throttle';
 import { customTextFragmentsPolyfill } from '../lib/text-fragments-polyfill';
@@ -25,7 +24,6 @@ const ABSPATHREGEXP = /^(https?:)?\/\/\S/;
  *
  * @attr avatar-src - Customize chatbot avatar
  * @attr header-background-src - Customize chatbot header background image with url
- * @attr themeColor - Customize chatbot theme color
  * @attr animation-origin - Set the transform origin for the animation
  * @attr server - REQUIRED, specify the server url bot talks to.
  * @attr site - Specify site base location the links refer to, if not relative to current location.
@@ -38,9 +36,6 @@ const ABSPATHREGEXP = /^(https?:)?\/\/\S/;
 export class QaBot extends LitElement {
     @property({ attribute: 'avatar-src', type: String, reflect: true })
     botAvatar?: string;
-
-    @property({ attribute: 'theme-color', type: String, reflect: true })
-    themColor?: string;
 
     @property({ type: String, reflect: true })
     override title!: string;
@@ -114,8 +109,6 @@ export class QaBot extends LitElement {
         ]
     };
 
-    private __color: any;
-
     debugEnabled?: boolean = false;
 
     private __debugEventListener?: (evt: CustomEvent) => void;
@@ -148,9 +141,6 @@ export class QaBot extends LitElement {
             }, { once: true });
         }
         this.themColor = this.themColor || (this.theme === 'light' ? '#009191' : '#FBCB67');
-        this.__color = chroma(this.themColor);
-        console.log(this.__color);
-        // this.theme = this.__color.isLight() ? 'light' : 'dark';
     }
 
     static override styles = [
@@ -622,7 +612,7 @@ export class QaBot extends LitElement {
         <button ?visible="${!this.open}" title="${this.preferences.name}" class="qabot widget"
             @click="${this.toggleOpen}">${this.getAvatar()}</button>
         <div class="qabot card" ?busy="${this.busy}" ?visible="${this.open}" ?closing="${this.closing}">
-            <button class="card__header" @click="${this.toggleOpen}">
+            <button class="card__header" @click="${this.toggleOpen}" style="${this.getHeaderBackground()}">
                 <span class="card__title">
                     <div class="icon avatar">${this.getAvatar()}</div>
                     <span class="card__title__content">
