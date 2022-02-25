@@ -469,6 +469,7 @@ export class QaBot extends LitElement {
                     new URL(this.makeReferenceLink(qaPair.answer.uri), window.location.href).toString() : undefined
             ).catch(() => 'swallow');
             this.textarea!.value = '';
+            this.textarea!.setAttribute('style', `height: auto;`);
 
         } finally {
             await this.scrollDialogToBottom();
