@@ -125,9 +125,13 @@ export const masterStyle = css`
         cursor: pointer;
     }
 
+    .qabot.widget:hover {
+        filter: brightness(0.8);
+    }
+
     .qabot.widget svg {
-        width: 2.5em;
-        height: 2em;
+        max-width: 80%;
+        max-height: 80%;
     }
 
     .qabot.widget [fill]:not([fill='none']) {
@@ -254,8 +258,12 @@ export const masterStyle = css`
         background-color: white;
     }
     .card .card__title .avatar svg {
-        width: calc(100% - 0.75em);
-        height: calc(100% - 1.375em);
+        max-width: 80%;
+        max-height: 80%;
+    }
+
+    .card .arrow-down:hover {
+        filter: brightness(0.8);
     }
 
     .card .card__content {
@@ -422,8 +430,8 @@ export const masterStyle = css`
     }
 
     .card__content .avatar svg {
-        width: calc(100% - 0.875em);
-        height: calc(100% - 0.875em);
+        max-width: 80%;
+        max-height: 80%;
     }
 
     .avatar img, .qabot.widget img {
@@ -667,6 +675,48 @@ export const masterStyle = css`
             opacity: 0.5;
             transform: scale(0.5);
         }
+    }
+    .avatar_eye_left {
+        animation: avatar_eye_left_blink 5000ms linear infinite alternate forwards
+    }
+    .card .avatar_eye_left {
+        animation: none;
+    }
+    .avatar_eye_right {
+        animation: avatar_eye_right_blink 5000ms linear infinite alternate forwards
+    }
+    .card .avatar_eye_right {
+        animation: none;
+    }
+    .avatar_header {
+        animation: avatar_header_blink 5000ms linear infinite alternate forwards
+    }
+    .card .avatar_header {
+        animation: none;
+    }
+    @keyframes avatar_eye_left_blink {
+        0% {fill: var(--qabot-color-action-contrast)}
+        20% {fill: var(--qabot-color-action-contrast);animation-timing-function: cubic-bezier(0.19,1,0.22,1)}
+        30% {fill: transparent;animation-timing-function: cubic-bezier(0.19,1,0.22,1)}
+        40% {fill: var(--qabot-color-action-contrast)}
+        100% {fill: var(--qabot-color-action-contrast)}
+    }
+    @keyframes avatar_eye_right_blink {
+        0% {fill: var(--qabot-color-action-contrast)}
+        30% {fill: var(--qabot-color-action-contrast);animation-timing-function: cubic-bezier(0.95,0.05,0.795,0.035)}
+        40% {fill: transparent;animation-timing-function: cubic-bezier(0.95,0.05,0.795,0.035)}
+        50% {fill: var(--qabot-color-action-contrast)}
+        100% {fill: var(--qabot-color-action-contrast)}
+    }
+    @keyframes avatar_header_blink {
+        0% {fill: var(--qabot-color-action-contrast)}
+        70% {fill: var(--qabot-color-action-contrast);animation-timing-function: cubic-bezier(0.42,0,0.58,1)}
+        74% {fill: transparent;animation-timing-function: cubic-bezier(0.42,0,0.58,1)}
+        76% {fill: var(--qabot-color-action-contrast);animation-timing-function: cubic-bezier(0.42,0,0.58,1)}
+        78% {fill: transparent;animation-timing-function: cubic-bezier(0.42,0,0.58,1)}
+        80% {fill: var(--qabot-color-action-contrast);animation-timing-function: cubic-bezier(0.42,0,0.58,1)}
+        82% {fill: transparent;animation-timing-function: cubic-bezier(0.42,0,0.58,1)}
+        84% {fill: var(--qabot-color-action-contrast)} 100% {fill: var(--qabot-color-action-contrast)}
     }
 `;
 

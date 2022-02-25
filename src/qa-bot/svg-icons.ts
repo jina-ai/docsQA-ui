@@ -139,21 +139,16 @@ export const downArrowCycle = svg`
 `;
 
 export const defaultAvatar = svg`
-<svg width="36px" height="29px" viewBox="0 0 36 29" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g transform="translate(-1082.000000, -312.000000)">
-            <g transform="translate(1060.000000, 284.000000)">
-                <g transform="translate(16.000000, 20.000000)">
-                    <g transform="translate(6.000000, 8.000000)">
-                        <rect stroke="#009191" stroke-width="3" x="6.5" y="10.5" width="23" height="17" rx="2"></rect>
-                        <path d="M13,17 C14.1045695,17 15,17.8954305 15,19 C15,20.1045695 14.1045695,21 13,21 C11.8954305,21 11,20.1045695 11,19 C11,17.8954305 11.8954305,17 13,17 Z M23,17 C24.1045695,17 25,17.8954305 25,19 C25,20.1045695 24.1045695,21 23,21 C21.8954305,21 21,20.1045695 21,19 C21,17.8954305 21.8954305,17 23,17 Z" fill="#009191"></path>
-                        <rect fill="#EB6161" x="0" y="15" width="3" height="8" rx="1.5"></rect>
-                        <rect fill="#EB6161" x="33" y="15" width="3" height="8" rx="1.5"></rect>
-                        <rect fill="#009191" x="16.5" y="5" width="3" height="5" rx="1.5"></rect>
-                        <circle fill="#FBCB67" cx="18" cy="3" r="3"></circle>
-                    </g>
-                </g>
-            </g>
+<svg cache-id="b0fafb11fd6e4bba86da626218b14deb" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 320 320" shape-rendering="geometricPrecision" text-rendering="geometricPrecision">
+    <g>
+        <rect width="320" height="320" rx="0" ry="0" fill="none"/>
+        <g transform="translate(23 50)">
+            <path d="M146.931034,37.931035c.552285,0,1,.447715,1,1v29.344L220,68.275862c8.379493,0,15.172414,6.792921,15.172414,15.172414v121.37931C235.172414,213.207079,228.379493,220,220,220h-166.896552c-8.379492,0-15.172413-6.792921-15.172413-15.172414v-121.37931c0-8.379493,6.792921-15.172414,15.172413-15.172414l72.068586-.000827.00038-29.344c0-.552285.447715-1,1-1h20.75862Zm65.482759,53.103448h-151.724138v106.206896h151.724138v-106.206896Z" fill="#009191"/>
+            <circle class="avatar_eye_left" r="15.1724" transform="translate(98.6207 144.138)" fill="#009191" fill-rule="evenodd"/>
+            <circle class="avatar_eye_right" r="15.1724" transform="translate(174.483 144.138)" fill="#009191" fill-rule="evenodd"/>
+            <rect width="22.7586" height="60.6897" rx="11.37931" ry="11.37931" transform="translate(0 113.793)" fill="#eb6161" fill-rule="evenodd"/>
+            <rect width="22.7586" height="60.6897" rx="11.37931" ry="11.37931" transform="translate(250.345 113.793)" fill="#eb6161" fill-rule="evenodd"/>
+            <circle class="avatar_header" r="22.7586" transform="translate(136.552 22.7586)" fill="#fbcb67" fill-rule="evenodd"/>
         </g>
     </g>
 </svg>
