@@ -65,6 +65,12 @@ export const masterStyle = css`
         right: 1.25em;
     }
 
+    @media (min-height: 90rem) {
+        :host {
+            max-height: 72rem;
+        }
+    }
+
     :host(:not([open])) {
         max-height: 3.75em;
         height: auto;
@@ -395,9 +401,11 @@ export const masterStyle = css`
         height: 100%;
     }
 
-    .answer-hint .answer-hint__content .question:hover {
-        background-color: var(--qabot-color-action);
-        color: var(--qabot-color-action-contrast);
+    @media (hover:hover) {
+        .answer-hint .answer-hint__content .question:hover {
+            background-color: var(--qabot-color-action);
+            color: var(--qabot-color-action-contrast);
+        }
     }
 
     .card__content .avatar {
@@ -427,6 +435,16 @@ export const masterStyle = css`
 
     .answer-dialog {
         width: 100%;
+        position: relative;
+    }
+
+    .bottom-line-detector {
+        position: absolute;
+        width: 1pt;
+        height: 1pt;
+        opacity: 0;
+        bottom: 1em;
+        left: 0;
     }
 
     .qa-pair {
@@ -582,9 +600,11 @@ export const masterStyle = css`
         justify-content: center;
     }
 
-    .feedback-tooltip .thumbs .thumb:hover {
-        transform: scale(1.2);
-        filter: brightness(0.8);
+    @media (hover:hover) {
+        .feedback-tooltip .thumbs .thumb:hover {
+            transform: scale(1.2);
+            filter: brightness(0.8);
+        }
     }
 
     .feedback-tooltip .thumbs .thumb .icon {

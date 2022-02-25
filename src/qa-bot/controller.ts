@@ -236,22 +236,46 @@ export class JinaQABotController implements ReactiveController {
         const thumbUpVal = thumbUpMap[feedback];
 
         try {
+
+            let answerText = qaPair.answer?.text;
+            if (qaPair.answer?.tags?.answerVec) {
+                const [a, b, c] = qaPair.answer.tags.answerVec;
+                answerText = `${a}**${b}**${c}`;
+            }
+
             const r = await this.rpc.sendFeedback({
                 question: qaPair.question,
-                answer: qaPair.answer?.text,
+                answer: answerText,
                 answer_uri: overrideURI || qaPair.answer?.uri,
                 thumbup: thumbUpVal
             });
 
-            if (feedback !== 'none') {
-                this.qaPairs.push({
-                    answer: {
-                        text: 'Thanks for your feedback! We will improve 🙇‍♂️',
-                        uri: '',
-                    },
-                    ts: Date.now()
-                });
-                this.saveQaPairs();
+            switch (feedback) {
+                case 'up': {
+                    this.qaPairs.push({
+                        answer: {
+                            textKey: 'feedbackThumbUp',
+                        },
+                        useTemplate: ANSWER_RENDER_TEMPLATE.PREFERENCE_TEXT,
+                        ts: Date.now()
+                    });
+                    this.saveQaPairs();
+                    break;
+                }
+                case 'down': {
+                    this.qaPairs.push({
+                        answer: {
+                            textKey: 'feedbackThumbDown',
+                        },
+                        useTemplate: ANSWER_RENDER_TEMPLATE.PREFERENCE_TEXT,
+                        ts: Date.now()
+                    });
+                    this.saveQaPairs();
+                    break;
+                }
+                default: {
+                    break;
+                }
             }
 
             return r;

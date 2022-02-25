@@ -89,6 +89,14 @@ export class QaBot extends LitElement {
     @query('.qabot__control textarea')
     protected textarea?: HTMLTextAreaElement;
 
+    @query('.bottom-line-detector')
+    protected bottomLineDetector?: HTMLElement;
+    protected lastBottomLineDetector?: HTMLElement;
+
+    protected bottomLineObserver: IntersectionObserver;
+
+    scrolledToBottom?: boolean;
+
     @queryAssignedElements({ slot: 'name' })
     protected slotName?: Array<HTMLElement>;
 
@@ -98,6 +106,9 @@ export class QaBot extends LitElement {
     @queryAssignedElements({ selector: 'dl' })
     protected slotGreetings?: Array<HTMLElement>;
 
+    @queryAssignedElements({ slot: 'texts' })
+    protected slotTexts?: Array<HTMLElement>;
+
     preferences = {
         name: 'DocsQA',
         description: '@Jina AI',
@@ -106,7 +117,11 @@ export class QaBot extends LitElement {
             'Create a <dl> block',
             'Set title using <dt>',
             'Set questions using <dd>'
-        ]
+        ],
+        texts: {
+            feedbackThumbUp: `Thank you for providing your feedback, happy to help!`,
+            feedbackThumbDown: `Thank you for providing your feedback, we will continue to improve.`,
+        }
     };
 
     debugEnabled?: boolean = false;
@@ -128,10 +143,18 @@ export class QaBot extends LitElement {
             this.debugEnabled = false;
         }
 
-
         if (this.debugEnabled) {
             this.setupDebugEventListener();
         }
+
+        this.bottomLineObserver = new IntersectionObserver((intersectionEvents) => {
+            intersectionEvents.sort((a, b) => {
+                return b.time - a.time;
+            });
+            const lastEvent = intersectionEvents[0];
+
+            this.scrolledToBottom = lastEvent?.isIntersecting;
+        });
 
         customTextFragmentsPolyfill();
 
@@ -143,16 +166,40 @@ export class QaBot extends LitElement {
         this.loadPreferences();
     }
 
+    protected async routineObserveBottomLine() {
+        await this.updateComplete;
+        const elem = this.bottomLineDetector;
+        if (!elem) {
+            return;
+        }
+        if (elem === this.lastBottomLineDetector) {
+            return;
+        }
+
+        if (this.lastBottomLineDetector) {
+            this.bottomLineObserver.unobserve(this.lastBottomLineDetector);
+        }
+
+        this.bottomLineObserver.observe(elem);
+        this.lastBottomLineDetector = elem;
+    }
+
     override connectedCallback() {
         document.addEventListener('readystatechange', this.__syncOptionsRoutine);
         super.connectedCallback();
         this.loadPreferences();
+        this.routineObserveBottomLine();
         this.requestUpdate();
     }
 
     override disconnectedCallback() {
         document.removeEventListener('readystatechange', this.__syncOptionsRoutine);
         super.disconnectedCallback();
+
+        if (this.lastBottomLineDetector) {
+            this.bottomLineObserver.unobserve(this.lastBottomLineDetector!);
+            this.lastBottomLineDetector = undefined;
+        }
     }
 
     static override styles = [
@@ -572,6 +619,21 @@ export class QaBot extends LitElement {
                     .map((x) => x.innerText.trim());
             }
         }
+
+        if (this.slotTexts?.length) {
+            const container = this.slotTexts[0];
+            const textElems = container.querySelectorAll('[for]') as NodeListOf<HTMLElement>;
+            for (const elem of Array.from(textElems)) {
+                const key = elem.getAttribute('for');
+                if (!key) {
+                    continue;
+                }
+                if (!elem.innerText) {
+                    continue;
+                }
+                (this.preferences.texts as any)[key] = elem.innerText;
+            }
+        }
     }
 
     protected getAnswerBlock() {
@@ -626,11 +688,12 @@ export class QaBot extends LitElement {
             <slot></slot>
             <slot name="name"></slot>
             <slot name="description"></slot>
+            <slot name="texts"></slot>
         </div>
         <button ?visible="${!this.open}" title="${this.preferences.name}" class="qabot widget"
             @click="${this.toggleOpen}">${this.getAvatar()}</button>
         <div class="qabot card" ?busy="${this.busy}" ?visible="${this.open}" ?closing="${this.closing}">
-            <button class="card__header" @click="${this.toggleOpen}" style="${this.getHeaderBackground()}">
+            <button class="card__header" @click="${this.toggleOpen}" style="xxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
                 <span class="card__title">
                     <div class="icon avatar">${this.getAvatar()}</div>
                     <span class="card__title__content">

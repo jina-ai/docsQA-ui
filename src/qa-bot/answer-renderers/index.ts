@@ -3,12 +3,15 @@ import { ANSWER_RENDER_TEMPLATE } from '../shared';
 import { renderText } from './text';
 import { renderTextWithLink } from './text-with-link';
 import { renderTextWithMultipleLinks } from './text-with-multiple-links';
+import { renderPreferenceText } from './preference-text';
+
 
 
 export const ANSWER_RENDERER_MAP = {
     [ANSWER_RENDER_TEMPLATE.TEXT]: renderText,
     [ANSWER_RENDER_TEMPLATE.TEXT_WITH_LINK]: renderTextWithLink,
     [ANSWER_RENDER_TEMPLATE.TEXT_WITH_MULTIPLE_LINKS]: renderTextWithMultipleLinks,
+    [ANSWER_RENDER_TEMPLATE.PREFERENCE_TEXT]: renderPreferenceText,
 };
 
 export * from './shared';
@@ -16,3 +19,4 @@ export * from './shared';
 export { renderText } from './text';
 export { renderTextWithLink } from './text-with-link';
 export { renderTextWithMultipleLinks } from './text-with-multiple-links';
+export { renderPreferenceText } from './preference-text';
