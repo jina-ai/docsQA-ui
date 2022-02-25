@@ -677,19 +677,19 @@ export const masterStyle = css`
         }
     }
     .avatar_eye_left {
-        animation: avatar_eye_left_blink 10000ms linear infinite alternate forwards
+        animation: avatar_eye_left_blink 10000ms linear infinite normal forwards
     }
     .card .avatar_eye_left {
         animation: none;
     }
     .avatar_eye_right {
-        animation: avatar_eye_right_blink 10000ms linear infinite alternate forwards
+        animation: avatar_eye_right_blink 10000ms linear infinite normal forwards
     }
     .card .avatar_eye_right {
         animation: none;
     }
     .avatar_header {
-        animation: avatar_header_blink 10000ms linear infinite alternate forwards
+        animation: avatar_header_blink 10000ms linear infinite normal forwards
     }
     .card .avatar_header {
         animation: none;
@@ -710,13 +710,14 @@ export const masterStyle = css`
     }
     @keyframes avatar_header_blink {
         0% {fill: var(--qabot-color-action-contrast)}
-        70% {fill: var(--qabot-color-action-contrast);animation-timing-function: cubic-bezier(0.42,0,0.58,1)}
-        74% {fill: transparent;animation-timing-function: cubic-bezier(0.42,0,0.58,1)}
-        76% {fill: var(--qabot-color-action-contrast);animation-timing-function: cubic-bezier(0.42,0,0.58,1)}
-        78% {fill: transparent;animation-timing-function: cubic-bezier(0.42,0,0.58,1)}
-        80% {fill: var(--qabot-color-action-contrast);animation-timing-function: cubic-bezier(0.42,0,0.58,1)}
-        82% {fill: transparent;animation-timing-function: cubic-bezier(0.42,0,0.58,1)}
-        84% {fill: var(--qabot-color-action-contrast)} 100% {fill: var(--qabot-color-action-contrast)}
+        35% {fill: var(--qabot-color-action-contrast);animation-timing-function: cubic-bezier(0.42,0,0.58,1)}
+        36% {fill: transparent;animation-timing-function: cubic-bezier(0.42,0,0.58,1)}
+        37% {fill: var(--qabot-color-action-contrast);animation-timing-function: cubic-bezier(0.42,0,0.58,1)}
+        38% {fill: transparent;animation-timing-function: cubic-bezier(0.42,0,0.58,1)}
+        39% {fill: var(--qabot-color-action-contrast);animation-timing-function: cubic-bezier(0.42,0,0.58,1)}
+        40% {fill: transparent;animation-timing-function: cubic-bezier(0.42,0,0.58,1)}
+        41% {fill: var(--qabot-color-action-contrast)} 
+        100% {fill: var(--qabot-color-action-contrast)}
     }
 `;
 
