@@ -14,7 +14,7 @@ export const masterStyle = css`
         --qabot-color-muted: #646776;
 
         --qabot-size-text-primary: 0.75em;
-        --qabot-size-line-height: 1.25em;
+        --qabot-size-line-height: 1.6;
         --qabot-size-text-title: 0.875em;
         --qabot-size-border-radius-primary: 1.25em;
 
@@ -277,7 +277,6 @@ export const masterStyle = css`
     .qabot__control {
         display: flex;
         position: relative;
-        line-height: var(--qabot-size-line-height);
         border-top: 1px solid var(--qabot-color-border);
     }
 
@@ -356,9 +355,8 @@ export const masterStyle = css`
     }
 
     .answer-hint {
-        max-width: calc(100% - 5.5em);
+        width: 100%;
         padding-right: 0.5em;
-        line-height: var(--qabot-size-line-height);
         flex-shrink: 0;
         display: flex;
         align-items: flex-end;
@@ -366,6 +364,7 @@ export const masterStyle = css`
     }
 
     .answer-hint .answer-hint__content {
+        max-width: calc(100% - 5.5em);
         border-radius: 1.15em 1.15em 1.15em 0.3125em;
         border: 0.0625em solid var(--qabot-color-action-secondary);
         background-color: var(--qabot-color-action-secondary);
@@ -373,8 +372,9 @@ export const masterStyle = css`
     }
 
     .answer-hint .answer-hint__content .greeting {
-        padding: 0.5em 1em;
+        padding: 0.75em 1em;
         font-size: var(--qabot-size-text-primary);
+        line-height: var(--qabot-size-line-height);
         font-weight: bold;
         color: var(--qabot-color-primary);
     }
@@ -383,7 +383,8 @@ export const masterStyle = css`
         background-color: var(--qabot-color-action-contrast);
         color: var(--qabot-color-action);
         font-size: var(--qabot-size-text-primary);
-        border-bottom: 0.0625em solid var(--qabot-color-action-secondary);
+        line-height: var(--qabot-size-line-height);
+        border-top: 0.0625em solid var(--qabot-color-action-secondary);
         padding: 0.5em 1em;
         display: block;
         cursor: pointer;
@@ -444,12 +445,6 @@ export const masterStyle = css`
         align-items: flex-end;
     }
 
-    /* .answer-hint, .qa-pair .qa-row {
-        opacity: 0;
-        transform: translateY(0.625em);
-        animation: 0.3s ease-in-out 0s forwards running slideIn;
-    } */
-
     .qa-pair .bubble {
         display: inline-block;
         position: relative;
@@ -458,6 +453,20 @@ export const masterStyle = css`
         color: var(--qabot-color-primary);
         border-radius: 1.15em 1.15em 1.15em 0.3125em;
         max-width: calc(100% - 5.5em);
+        border: 0.0625em solid var(--qabot-color-action-secondary);
+        overflow: hidden;
+    }
+
+    .qa-pair[multi-convo] .bubble {
+        border-top-left-radius: 0.3125em;
+    }
+
+    .qa-pair[multi-convo][last-graph] .bubble {
+        border-bottom-left-radius: 1.15em;
+    }
+
+    .qa-pair:not([last-graph]) .avatar {
+        opacity: 0;
     }
 
     .qa-pair .qa-row.answer .talktext p::first-letter {
@@ -473,14 +482,14 @@ export const masterStyle = css`
     }
 
     .qa-pair .talktext {
-        padding: 1em;
         text-align: left;
         font-size: var(--qabot-size-text-primary);
         line-height: var(--qabot-size-line-height);
     }
 
-    .qa-pair .talktext p {
+    .qa-pair .talktext > p {
         overflow-wrap: anywhere;
+        padding: 0.75em 1em;
     }
 
     .qa-pair .talktext a {
@@ -490,8 +499,28 @@ export const masterStyle = css`
         display: flex;
         align-items: center;
         color: var(--qabot-color-action);
+    }
+
+    .qa-pair .talktext > a {
+        padding: 0 1em 1em;
         text-decoration: underline;
-        margin-top: 0.125em;
+    }
+
+    .qa-pair .talktext .multiple-links {
+        background-color: var(--qabot-color-action-contrast);
+        color: var(--qabot-color-action);
+    }
+
+    .qa-pair .talktext .multiple-links a {
+        padding: 0.5em 1em;
+    }
+
+    .qa-pair .talktext .multiple-links a {
+        border-top: 0.0625em solid var(--qabot-color-action-secondary);
+    }
+
+    .qa-pair .talktext .multiple-links a:hover {
+        text-decoration: underline;
     }
 
     .qa-pair .question .bubble {
@@ -527,6 +556,7 @@ export const masterStyle = css`
         cursor: wait;
         color: var(--qabot-color-action-contrast);
         fill: var(--qabot-color-action-contrast);
+        margin: 1em;
     }
 
     .qa-pair .answer:hover .feedback-tooltip .thumbs {

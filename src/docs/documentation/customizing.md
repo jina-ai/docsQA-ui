@@ -63,7 +63,7 @@ By default the background of the chat box header is primary color(light mode). I
 ```html
 <qa-bot
     server="https://jina-ai-jina-docsqa.jina.ai"
-    header-background="https://jina.ai/assets/images/backgrounds/docarray.png"
+    header-background-src="https://jina.ai/assets/images/backgrounds/docarray.png"
 ></qa-bot>
 ```
 
@@ -75,7 +75,7 @@ These were intended to be customized by the users to fit their own needs.
     server="https://jina-ai-jina.docsqa.jina.ai"    
     style="position: fixed; width: 26em; max-height: 20rem;"
 >
-  <dl slot="example">
+  <dl>
     <dt>You can tryout qabot easily:</dt>
     <dd>What is qabot?</dd>
     <dd>Does qabot support Vue/React/Angular?</dd>
@@ -86,13 +86,13 @@ These were intended to be customized by the users to fit their own needs.
 ## Choose animation implementation
 By default the slide-up/slide-down animation is implemented by transitioning `max-height` of the element.
 
-If you intend to have `<doc-bot>` fixed at the left bottom of the page, you can set `animation-origin="left-bottom"` to decide the animation origin, the supported values: `left-bottom`, `right-bottom`, `left-top`, `right-top` and `center`.
+If you intend to have `<doc-bot>` fixed at the left bottom of the page, you can set `orientation="bottom-top"` to decide the animation origin, the supported values: `bottom-left`, `bottom-right`, `top-left`, `top-right` and `center`.
 
 ```html
 <qa-bot
     server="https://jina-ai-jina.docsqa.jina.ai"
     site="https://docs.jina.ai"
-    animation-origin="left-bottom"
+    orientation="bottom-left"
 ></qa-bot>
 ```
 
@@ -100,7 +100,7 @@ If you intend to have `<doc-bot>` fixed at the left bottom of the page, you can 
     server="https://jina-ai-jina.docsqa.jina.ai"
     site="https://docs.jina.ai"
     open
-    animation-origin="left-bottom"  
+    orientation="bottom-left"  
     header-background="https://jina.ai/assets/images/backgrounds/docarray.png">
 </qa-bot>
 

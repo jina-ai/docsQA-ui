@@ -31,7 +31,7 @@ To customize the backend server, you can modify the `server` attribute of `<qa-b
 ></qa-bot>
 ```
 
-<qa-bot server="https://jina-ai-jina.docsqa.jina.ai" site="https://docs.jina.ai"></qa-bot>
+<qa-bot server="https://jina-ai-jina.docsqa.jina.ai" site="https://docs.jina.ai" orientation="bottom-left"></qa-bot>
 
 ## Run this doc site locally 
 ```shell

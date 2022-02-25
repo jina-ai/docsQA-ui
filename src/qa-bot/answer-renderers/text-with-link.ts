@@ -19,7 +19,7 @@ export function renderTextWithLink(this: QaBot, qa: QAPair) {
         ${textVec}
         ${qa.answer?.uri ? html`
         <a class="answer-reference" @click="${() => this.setQaPairTargeted(qa)}" href="${this.makeReferenceLink(qa.answer.uri)}"
-            target="${this.target as any}">Click here to view source </a>
+            target="${this.target as any}">See context</a>
         ` : ''}
     </div>
     `;
