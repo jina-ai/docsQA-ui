@@ -124,12 +124,12 @@ export class QaBot extends LitElement {
             'Set questions using <dd>'
         ],
         texts: {
-            feedbackThumbUp: `Thank you for providing your feedback, happy to help! 😀`,
-            feedbackThumbDown: `Thank you for providing your feedback, we will continue to improve. 🙇‍♂️`,
+            feedbackThumbUp: [`😀 Happy to help!`, 'You are welcome!', '😎', 'You are the best!'],
+            feedbackThumbDown: [` 🙇‍♂️ Noted, thanks!`, '😢 Sorry, my bad', '😬 Will improve!'],
             contextHref: 'See context',
-            unknownError: `🚨 Sorry, something went wrong. ⛑️\nPlease try again later.`,
-            networkError: `🚨 Sorry, we are experiencing some technical difficulties on networking. 🌐\nPlease try again later. 🙇‍♂️`,
-            serverError: `🚨 Sorry, we are experiencing some technical difficulties on the server. 🐛\nPlease try again later. 🙇‍♂️`,
+            unknownError: `😵‍💫 Sorry! Something somehow went wrong.\n ⛑ ️Please ping me later. 🙇‍♂️`,
+            networkError: `😶‍🌫️ Sorry! I'm experiencing some technical issues on networking. \n🌐 Please ping me later. 🙇‍♂️`,
+            serverError: `🥶 Sorry! My brain is freezing, I mean my server is down.\n 🐛Please ping me later. 🙇‍♂️`,
         }
     };
 
