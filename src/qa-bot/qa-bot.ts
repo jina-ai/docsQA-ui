@@ -98,7 +98,6 @@ export class QaBot extends LitElement {
 
     scrolledToBottom?: boolean;
     smallViewPort?: boolean;
-    expectPhysicalKeyboard?: boolean = false;
 
     @queryAssignedElements({ slot: 'name' })
     protected slotName?: Array<HTMLElement>;
@@ -114,9 +113,6 @@ export class QaBot extends LitElement {
 
     @queryAssignedElements({ slot: 'texts' })
     protected slotTexts?: Array<HTMLElement>;
-
-    private lastKeyDownAt?: number;
-    private lastKeyDown?: string;
 
     preferences = {
         name: 'DocsQA',
@@ -201,6 +197,8 @@ export class QaBot extends LitElement {
         }
         if (unitRemArea * 3 > areaRem) {
             this.smallViewPort = true;
+        } else {
+            this.smallViewPort = false;
         }
     }
 
@@ -291,10 +289,6 @@ export class QaBot extends LitElement {
     }
 
     protected onTextAreaInput(event: KeyboardEvent) {
-        if (this.lastKeyDown !== event.key) {
-            this.lastKeyDown = event.key;
-            this.lastKeyDownAt = performance.now();
-        }
         if (event.key !== 'Enter') {
             return;
         }
@@ -305,22 +299,6 @@ export class QaBot extends LitElement {
         event.preventDefault();
 
         this.submitQuestion();
-    }
-
-    protected onTextAreaKeyUp(event: KeyboardEvent) {
-        if (event.key !== this.lastKeyDown) {
-            return;
-        }
-
-        if (!this.lastKeyDownAt) {
-            return;
-        }
-
-        if ((performance.now() - this.lastKeyDownAt) > 20) {
-            this.expectPhysicalKeyboard = true;
-        } else {
-            this.expectPhysicalKeyboard = false;
-        }
     }
 
     setQaPairTargeted(qaPair?: QAPair) {
@@ -476,7 +454,7 @@ export class QaBot extends LitElement {
         }
 
         await this.updateComplete;
-        if (this.open && this.expectPhysicalKeyboard) {
+        if (this.open && !this.smallViewPort) {
             this.textarea?.focus();
         }
     }
@@ -803,7 +781,6 @@ export class QaBot extends LitElement {
                 <div class="qabot__control">
                     <textarea maxlength="200" rows="1" tabindex="0" ?disabled="${this.busy}"
                         @keydown="${this.onTextAreaInput}"
-                        @keyup="${this.onTextAreaKeyUp}"
                         @input="${this.onInputQuestion}"
                         placeholder="${this.server ? 'Type your question here...' : 'Waiting for server configuration...'}"></textarea>
                     <button title="Submit" ?disabled="${this.busy}" ?active="${this.typing}" @click="${this.submitQuestion}">
