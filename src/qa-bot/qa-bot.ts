@@ -15,6 +15,7 @@ import {
 import { AnswerRenderer, ANSWER_RENDERER_MAP } from './answer-renderers';
 import { delay } from '../lib/timeout';
 import { runOnce } from '../lib/decorators/once';
+import { debounce } from '../lib/decorators/debounce';
 
 const ABSPATHREGEXP = /^(https?:)?\/\/\S/;
 
@@ -103,7 +104,10 @@ export class QaBot extends LitElement {
     @queryAssignedElements({ slot: 'description' })
     protected slotDescription?: Array<HTMLElement>;
 
-    @queryAssignedElements({ selector: 'dl' })
+    @queryAssignedElements()
+    protected slotDefault?: Array<HTMLElement>;
+
+    @queryAssignedElements({ slot: 'greetings' })
     protected slotGreetings?: Array<HTMLElement>;
 
     @queryAssignedElements({ slot: 'texts' })
@@ -119,8 +123,9 @@ export class QaBot extends LitElement {
             'Set questions using <dd>'
         ],
         texts: {
-            feedbackThumbUp: `Thank you for providing your feedback, happy to help!`,
-            feedbackThumbDown: `Thank you for providing your feedback, we will continue to improve.`,
+            feedbackThumbUp: `Thank you for providing your feedback, happy to help! 😀`,
+            feedbackThumbDown: `Thank you for providing your feedback, we will continue to improve. 🙇‍♂️`,
+            contextHref: 'See context'
         }
     };
 
@@ -131,6 +136,7 @@ export class QaBot extends LitElement {
     answerRenderer: { [k in ANSWER_RENDER_TEMPLATE]: AnswerRenderer } = ANSWER_RENDERER_MAP;
 
     private __syncOptionsRoutine: (event: Event) => void;
+    private __onScreenResizeRoutine: (event: Event) => void;
 
     constructor() {
         super();
@@ -162,11 +168,14 @@ export class QaBot extends LitElement {
             this.loadPreferences();
             this.requestUpdate();
         };
+        this.__onScreenResizeRoutine = () => {
+            this.__onScreenResize();
+        };
 
         this.loadPreferences();
     }
 
-    protected async routineObserveBottomLine() {
+    protected async __observeBottomLine() {
         await this.updateComplete;
         const elem = this.bottomLineDetector;
         if (!elem) {
@@ -184,16 +193,28 @@ export class QaBot extends LitElement {
         this.lastBottomLineDetector = elem;
     }
 
+    @debounce(100)
+    protected async __onScreenResize() {
+        const shouldScrollToBottom = this.scrolledToBottom;
+        await this.updateComplete;
+
+        if (shouldScrollToBottom) {
+            this.scrollDialogToBottom();
+        }
+    }
+
     override connectedCallback() {
         document.addEventListener('readystatechange', this.__syncOptionsRoutine);
+        document.addEventListener('resize', this.__onScreenResizeRoutine);
         super.connectedCallback();
         this.loadPreferences();
-        this.routineObserveBottomLine();
+        this.__observeBottomLine();
         this.requestUpdate();
     }
 
     override disconnectedCallback() {
         document.removeEventListener('readystatechange', this.__syncOptionsRoutine);
+        document.removeEventListener('resize', this.__onScreenResizeRoutine);
         super.disconnectedCallback();
 
         if (this.lastBottomLineDetector) {
@@ -526,12 +547,10 @@ export class QaBot extends LitElement {
     protected getSingleQAComp(qa: QAPair, index: number) {
         // the last graph means current qa is last one, or there is a new question is risen.
         const isLastGraph: boolean = !this.qaControl?.qaPairs[index + 1] ||
-        !!this.qaControl?.qaPairs[index + 1]?.question;
+            !!this.qaControl?.qaPairs[index + 1]?.question;
 
         return html`
-            <div class="qa-pair"
-                ?multi-convo="${!qa.question}"
-                ?last-graph="${isLastGraph}">
+            <div class="qa-pair" ?multi-convo="${!qa.question}" ?last-graph="${isLastGraph}">
                 ${qa.question ? html`
                 <div class="qa-row question">
                     <div class="bubble">
@@ -592,46 +611,83 @@ export class QaBot extends LitElement {
         return renderer.call(this, qaPair);
     }
 
+    __loadFromSlot(elems?: HTMLElement[], selector = '*') {
+        if (!elems?.length) {
+            return;
+        }
+        for (const elem of elems) {
+            const root = elem.tagName === 'TEMPLATE' ? (elem as HTMLTemplateElement).content : elem;
+
+            const children = root.querySelectorAll(selector) as NodeListOf<HTMLElement>;
+
+            const tgt = children.length === 1 ? children[0] : (root as HTMLElement);
+
+            if (!tgt.textContent) {
+                continue;
+            }
+
+            return tgt;
+        }
+    }
+
     loadPreferences() {
-        if (this.slotName?.[0]?.innerText.trim()) {
-            this.preferences.name = this.slotName[0].innerText.trim();
-        } else if (this.title) {
+
+        if (this.title) {
             this.preferences.name = this.title;
         }
+        if (this.slotName?.length) {
+            const elem = this.__loadFromSlot(this.slotName);
+            const text = elem?.textContent?.trim();
+            if (text) {
+                this.preferences.name = text;
+            }
+        }
 
-        if (this.slotDescription?.[0]?.innerText) {
-            this.preferences.description = this.slotDescription[0].innerText;
-        } else if (this.description !== undefined) {
+        if (this.description !== undefined) {
             this.preferences.description = this.description;
         }
-        if (this.slotGreetings?.length) {
-            const dl = this.slotGreetings[0];
-            const dt = dl?.querySelector('dt');
-            const dds = dl?.querySelectorAll('dd');
+        if (this.slotDescription?.length) {
+            const elem = this.__loadFromSlot(this.slotDescription);
+            const text = elem?.textContent?.trim();
+            if (text) {
+                this.preferences.description = text;
+            }
+        }
+        if (this.slotGreetings?.length || this.slotDefault?.length) {
+            const elem = this.__loadFromSlot(this.slotGreetings, 'dl') || this.__loadFromSlot(this.slotDefault, 'dl');
+            const dt = elem?.querySelector('dt');
+            const dds = elem?.querySelectorAll('dd');
 
-            if (dt?.innerText) {
-                this.preferences.greeting = dt.innerText.trim();
+            if (dt?.textContent) {
+                this.preferences.greeting = dt.textContent.trim();
             }
 
             if (dds?.length) {
                 this.preferences.questions = Array.from(dds)
-                    .filter((x) => Boolean(x.innerText.trim()))
-                    .map((x) => x.innerText.trim());
+                    .filter((x) => Boolean(x.textContent?.trim()))
+                    .map((x) => x.textContent!.trim());
             }
         }
 
         if (this.slotTexts?.length) {
-            const container = this.slotTexts[0];
-            const textElems = container.querySelectorAll('[for]') as NodeListOf<HTMLElement>;
-            for (const elem of Array.from(textElems)) {
-                const key = elem.getAttribute('for');
-                if (!key) {
-                    continue;
+            const elem = this.__loadFromSlot(this.slotTexts);
+            const textElems = elem?.querySelectorAll('[for]') as (NodeListOf<HTMLElement> | undefined);
+            if (textElems?.length) {
+                for (const elem of Array.from(textElems)) {
+                    const key = elem.getAttribute('for');
+                    if (!key) {
+                        continue;
+                    }
+                    if (!elem.textContent) {
+                        continue;
+                    }
+                    (this.preferences.texts as any)[key] = elem.textContent;
                 }
-                if (!elem.innerText) {
-                    continue;
+            } else if (elem?.getAttribute('for')) {
+                const key = elem.getAttribute('for')!;
+                if (elem.textContent) {
+                    (this.preferences.texts as any)[key] = elem.textContent;
                 }
-                (this.preferences.texts as any)[key] = elem.innerText;
             }
         }
     }
@@ -668,10 +724,6 @@ export class QaBot extends LitElement {
         return defaultAvatar;
     }
 
-    protected getHeaderBackground() {
-        return this.headerBackground ? `background-image: url(${this.headerBackground})` : '';
-    }
-
     protected onInputQuestion() {
         const content = this.textarea?.value;
         this.typing = !!content;
@@ -684,16 +736,22 @@ export class QaBot extends LitElement {
 
     override render() {
         return html`
+        <style>
+            .card .card__header {
+                background-image: ${this.headerBackground ? `url(${this.headerBackground})` : 'unset'};
+            }
+        </style>
         <div class="slots" style="display: none">
-            <slot></slot>
             <slot name="name"></slot>
             <slot name="description"></slot>
             <slot name="texts"></slot>
+            <slot name="greetings"></slot>
+            <slot></slot>
         </div>
         <button ?visible="${!this.open}" title="${this.preferences.name}" class="qabot widget"
             @click="${this.toggleOpen}">${this.getAvatar()}</button>
         <div class="qabot card" ?busy="${this.busy}" ?visible="${this.open}" ?closing="${this.closing}">
-            <button class="card__header" @click="${this.toggleOpen}" style="${this.getHeaderBackground()}">
+            <button class="card__header" @click="${this.toggleOpen}">
                 <span class="card__title">
                     <div class="icon avatar">${this.getAvatar()}</div>
                     <span class="card__title__content">

@@ -10,32 +10,32 @@
 </head>
 
 <body>
-
-  <style>
-    qa-bot:not(:defined) {
-      display: none;
-    }
-  </style>
   <p>
     Need some text here.
   </p>
   <p>
     Jina Finetuner Docarray
     Document
+
   </p>
-  <qa-bot server="https://jina-ai-jina.docsqa.jina.ai" theme="light" site="docs.jina.ai" target="_blank"
-    orientation="center" title="DocsQA">
-    <dl>
-      <dt>Welcome to DocsQA! Please ask any question:</dt>
-      <dd>What is Jina</dd>
-      <dd>Does Jina support Kubernetes?</dd>
-      <dd>How can I traverse a nested DocumentArray?</dd>
-    </dl>
-    <span slot="description">@@JinaAI</span>
-    <span slot="texts">
-      <label for="feedbackThumbUp">666</label>
-    </span>
-  </qa-bot>
+  <div>
+    <qa-bot server="https://jina-ai-jina.docsqa.jina.ai" theme="light" site="docs.jina.ai" target="_blank"
+      orientation="center" title="DocsQA">
+      <template slot="greetings">
+        <dl>
+          <dt>Welcome to DocsQA! Please ask any question:</dt>
+          <dd>What is Jina</dd>
+          <dd>Does Jina support Kubernetes?</dd>
+          <dd>How can I traverse a nested DocumentArray?</dd>
+        </dl>
+      </template>
+      <template slot="description"><span>@@JinaAI</span></template>
+      <template slot="texts">
+        <label for="feedbackThumbUp">666</label>
+      </template>
+    </qa-bot>
+  </div>
+
 
   <script type="module" src="./qabot.js"></script>
 
