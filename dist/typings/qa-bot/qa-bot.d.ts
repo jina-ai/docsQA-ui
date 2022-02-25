@@ -20,14 +20,23 @@ export declare class QaBot extends LitElement {
     protected closing: boolean;
     protected qaControl?: JinaQABotController;
     protected textarea?: HTMLTextAreaElement;
+    protected bottomLineDetector?: HTMLElement;
+    protected lastBottomLineDetector?: HTMLElement;
+    protected bottomLineObserver: IntersectionObserver;
+    scrolledToBottom?: boolean;
     protected slotName?: Array<HTMLElement>;
     protected slotDescription?: Array<HTMLElement>;
     protected slotGreetings?: Array<HTMLElement>;
+    protected slotTexts?: Array<HTMLElement>;
     preferences: {
         name: string;
         description: string;
         greeting: string;
         questions: string[];
+        texts: {
+            feedbackThumbUp: string;
+            feedbackThumbDown: string;
+        };
     };
     debugEnabled?: boolean;
     private __debugEventListener?;
@@ -36,6 +45,7 @@ export declare class QaBot extends LitElement {
     };
     private __syncOptionsRoutine;
     constructor();
+    protected routineObserveBottomLine(): Promise<void>;
     connectedCallback(): void;
     disconnectedCallback(): void;
     static styles: import("lit").CSSResult[];
@@ -52,7 +62,7 @@ export declare class QaBot extends LitElement {
     scrollToAnswerByRequestId(requestId: string): Promise<void>;
     toggleOpen(): Promise<void>;
     protected makeReferenceLink(uri?: string): string;
-    protected getSingleQAComp(qa: QAPair): import("lit-html").TemplateResult<1>;
+    protected getSingleQAComp(qa: QAPair, index: number): import("lit-html").TemplateResult<1>;
     protected getFeedbackTooltip(qa: QAPair): import("lit-html").TemplateResult<1>;
     protected renderAnswerBubble(qaPair: QAPair): any;
     loadPreferences(): void;
