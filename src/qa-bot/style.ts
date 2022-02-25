@@ -716,7 +716,7 @@ export const masterStyle = css`
         38% {fill: transparent;animation-timing-function: cubic-bezier(0.42,0,0.58,1)}
         39% {fill: var(--qabot-color-action-contrast);animation-timing-function: cubic-bezier(0.42,0,0.58,1)}
         40% {fill: transparent;animation-timing-function: cubic-bezier(0.42,0,0.58,1)}
-        41% {fill: var(--qabot-color-action-contrast)} 
+        41% {fill: var(--qabot-color-action-contrast)}
         100% {fill: var(--qabot-color-action-contrast)}
     }
 `;

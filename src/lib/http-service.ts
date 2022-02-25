@@ -54,10 +54,14 @@ export class HTTPServiceError<T extends HTTPServiceRequestOptions = HTTPServiceR
     }) {
         super(`Req(${serial}): ${options?.err?.message}`);
         this.serial = serial;
+        this.name = 'HTTPServiceError';
         if (options) {
             Object.assign(this, options);
         }
-        this.message = `Req(${serial} ${(this.config?.method || 'get').toUpperCase()} ${this.config?.url}): ${stringifyErrorLike(this.err)}`;
+        this.message = `Req(${serial} ${this.response?.status || '???'} ${(this.config?.method || 'get').toUpperCase()} ${this.config?.url}): ${stringifyErrorLike(this.err)}`;
+        if (this.response?.status !== undefined) {
+            this.status = this.response.status;
+        }
         if (this.err?.stack && this.stack) {
             const messageLines = (this.message.match(/\n/g) || []).length + 1;
             // eslint-disable-next-line prefer-template

@@ -10,6 +10,7 @@ export enum ANSWER_RENDER_TEMPLATE {
     TEXT_WITH_LINK = 'text-with-link',
     TEXT_WITH_MULTIPLE_LINKS = 'text-with-multiple-links',
     PREFERENCE_TEXT = 'preference-text',
+    ERROR = 'error',
 }
 
 type DeepPartial<T> = T extends object ? {

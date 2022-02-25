@@ -215,6 +215,7 @@ export class JinaQABotController implements ReactiveController {
             return qaPair;
         } catch (e: any) {
             qaPair.error = e;
+            qaPair.useTemplate = ANSWER_RENDER_TEMPLATE.ERROR;
             this.dispatchEvent('debug', {
                 type: 'error',
                 clientId: this.clientId,
@@ -337,6 +338,7 @@ export class JinaQABotController implements ReactiveController {
 
         } catch (err: any) {
             qaPair.error = err;
+            qaPair.useTemplate = ANSWER_RENDER_TEMPLATE.ERROR;
         } finally {
             await this.host.requestUpdate();
         }
@@ -379,6 +381,7 @@ export class JinaQABotController implements ReactiveController {
 
         } catch (err: any) {
             qaPair.error = err;
+            qaPair.useTemplate = ANSWER_RENDER_TEMPLATE.ERROR;
         } finally {
             await this.host.requestUpdate();
         }

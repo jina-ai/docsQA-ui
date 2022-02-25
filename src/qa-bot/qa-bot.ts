@@ -9,7 +9,7 @@ import { JinaQABotController } from './controller';
 import { ANSWER_RENDER_TEMPLATE, getLocalStorageKey, QAPair } from './shared';
 import masterStyle from './style';
 import {
-    paperPlane, downArrowCycle, defaultAvatar,
+    paperPlane, downArrowCircle, defaultAvatar,
     thumbUp, thumbUpActive, thumbDown, thumbDownActive
 } from './svg-icons';
 import { AnswerRenderer, ANSWER_RENDERER_MAP } from './answer-renderers';
@@ -97,6 +97,8 @@ export class QaBot extends LitElement {
     protected bottomLineObserver: IntersectionObserver;
 
     scrolledToBottom?: boolean;
+    smallViewPort?: boolean;
+    expectPhysicalKeyboard?: boolean = false;
 
     @queryAssignedElements({ slot: 'name' })
     protected slotName?: Array<HTMLElement>;
@@ -113,6 +115,9 @@ export class QaBot extends LitElement {
     @queryAssignedElements({ slot: 'texts' })
     protected slotTexts?: Array<HTMLElement>;
 
+    private lastKeyDownAt?: number;
+    private lastKeyDown?: string;
+
     preferences = {
         name: 'DocsQA',
         description: '@Jina AI',
@@ -125,7 +130,10 @@ export class QaBot extends LitElement {
         texts: {
             feedbackThumbUp: `Thank you for providing your feedback, happy to help! 😀`,
             feedbackThumbDown: `Thank you for providing your feedback, we will continue to improve. 🙇‍♂️`,
-            contextHref: 'See context'
+            contextHref: 'See context',
+            unknownError: `🚨 Sorry, something went wrong. ⛑️\nPlease try again later.`,
+            networkError: `🚨 Sorry, we are experiencing some technical difficulties on networking. 🌐\nPlease try again later. 🙇‍♂️`,
+            serverError: `🚨 Sorry, we are experiencing some technical difficulties on the server. 🐛\nPlease try again later. 🙇‍♂️`,
         }
     };
 
@@ -169,14 +177,34 @@ export class QaBot extends LitElement {
             this.requestUpdate();
         };
         this.__onScreenResizeRoutine = () => {
-            this.__onScreenResize();
+            this.__detectViewPort();
+
+            if (!this.scrolledToBottom) {
+                return;
+            }
+            this.debouncedScrollToBottom();
         };
+        this.__detectViewPort();
 
         this.loadPreferences();
     }
 
+    protected __detectViewPort() {
+        const fontSize = parseInt(window.getComputedStyle(this).fontSize, 10);
+        const wrem = window.innerWidth / fontSize;
+        const hrem = window.innerHeight / fontSize;
+        const areaRem = wrem * hrem;
+        let unitRemArea = 22.5 * hrem * 0.8;
+
+        if (hrem > 90) {
+            unitRemArea = 22.5 * fontSize * 72;
+        }
+        if (unitRemArea * 3 > areaRem) {
+            this.smallViewPort = true;
+        }
+    }
+
     protected async __observeBottomLine() {
-        await this.updateComplete;
         const elem = this.bottomLineDetector;
         if (!elem) {
             return;
@@ -188,24 +216,18 @@ export class QaBot extends LitElement {
         if (this.lastBottomLineDetector) {
             this.bottomLineObserver.unobserve(this.lastBottomLineDetector);
         }
-
         this.bottomLineObserver.observe(elem);
         this.lastBottomLineDetector = elem;
     }
 
     @debounce(100)
-    protected async __onScreenResize() {
-        const shouldScrollToBottom = this.scrolledToBottom;
-        await this.updateComplete;
-
-        if (shouldScrollToBottom) {
-            this.scrollDialogToBottom();
-        }
+    protected debouncedScrollToBottom() {
+        this.scrollDialogToBottom();
     }
 
     override connectedCallback() {
         document.addEventListener('readystatechange', this.__syncOptionsRoutine);
-        document.addEventListener('resize', this.__onScreenResizeRoutine);
+        window.addEventListener('resize', this.__onScreenResizeRoutine);
         super.connectedCallback();
         this.loadPreferences();
         this.__observeBottomLine();
@@ -214,7 +236,7 @@ export class QaBot extends LitElement {
 
     override disconnectedCallback() {
         document.removeEventListener('readystatechange', this.__syncOptionsRoutine);
-        document.removeEventListener('resize', this.__onScreenResizeRoutine);
+        window.removeEventListener('resize', this.__onScreenResizeRoutine);
         super.disconnectedCallback();
 
         if (this.lastBottomLineDetector) {
@@ -257,15 +279,22 @@ export class QaBot extends LitElement {
         if (!this.qaControl) {
             return;
         }
+        this.__observeBottomLine();
 
         if (this.qaControl.qaPairToFocus) {
             this.scrollToAnswerByRequestId(this.qaControl.qaPairToFocus);
-            this.open = true;
+            if (!this.smallViewPort) {
+                this.open = true;
+            }
             this.qaControl.qaPairToFocus = undefined;
         }
     }
 
     protected onTextAreaInput(event: KeyboardEvent) {
+        if (this.lastKeyDown !== event.key) {
+            this.lastKeyDown = event.key;
+            this.lastKeyDownAt = performance.now();
+        }
         if (event.key !== 'Enter') {
             return;
         }
@@ -276,6 +305,22 @@ export class QaBot extends LitElement {
         event.preventDefault();
 
         this.submitQuestion();
+    }
+
+    protected onTextAreaKeyUp(event: KeyboardEvent) {
+        if (event.key !== this.lastKeyDown) {
+            return;
+        }
+
+        if (!this.lastKeyDownAt) {
+            return;
+        }
+
+        if ((performance.now() - this.lastKeyDownAt) > 20) {
+            this.expectPhysicalKeyboard = true;
+        } else {
+            this.expectPhysicalKeyboard = false;
+        }
     }
 
     setQaPairTargeted(qaPair?: QAPair) {
@@ -430,7 +475,7 @@ export class QaBot extends LitElement {
         }
 
         await this.updateComplete;
-        if (this.open) {
+        if (this.open && this.expectPhysicalKeyboard) {
             this.textarea?.focus();
         }
     }
@@ -589,17 +634,7 @@ export class QaBot extends LitElement {
         `;
     }
     protected renderAnswerBubble(qaPair: QAPair) {
-        if (qaPair.error) {
-            return html`
-            <div class="talktext">
-                <p>${qaPair.error.toString()}</p>
-            </div>
-            <div class="feedback-tooltip">
-                <a class="answer-reference" href="https://slack.jina.ai" target="_blank">Report</a>
-            </div>`;
-        }
-
-        if (!qaPair.answer) {
+        if (!qaPair.answer && !qaPair.error) {
             return html`
                 <div class="talktext">
                     <div class="icon loading triple-dot">${[1, 2, 3].map(() => html`<span class="dot"></span>`)}</div>
@@ -705,6 +740,7 @@ export class QaBot extends LitElement {
         </div>
         <div class="answer-dialog">
             ${this.qaControl?.qaPairs.map((qa, index) => this.getSingleQAComp(qa, index))}
+            <i class="bottom-line-detector"></i>
         </div>
         `;
     }
@@ -750,7 +786,7 @@ export class QaBot extends LitElement {
         </div>
         <button ?visible="${!this.open}" title="${this.preferences.name}" class="qabot widget"
             @click="${this.toggleOpen}">${this.getAvatar()}</button>
-        <div class="qabot card" ?busy="${this.busy}" ?visible="${this.open}" ?closing="${this.closing}">
+        <div class="qabot card" title="" ?busy="${this.busy}" ?visible="${this.open}" ?closing="${this.closing}">
             <button class="card__header" @click="${this.toggleOpen}">
                 <span class="card__title">
                     <div class="icon avatar">${this.getAvatar()}</div>
@@ -759,14 +795,16 @@ export class QaBot extends LitElement {
                         <span class="description">${this.preferences.description}</span>
                     </span>
                 </span>
-                <i class="icon arrow-down">${downArrowCycle}</i>
+                <i class="icon arrow-down">${downArrowCircle}</i>
             </button>
-            <div class="card__content">
-                <div class="qabot__answer-block">
+            <div class="card__content" title="">
+                <div class="qabot__answer-block" title="">
                     ${this.getAnswerBlock()}
                 </div>
                 <div class="qabot__control">
-                    <textarea maxlength="200" rows="1" tabindex="0" ?disabled="${this.busy}" @keypress="${this.onTextAreaInput}"
+                    <textarea maxlength="200" rows="1" tabindex="0" ?disabled="${this.busy}"
+                        @keydown="${this.onTextAreaInput}"
+                        @keyup="${this.onTextAreaKeyUp}"
                         @input="${this.onInputQuestion}"
                         placeholder="${this.server ? 'Type your question here...' : 'Waiting for server configuration...'}"></textarea>
                     <button title="Submit" ?disabled="${this.busy}" ?active="${this.typing}" @click="${this.submitQuestion}">

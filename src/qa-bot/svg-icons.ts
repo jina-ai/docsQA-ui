@@ -123,14 +123,14 @@ export const linkIcon = svg`
 </svg>
 `;
 
-export const downArrowCycle = svg`
+export const downArrowCircle = svg`
 <svg width="2em" height="2em" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <g id="Jina" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Chatbot_Typing" transform="translate(-1372.000000, -312.000000)">
-            <g id="编组-2备份" transform="translate(1060.000000, 284.000000)">
-                <g id="编组-3" transform="translate(312.000000, 28.000000)">
-                    <circle id="Icon-BG" fill-opacity="0.3" fill="#FFFFFF" cx="16" cy="16" r="16"></circle>
-                    <polyline id="路径" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" transform="translate(16.016854, 14.516854) rotate(-45.000000) translate(-16.016854, -14.516854) " points="20.0168542 18.5168542 12.0168542 18.5168542 12.0168542 10.5168542"></polyline>
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g transform="translate(-1372.000000, -312.000000)">
+            <g transform="translate(1060.000000, 284.000000)">
+                <g transform="translate(312.000000, 28.000000)">
+                    <circle fill-opacity="0.3" fill="#FFFFFF" cx="16" cy="16" r="16"></circle>
+                    <polyline stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" transform="translate(16.016854, 14.516854) rotate(-45.000000) translate(-16.016854, -14.516854) " points="20.0168542 18.5168542 12.0168542 18.5168542 12.0168542 10.5168542"></polyline>
                 </g>
             </g>
         </g>
@@ -139,7 +139,7 @@ export const downArrowCycle = svg`
 `;
 
 export const defaultAvatar = svg`
-<svg cache-id="b0fafb11fd6e4bba86da626218b14deb" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 320 320" shape-rendering="geometricPrecision" text-rendering="geometricPrecision">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 320 320" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" width="100%" height="100%">
     <g>
         <rect width="320" height="320" rx="0" ry="0" fill="none"/>
         <g transform="translate(23 50)">
