@@ -677,35 +677,35 @@ export const masterStyle = css`
         }
     }
     .avatar_eye_left {
-        animation: avatar_eye_left_blink 5000ms linear infinite alternate forwards
+        animation: avatar_eye_left_blink 10000ms linear infinite alternate forwards
     }
     .card .avatar_eye_left {
         animation: none;
     }
     .avatar_eye_right {
-        animation: avatar_eye_right_blink 5000ms linear infinite alternate forwards
+        animation: avatar_eye_right_blink 10000ms linear infinite alternate forwards
     }
     .card .avatar_eye_right {
         animation: none;
     }
     .avatar_header {
-        animation: avatar_header_blink 5000ms linear infinite alternate forwards
+        animation: avatar_header_blink 10000ms linear infinite alternate forwards
     }
     .card .avatar_header {
         animation: none;
     }
     @keyframes avatar_eye_left_blink {
         0% {fill: var(--qabot-color-action-contrast)}
-        20% {fill: var(--qabot-color-action-contrast);animation-timing-function: cubic-bezier(0.19,1,0.22,1)}
-        30% {fill: transparent;animation-timing-function: cubic-bezier(0.19,1,0.22,1)}
-        40% {fill: var(--qabot-color-action-contrast)}
+        10% {fill: var(--qabot-color-action-contrast);animation-timing-function: cubic-bezier(0.19,1,0.22,1)}
+        13% {fill: transparent;animation-timing-function: cubic-bezier(0.19,1,0.22,1)}
+        16% {fill: var(--qabot-color-action-contrast)}
         100% {fill: var(--qabot-color-action-contrast)}
     }
     @keyframes avatar_eye_right_blink {
         0% {fill: var(--qabot-color-action-contrast)}
-        30% {fill: var(--qabot-color-action-contrast);animation-timing-function: cubic-bezier(0.95,0.05,0.795,0.035)}
-        40% {fill: transparent;animation-timing-function: cubic-bezier(0.95,0.05,0.795,0.035)}
-        50% {fill: var(--qabot-color-action-contrast)}
+        12% {fill: var(--qabot-color-action-contrast);animation-timing-function: cubic-bezier(0.95,0.05,0.795,0.035)}
+        15% {fill: transparent;animation-timing-function: cubic-bezier(0.95,0.05,0.795,0.035)}
+        17% {fill: var(--qabot-color-action-contrast)}
         100% {fill: var(--qabot-color-action-contrast)}
     }
     @keyframes avatar_header_blink {
