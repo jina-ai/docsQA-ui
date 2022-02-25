@@ -281,6 +281,7 @@ export class QaBot extends LitElement {
 
         if (this.qaControl.qaPairToFocus) {
             this.scrollToAnswerByRequestId(this.qaControl.qaPairToFocus);
+            this.__detectViewPort();
             if (!this.smallViewPort) {
                 this.open = true;
             }
@@ -306,6 +307,9 @@ export class QaBot extends LitElement {
             return;
         }
         this.qaControl?.setTargeted(qaPair.requestId);
+        if (this.smallViewPort && this.target === 'self') {
+            this.close();
+        }
     }
 
     protected setupDebugEventListener(flag: boolean = true) {
@@ -540,6 +544,15 @@ export class QaBot extends LitElement {
         } else {
             this.open = true;
             this.textarea?.focus();
+        }
+    }
+
+    @throttle()
+    async close() {
+        this.closing = !!this.open;
+        if (this.open) {
+            await delay(300);
+            this.open = false;
         }
     }
 
