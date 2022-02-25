@@ -8,5 +8,5 @@ export declare const thumbDownActive: import("lit-html").TemplateResult<1 | 2>;
 export declare const tripleDot: import("lit-html").TemplateResult<1 | 2>;
 export declare const paperPlane: import("lit-html").TemplateResult<1 | 2>;
 export declare const linkIcon: import("lit-html").TemplateResult<1 | 2>;
-export declare const downArrowCycle: import("lit-html").TemplateResult<1 | 2>;
+export declare const downArrowCircle: import("lit-html").TemplateResult<1 | 2>;
 export declare const defaultAvatar: import("lit-html").TemplateResult<1 | 2>;

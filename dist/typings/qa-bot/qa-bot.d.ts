@@ -24,10 +24,15 @@ export declare class QaBot extends LitElement {
     protected lastBottomLineDetector?: HTMLElement;
     protected bottomLineObserver: IntersectionObserver;
     scrolledToBottom?: boolean;
+    smallViewPort?: boolean;
+    expectPhysicalKeyboard?: boolean;
     protected slotName?: Array<HTMLElement>;
     protected slotDescription?: Array<HTMLElement>;
+    protected slotDefault?: Array<HTMLElement>;
     protected slotGreetings?: Array<HTMLElement>;
     protected slotTexts?: Array<HTMLElement>;
+    private lastKeyDownAt?;
+    private lastKeyDown?;
     preferences: {
         name: string;
         description: string;
@@ -36,6 +41,10 @@ export declare class QaBot extends LitElement {
         texts: {
             feedbackThumbUp: string;
             feedbackThumbDown: string;
+            contextHref: string;
+            unknownError: string;
+            networkError: string;
+            serverError: string;
         };
     };
     debugEnabled?: boolean;
@@ -44,8 +53,11 @@ export declare class QaBot extends LitElement {
         [k in ANSWER_RENDER_TEMPLATE]: AnswerRenderer;
     };
     private __syncOptionsRoutine;
+    private __onScreenResizeRoutine;
     constructor();
-    protected routineObserveBottomLine(): Promise<void>;
+    protected __detectViewPort(): void;
+    protected __observeBottomLine(): Promise<void>;
+    protected debouncedScrollToBottom(): void;
     connectedCallback(): void;
     disconnectedCallback(): void;
     static styles: import("lit").CSSResult[];
@@ -53,6 +65,7 @@ export declare class QaBot extends LitElement {
     scrollDialogToBottomForTheVeryFirstTime(): Promise<void>;
     updated(): void;
     protected onTextAreaInput(event: KeyboardEvent): void;
+    protected onTextAreaKeyUp(event: KeyboardEvent): void;
     setQaPairTargeted(qaPair?: QAPair): void;
     protected setupDebugEventListener(flag?: boolean): void;
     debugCommands(input: string): void;
@@ -65,11 +78,11 @@ export declare class QaBot extends LitElement {
     protected getSingleQAComp(qa: QAPair, index: number): import("lit-html").TemplateResult<1>;
     protected getFeedbackTooltip(qa: QAPair): import("lit-html").TemplateResult<1>;
     protected renderAnswerBubble(qaPair: QAPair): any;
+    __loadFromSlot(elems?: HTMLElement[], selector?: string): HTMLElement | undefined;
     loadPreferences(): void;
     protected getAnswerBlock(): import("lit-html").TemplateResult<1>;
     protected onClickQuestion(e: Event): void;
     protected getAvatar(): import("lit-html").TemplateResult<1 | 2>;
-    protected getHeaderBackground(): string;
     protected onInputQuestion(): void;
     render(): import("lit-html").TemplateResult<1>;
 }

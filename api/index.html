@@ -160,6 +160,22 @@
        </tr>
      
        <tr>
+         <td>smallViewPort</td><td></td><td></td><td>boolean | undefined</td><td></td>
+       </tr>
+     
+       <tr>
+         <td>expectPhysicalKeyboard</td><td></td><td></td><td>boolean | undefined</td><td>false</td>
+       </tr>
+     
+       <tr>
+         <td>lastKeyDownAt</td><td></td><td></td><td>number | undefined</td><td></td>
+       </tr>
+     
+       <tr>
+         <td>lastKeyDown</td><td></td><td></td><td>string | undefined</td><td></td>
+       </tr>
+     
+       <tr>
          <td>preferences</td><td></td><td></td><td>object</td><td>{
         name: 'DocsQA',
         description: '@Jina AI',
@@ -170,8 +186,12 @@
             'Set questions using <dd>'
         ],
         texts: {
-            feedbackThumbUp: `Thank you for providing your feedback, happy to help!`,
-            feedbackThumbDown: `Thank you for providing your feedback, we will continue to improve.`,
+            feedbackThumbUp: `Thank you for providing your feedback, happy to help! 😀`,
+            feedbackThumbDown: `Thank you for providing your feedback, we will continue to improve. 🙇‍♂️`,
+            contextHref: 'See context',
+            unknownError: `🚨 Sorry, something went wrong. ⛑️\nPlease try again later.`,
+            networkError: `🚨 Sorry, we are experiencing some technical difficulties on networking. 🌐\nPlease try again later. 🙇‍♂️`,
+            serverError: `🚨 Sorry, we are experiencing some technical difficulties on the server. 🐛\nPlease try again later. 🙇‍♂️`,
         }
     }</td>
        </tr>
@@ -190,6 +210,10 @@
      
        <tr>
          <td>__syncOptionsRoutine</td><td></td><td></td><td>(event: Event) => void</td><td></td>
+       </tr>
+     
+       <tr>
+         <td>__onScreenResizeRoutine</td><td></td><td></td><td>(event: Event) => void</td><td></td>
        </tr>
      
    </table>
@@ -263,6 +287,26 @@
      
        <tr>
          <td>toggleOpen</td><td></td><td></td><td></td>
+       </tr>
+     
+       <tr>
+         <td>__loadFromSlot</td><td>
+   
+   <table>
+     <tr>
+       <th>Name</th><th>Description</th><th>Type</th>
+     </tr>
+     
+       <tr>
+         <td>elems</td><td></td><td>HTMLElement[]</td>
+       </tr>
+     
+       <tr>
+         <td>selector</td><td></td><td></td>
+       </tr>
+     
+   </table>
+ </td><td></td><td></td>
        </tr>
      
        <tr>
