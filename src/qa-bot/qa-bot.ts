@@ -763,11 +763,7 @@ export class QaBot extends LitElement {
     protected onInputQuestion() {
         const content = this.textarea?.value;
         this.typing = !!content;
-        const lineBreaks = (content?.match(/\n/g) || []).length;
-        if (lineBreaks < 10) {
-            this.textarea?.setAttribute('style', 'height: auto');
-            this.textarea?.setAttribute('style', `height: ${this.textarea?.scrollHeight.toString()}px`);
-        }
+        this.textarea?.setAttribute('style', `height: ${(this.textarea?.scrollHeight + 1).toString()}px`);
     }
 
     override render() {

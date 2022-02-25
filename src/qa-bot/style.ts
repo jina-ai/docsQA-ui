@@ -63,6 +63,7 @@ export const masterStyle = css`
         position: fixed;
         bottom: 1.25em;
         right: 1.25em;
+        z-index: 101;
     }
 
     @media (min-height: 90rem) {
@@ -296,10 +297,9 @@ export const masterStyle = css`
 
     .qabot__control button {
         display: flex;
-        align-items: flex-start;
+        align-items: center;
         justify-content: center;
         position: absolute;
-        padding-top: 1em;
         border: none;
         right: 0;
         border-left: none;
@@ -308,7 +308,7 @@ export const masterStyle = css`
         cursor: pointer;
         color: var(--qabot-color-action);
         fill: var(--qabot-color-action);
-        background-color: var(--qabot-color-action-contrast);
+        background-color: transparent;
     }
 
     .qabot__control button [fill] {
@@ -338,8 +338,11 @@ export const masterStyle = css`
         border-right: none;
         font-size: var(--qabot-size-text-primary);
         resize: none;
+        height: auto;
+        max-height: 12em;
 
         overflow-y: scroll;
+        overflow-y: overlay;
         scrollbar-width: none;
     }
 
