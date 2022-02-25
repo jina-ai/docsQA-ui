@@ -763,6 +763,8 @@ export class QaBot extends LitElement {
     protected onInputQuestion() {
         const content = this.textarea?.value;
         this.typing = !!content;
+        // The following line prevents the height pile up. Need to keep.
+        this.textarea?.setAttribute('style', `height: auto;`);
         this.textarea?.setAttribute('style', `height: ${(this.textarea?.scrollHeight + 1).toString()}px`);
     }
 
