@@ -66,5 +66,5 @@ Or you can put the `<script>` tag before any `<doc-bot>`, or in the `head` secti
         width: 22rem; 
         max-height: 50vh;
         "
-    animate-by="position">
+    orientation="bottom-left">
     </qa-bot>

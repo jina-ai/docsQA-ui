@@ -476,9 +476,15 @@ export class QaBot extends LitElement {
         return uri;
     }
 
-    protected getSingleQAComp(qa: QAPair) {
+    protected getSingleQAComp(qa: QAPair, index: number) {
+        // the last graph means current qa is last one, or there is a new question is risen.
+        const isLastGraph: boolean = !this.qaControl?.qaPairs[index + 1] ||
+        !!this.qaControl?.qaPairs[index + 1]?.question;
+
         return html`
-            <div class="qa-pair">
+            <div class="qa-pair"
+                ?multi-convo="${!qa.question}"
+                ?last-graph="${isLastGraph}">
                 ${qa.question ? html`
                 <div class="qa-row question">
                     <div class="bubble">
@@ -489,7 +495,7 @@ export class QaBot extends LitElement {
                 </div>
                 ` : ''}
                 <div class="qa-row answer">
-                    <div class="avatar">${this.getAvatar()}</div>
+                    <div class="avatar">${isLastGraph ? this.getAvatar() : ''}</div>
                     <div class="bubble">
                         ${this.renderAnswerBubble(qa)}
                     </div>
@@ -580,7 +586,7 @@ export class QaBot extends LitElement {
             </dl>
         </div>
         <div class="answer-dialog">
-            ${this.qaControl?.qaPairs.map((qa) => this.getSingleQAComp(qa))}
+            ${this.qaControl?.qaPairs.map((qa, index) => this.getSingleQAComp(qa, index))}
         </div>
         `;
     }
@@ -608,7 +614,7 @@ export class QaBot extends LitElement {
         const content = this.textarea?.value;
         this.typing = !!content;
         const lineBreaks = (content?.match(/\n/g) || []).length;
-        if (lineBreaks <= 10) {
+        if (lineBreaks < 10) {
             this.textarea?.setAttribute('style', 'height: auto');
             this.textarea?.setAttribute('style', `height: ${this.textarea?.scrollHeight.toString()}px`);
         }

@@ -42,7 +42,7 @@ To do so, override the following CSS variables:
 </style>
 ```
 
-<qa-bot server="https://jina-ai-jina.docsqa.jina.ai" theme="light" site="https://docs.jina.ai"></qa-bot>
+<qa-bot server="https://jina-ai-jina.docsqa.jina.ai" theme="light" site="https://docs.jina.ai" orientation="bottom-left"></qa-bot>
 
 <style>
     qa-bot {
