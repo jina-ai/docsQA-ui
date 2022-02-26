@@ -1,4 +1,4 @@
-import { css } from 'lit';
+import {css} from 'lit';
 
 
 export const masterStyle = css`
@@ -698,30 +698,72 @@ export const masterStyle = css`
         animation: none;
     }
     @keyframes avatar_eye_left_blink {
-        0% {fill: var(--qabot-color-action-contrast)}
-        10% {fill: var(--qabot-color-action-contrast);animation-timing-function: cubic-bezier(0.19,1,0.22,1)}
-        13% {fill: transparent;animation-timing-function: cubic-bezier(0.19,1,0.22,1)}
-        16% {fill: var(--qabot-color-action-contrast)}
-        100% {fill: var(--qabot-color-action-contrast)}
+        0% {
+        transform: translate(98.6207px, 144.137956px) scale(1, 1);
+        animation-timing-function: cubic-bezier(0.42, 0, 0.58, 1)
+        }
+        2% {
+            transform: translate(98.6207px, 144.137956px) scale(1, 0.291967);
+            animation-timing-function: cubic-bezier(0.42, 0, 0.58, 1)
+        }
+        4% {
+            transform: translate(98.6207px, 144.137956px) scale(1, 1)
+        }
+        100% {
+            transform: translate(98.6207px, 144.137956px) scale(1, 1)
+        }
     }
     @keyframes avatar_eye_right_blink {
-        0% {fill: var(--qabot-color-action-contrast)}
-        12% {fill: var(--qabot-color-action-contrast);animation-timing-function: cubic-bezier(0.95,0.05,0.795,0.035)}
-        15% {fill: transparent;animation-timing-function: cubic-bezier(0.95,0.05,0.795,0.035)}
-        17% {fill: var(--qabot-color-action-contrast)}
-        100% {fill: var(--qabot-color-action-contrast)}
+        0% {
+        transform: translate(174.482765px, 144.137932px) scale(1, 1);
+        animation-timing-function: cubic-bezier(0.42, 0, 0.58, 1)
+    }
+    2% {
+        transform: translate(174.482765px, 144.137932px) scale(1, 0.291966);
+        animation-timing-function: cubic-bezier(0.42, 0, 0.58, 1)
+    }
+    4% {
+        transform: translate(174.482765px, 144.137932px) scale(1, 1)
+    }
+    100% {
+        transform: translate(174.482765px, 144.137932px) scale(1, 1)
+    }
     }
     @keyframes avatar_header_blink {
-        0% {fill: var(--qabot-color-action-contrast)}
-        35% {fill: var(--qabot-color-action-contrast);animation-timing-function: cubic-bezier(0.42,0,0.58,1)}
-        36% {fill: transparent;animation-timing-function: cubic-bezier(0.42,0,0.58,1)}
-        37% {fill: var(--qabot-color-action-contrast);animation-timing-function: cubic-bezier(0.42,0,0.58,1)}
-        38% {fill: transparent;animation-timing-function: cubic-bezier(0.42,0,0.58,1)}
-        39% {fill: var(--qabot-color-action-contrast);animation-timing-function: cubic-bezier(0.42,0,0.58,1)}
-        40% {fill: transparent;animation-timing-function: cubic-bezier(0.42,0,0.58,1)}
-        41% {fill: var(--qabot-color-action-contrast)}
-        100% {fill: var(--qabot-color-action-contrast)}
+        0% {
+        transform: translate(136.551727px, 22.758621px) scale(1, 1)
+        }
+        25% {
+            transform: translate(136.551727px, 22.758621px) scale(1, 1);
+            animation-timing-function: cubic-bezier(0, 0, 0.58, 1)
+        }
+        30% {
+            transform: translate(136.551727px, 22.758621px) scale(1.666659, 1.666661)
+        }
+        100% {
+            transform: translate(136.551727px, 22.758621px) scale(1.666659, 1.666661)
+        }
     }
+    #avatar_header_radio {
+        animation: avatar_header_radio_ani 10000ms linear infinite normal forwards
+    }
+
+    @keyframes avatar_header_radio_ani {
+        0% {
+            fill-opacity: 1
+        }
+        25% {
+            fill-opacity: 1;
+            animation-timing-function: cubic-bezier(0, 0, 0.58, 1)
+        }
+        30% {
+            fill-opacity: 0
+        }
+        100% {
+            fill-opacity: 0
+        }
+    }
+
 `;
 
 

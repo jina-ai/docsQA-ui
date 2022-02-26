@@ -149,6 +149,7 @@ export const defaultAvatar = svg`
             <rect width="22.7586" height="60.6897" rx="11.37931" ry="11.37931" transform="translate(0 113.793)" fill="#eb6161" fill-rule="evenodd"/>
             <rect width="22.7586" height="60.6897" rx="11.37931" ry="11.37931" transform="translate(250.345 113.793)" fill="#eb6161" fill-rule="evenodd"/>
             <circle class="avatar_header" r="22.7586" transform="translate(136.552 22.7586)" fill="#fbcb67" fill-rule="evenodd"/>
+            <circle class="avatar_header_radio" r="22.7586" transform="translate(136.552 22.7586)" fill="#fbcb67" fill-rule="evenodd"/>
         </g>
     </g>
 </svg>
