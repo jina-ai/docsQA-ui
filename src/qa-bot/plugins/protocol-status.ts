@@ -62,7 +62,7 @@ export function mangleAnswerByStatus(this: DocQAAnswer, qaPair: QAPair) {
             qaPair.answer.matches = this.matches.slice(0, 3).map((x) => {
                 return {
                     text: x.text,
-                    uri: x.uri,
+                    uri: x.tags?.original_uri || x.uri,
                 };
             });
 

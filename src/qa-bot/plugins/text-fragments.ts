@@ -60,6 +60,10 @@ export function transformAnswerUriAddTextFragments(this: DocQAAnswer, _qaPair: Q
         if (sentence && sentence.length > (answerText.length + 5)) {
             const patched = makeTextFragmentUriFromPassage(answerText, sentence, match.uri);
             if (patched) {
+                if (!match.tags) {
+                    match.tags = {};
+                }
+                match.tags.original_uri = match.uri;
                 match.uri = patched;
                 continue;
             }
@@ -67,6 +71,10 @@ export function transformAnswerUriAddTextFragments(this: DocQAAnswer, _qaPair: Q
 
         const patched = makeTextFragmentUriFromPassage(answerText, paragraph, match.uri);
         if (patched) {
+            if (!match.tags) {
+                match.tags = {};
+            }
+            match.tags.original_uri = match.uri;
             match.uri = patched;
         }
     }
