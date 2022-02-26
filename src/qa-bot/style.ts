@@ -715,23 +715,28 @@ export const masterStyle = css`
     }
     @keyframes avatar_eye_right_blink {
         0% {
-        transform: translate(174.482765px, 144.137932px) scale(1, 1);
-        animation-timing-function: cubic-bezier(0.42, 0, 0.58, 1)
+            transform: translate(174.482765px, 144.137932px) scale(1, 1);
+            animation-timing-function: cubic-bezier(0.42, 0, 0.58, 1)
+        }
+        2% {
+            transform: translate(174.482765px, 144.137932px) scale(1, 0.291966);
+            animation-timing-function: cubic-bezier(0.42, 0, 0.58, 1)
+        }
+        4% {
+            transform: translate(174.482765px, 144.137932px) scale(1, 1)
+        }
+        100% {
+            transform: translate(174.482765px, 144.137932px) scale(1, 1)
+        }
     }
-    2% {
-        transform: translate(174.482765px, 144.137932px) scale(1, 0.291966);
-        animation-timing-function: cubic-bezier(0.42, 0, 0.58, 1)
+
+    #eOogTejGVnl11_ts {
+        animation: eOogTejGVnl11_ts__ts 10000ms linear infinite normal forwards
     }
-    4% {
-        transform: translate(174.482765px, 144.137932px) scale(1, 1)
-    }
-    100% {
-        transform: translate(174.482765px, 144.137932px) scale(1, 1)
-    }
-    }
-    @keyframes avatar_header_blink {
+
+    @keyframes eOogTejGVnl11_ts__ts {
         0% {
-        transform: translate(136.551727px, 22.758621px) scale(1, 1)
+            transform: translate(136.551727px, 22.758621px) scale(1, 1)
         }
         25% {
             transform: translate(136.551727px, 22.758621px) scale(1, 1);
@@ -744,11 +749,12 @@ export const masterStyle = css`
             transform: translate(136.551727px, 22.758621px) scale(1.666659, 1.666661)
         }
     }
-    #avatar_header_radio {
-        animation: avatar_header_radio_ani 10000ms linear infinite normal forwards
+
+    #eOogTejGVnl11 {
+        animation: eOogTejGVnl11_f_o 10000ms linear infinite normal forwards
     }
 
-    @keyframes avatar_header_radio_ani {
+    @keyframes eOogTejGVnl11_f_o {
         0% {
             fill-opacity: 1
         }
