@@ -50,10 +50,7 @@ export function mangleAnswerByStatus(this: DocQAAnswer, qaPair: QAPair) {
 
         case DOCQA_ANSWER_STATUS.NOT_ANSWERED: {
             qaPair.useTemplate = ANSWER_RENDER_TEMPLATE.TEXT;
-            qaPair.answer.text = `I am sorry but I didn't find anything related.
-
-            Could you rephrase it?
-            Or maybe you can try to ask me something else?`;
+            qaPair.answer.text = `😵‍💫 I'm sorry but I don't know the answer.`;
 
             break;
         }
@@ -61,7 +58,7 @@ export function mangleAnswerByStatus(this: DocQAAnswer, qaPair: QAPair) {
         case DOCQA_ANSWER_STATUS.NOT_CONFIDENT: {
 
             qaPair.useTemplate = ANSWER_RENDER_TEMPLATE.TEXT_WITH_MULTIPLE_LINKS;
-            qaPair.answer.text = `I am not sure whether I can answer this. Anyhow, here are possible resources that might help:`;
+            qaPair.answer.text = `😵‍💫 I'm not sure I can answer this. I guess these can help?`;
             qaPair.answer.matches = this.matches.slice(0, 3).map((x) => {
                 return {
                     text: x.text,
