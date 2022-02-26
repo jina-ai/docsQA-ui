@@ -743,10 +743,10 @@ export const masterStyle = css`
             animation-timing-function: cubic-bezier(0, 0, 0.58, 1)
         }
         30% {
-            transform: translate(136.551727px, 22.758621px) scale(1.666659, 1.666661)
+            transform: translate(136.551727px, 22.758621px) scale(2, 2)
         }
         100% {
-            transform: translate(136.551727px, 22.758621px) scale(1.666659, 1.666661)
+            transform: translate(136.551727px, 22.758621px) scale(2, 2)
         }
     }
 
