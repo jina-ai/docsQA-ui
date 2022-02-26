@@ -307,8 +307,8 @@ export class QaBot extends LitElement {
             return;
         }
         this.qaControl?.setTargeted(qaPair.requestId);
-        if (this.smallViewPort && this.target === 'self') {
-            this.close();
+        if (this.smallViewPort && this.target === '_self') {
+            this.closeCard();
         }
     }
 
@@ -537,23 +537,26 @@ export class QaBot extends LitElement {
 
     @throttle()
     async toggleOpen() {
-        this.closing = !!this.open;
         if (this.open) {
-            await delay(300);
-            this.open = false;
+            this.closeCard();
         } else {
-            this.open = true;
+            this.openCard();
             this.textarea?.focus();
         }
     }
 
     @throttle()
-    async close() {
+    async closeCard() {
         this.closing = !!this.open;
         if (this.open) {
             await delay(300);
             this.open = false;
         }
+    }
+
+    openCard() {
+        this.closing = false;
+        this.open = true;
     }
 
     protected makeReferenceLink(uri?: string) {
