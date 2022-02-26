@@ -63,6 +63,7 @@ export const masterStyle = css`
         position: fixed;
         bottom: 1.25em;
         right: 1.25em;
+        max-width: calc(100vw - 2.5em);
         z-index: 101;
     }
 

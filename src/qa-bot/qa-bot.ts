@@ -16,6 +16,7 @@ import { AnswerRenderer, ANSWER_RENDERER_MAP } from './answer-renderers';
 import { delay } from '../lib/timeout';
 import { runOnce } from '../lib/decorators/once';
 import { debounce } from '../lib/decorators/debounce';
+import { DEFAULT_PREFERENCE } from './constants';
 
 const ABSPATHREGEXP = /^(https?:)?\/\/\S/;
 
@@ -114,24 +115,7 @@ export class QaBot extends LitElement {
     @queryAssignedElements({ slot: 'texts' })
     protected slotTexts?: Array<HTMLElement>;
 
-    preferences = {
-        name: 'DocsQA',
-        description: '@Jina AI',
-        greeting: 'You should define custom questions inside <qa-bot>. Try:',
-        questions: [
-            'Create a <dl> block',
-            'Set title using <dt>',
-            'Set questions using <dd>'
-        ],
-        texts: {
-            feedbackThumbUp: [`😀 Happy to help!`, 'You are welcome!', '😎', 'You are the best!'],
-            feedbackThumbDown: [` 🙇‍♂️ Noted, thanks!`, '😢 Sorry, my bad', '😬 Will improve!'],
-            contextHref: 'See context',
-            unknownError: `😵‍💫 Sorry! Something somehow went wrong.\n ⛑ ️Please ping me later. 🙇‍♂️`,
-            networkError: `😶‍🌫️ Sorry! I'm experiencing some technical issues on networking. \n🌐 Please ping me later. 🙇‍♂️`,
-            serverError: `🥶 Sorry! My brain is freezing, I mean my server is down.\n 🐛Please ping me later. 🙇‍♂️`,
-        }
-    };
+    preferences = DEFAULT_PREFERENCE;
 
     debugEnabled?: boolean = false;
 
@@ -701,11 +685,16 @@ export class QaBot extends LitElement {
 
         if (this.slotTexts?.length) {
             const elem = this.__loadFromSlot(this.slotTexts);
-            const textElems = elem?.querySelectorAll('[for]') as (NodeListOf<HTMLElement> | undefined);
-            if (textElems?.length) {
-                for (const elem of Array.from(textElems)) {
+            const inputElems = elem?.querySelectorAll('[for]') as (NodeListOf<HTMLElement> | undefined);
+            if (inputElems?.length) {
+                for (const elem of Array.from(inputElems)) {
                     const key = elem.getAttribute('for');
                     if (!key) {
+                        continue;
+                    }
+                    if (elem.tagName === 'UL' || elem.tagName === 'DL' || elem.tagName === 'OL') {
+                        const arrayElems = elem.querySelectorAll('li,dd');
+                        (this.preferences.texts as any)[key] = Array.from(arrayElems).map((e) => e.textContent);
                         continue;
                     }
                     if (!elem.textContent) {
@@ -715,7 +704,10 @@ export class QaBot extends LitElement {
                 }
             } else if (elem?.getAttribute('for')) {
                 const key = elem.getAttribute('for')!;
-                if (elem.textContent) {
+                if (elem.tagName === 'UL' || elem.tagName === 'DL' || elem.tagName === 'OL') {
+                    const arrayElems = elem.querySelectorAll('li,dd');
+                    (this.preferences.texts as any)[key] = Array.from(arrayElems).map((e) => e.textContent);
+                } else if (elem.textContent) {
                     (this.preferences.texts as any)[key] = elem.textContent;
                 }
             }
