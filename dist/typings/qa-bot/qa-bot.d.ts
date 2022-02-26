@@ -25,22 +25,19 @@ export declare class QaBot extends LitElement {
     protected bottomLineObserver: IntersectionObserver;
     scrolledToBottom?: boolean;
     smallViewPort?: boolean;
-    expectPhysicalKeyboard?: boolean;
     protected slotName?: Array<HTMLElement>;
     protected slotDescription?: Array<HTMLElement>;
     protected slotDefault?: Array<HTMLElement>;
     protected slotGreetings?: Array<HTMLElement>;
     protected slotTexts?: Array<HTMLElement>;
-    private lastKeyDownAt?;
-    private lastKeyDown?;
     preferences: {
         name: string;
         description: string;
         greeting: string;
         questions: string[];
         texts: {
-            feedbackThumbUp: string;
-            feedbackThumbDown: string;
+            feedbackThumbUp: string[];
+            feedbackThumbDown: string[];
             contextHref: string;
             unknownError: string;
             networkError: string;
@@ -65,7 +62,6 @@ export declare class QaBot extends LitElement {
     scrollDialogToBottomForTheVeryFirstTime(): Promise<void>;
     updated(): void;
     protected onTextAreaInput(event: KeyboardEvent): void;
-    protected onTextAreaKeyUp(event: KeyboardEvent): void;
     setQaPairTargeted(qaPair?: QAPair): void;
     protected setupDebugEventListener(flag?: boolean): void;
     debugCommands(input: string): void;
@@ -74,6 +70,8 @@ export declare class QaBot extends LitElement {
     scrollDialogToBottom(): Promise<void>;
     scrollToAnswerByRequestId(requestId: string): Promise<void>;
     toggleOpen(): Promise<void>;
+    closeCard(): Promise<void>;
+    openCard(): void;
     protected makeReferenceLink(uri?: string): string;
     protected getSingleQAComp(qa: QAPair, index: number): import("lit-html").TemplateResult<1>;
     protected getFeedbackTooltip(qa: QAPair): import("lit-html").TemplateResult<1>;
