@@ -730,7 +730,7 @@ export const masterStyle = css`
         }
     }
 
-    #eOogTejGVnl11_ts {
+    .eOogTejGVnl11_ts {
         animation: eOogTejGVnl11_ts__ts 10000ms linear infinite normal forwards
     }
 
@@ -750,7 +750,7 @@ export const masterStyle = css`
         }
     }
 
-    #eOogTejGVnl11 {
+    .eOogTejGVnl11 {
         animation: eOogTejGVnl11_f_o 10000ms linear infinite normal forwards
     }
 

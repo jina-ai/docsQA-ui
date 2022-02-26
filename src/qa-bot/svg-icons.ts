@@ -149,8 +149,8 @@ export const defaultAvatar = svg`
             <rect width="22.7586" height="60.6897" rx="11.37931" ry="11.37931" transform="translate(0 113.793)" fill="#eb6161" fill-rule="evenodd"/>
             <rect width="22.7586" height="60.6897" rx="11.37931" ry="11.37931" transform="translate(250.345 113.793)" fill="#eb6161" fill-rule="evenodd"/>
             <circle class="avatar_header" r="22.7586" transform="translate(136.552 22.7586)" fill="#fbcb67" fill-rule="evenodd"/>
-            <g id="eOogTejGVnl11_ts" transform="translate(136.551727,22.758621) scale(1,1)">
-                <circle id="eOogTejGVnl11" r="22.7586" transform="translate(0.000273,-0.000021)" fill="#fbcb67"
+            <g class="eOogTejGVnl11_ts" transform="translate(136.551727,22.758621) scale(1,1)">
+                <circle class="eOogTejGVnl11" r="22.7586" transform="translate(0.000273,-0.000021)" fill="#fbcb67"
                         fill-rule="evenodd"/>
             </g>
         </g>
