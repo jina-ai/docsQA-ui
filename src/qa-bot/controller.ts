@@ -232,7 +232,7 @@ export class JinaQABotController implements ReactiveController {
         const thumbUpMap = {
             up: true,
             down: false,
-            none: null
+            none: undefined
         };
         const thumbUpVal = thumbUpMap[feedback];
 

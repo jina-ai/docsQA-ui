@@ -642,10 +642,11 @@ export class QaBot extends LitElement {
         return html`
         ${(qa.question && qa.answer) ? html`
         <div class="thumbs">
-            <button class="thumb thumbup" ?active="${qa.feedback === true}" @click="${() => this.submitFeedback(qa, 'up')}">
+            <button class="thumb thumbup" ?active="${qa.feedback === true}" ?disabled="${qa.feedback !== undefined}"
+                @click="${() => this.submitFeedback(qa, 'up')}">
                 <i class="icon icon-thumb-up">${qa.feedback === true ? thumbUpActive : thumbUp}</i>
             </button>
-            <button class="thumb thumbdown" ?active="${qa.feedback === false}"
+            <button class="thumb thumbdown" ?active="${qa.feedback === false}" ?disabled="${qa.feedback !== undefined}"
                 @click="${() => this.submitFeedback(qa, 'down')}">
                 <i class="icon icon-thumb-down">${qa.feedback === false ? thumbDownActive : thumbDown}</i>
             </button>

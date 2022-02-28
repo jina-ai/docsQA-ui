@@ -613,10 +613,13 @@ export const masterStyle = css`
     }
 
     @media (hover:hover) {
-        .feedback-tooltip .thumbs .thumb:hover {
+        .feedback-tooltip .thumbs .thumb:not([disabled]):hover {
             transform: scale(1.2);
             filter: brightness(0.8);
         }
+    }
+    .feedback-tooltip .thumbs .thumb[disabled]:not([active]) {
+        display: none;
     }
 
     .feedback-tooltip .thumbs .thumb .icon {
