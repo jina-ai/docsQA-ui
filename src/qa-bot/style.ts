@@ -231,6 +231,7 @@ export const masterStyle = css`
         display: flex;
         align-items: center;
         column-gap: 0.75em;
+        width: 100%;
     }
 
     .card .card__title .card__title__content {
