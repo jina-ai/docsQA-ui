@@ -71,7 +71,7 @@
        </tr>
      
        <tr>
-         <td>theme</td><td>Choose between preset themes, auto, `light`, or `dark`.</td><td>'auto' | 'dark' | 'light' | string | undefined</td><td>'auto'</td>
+         <td>theme</td><td>Choose between preset themes, auto, `light`, or `dark`.</td><td>'auto' | 'dark' | 'light' | 'infer' | string | undefined</td><td>'auto'</td>
        </tr>
      
        <tr>
@@ -92,6 +92,14 @@
      
        <tr>
          <td>powered-by-icon-src</td><td>Image url for `powered-by` footer.</td><td>string | undefined</td><td></td>
+       </tr>
+     
+       <tr>
+         <td>fg-color</td><td></td><td>string | undefined</td><td></td>
+       </tr>
+     
+       <tr>
+         <td>bg-color</td><td></td><td>string | undefined</td><td></td>
        </tr>
      
    </table>
@@ -140,7 +148,29 @@
        </tr>
      
        <tr>
-         <td>theme</td><td>theme</td><td></td><td>'auto' | 'dark' | 'light' | string | undefined</td><td>'auto'</td>
+         <td>theme</td><td>theme</td><td></td><td>'auto' | 'dark' | 'light' | 'infer' | string | undefined</td><td>'auto'</td>
+       </tr>
+     
+       <tr>
+         <td>fgColor</td><td>fg-color</td><td></td><td>string | undefined</td><td></td>
+       </tr>
+     
+       <tr>
+         <td>bgColor</td><td>bg-color</td><td></td><td>string | undefined</td><td></td>
+       </tr>
+     
+       <tr>
+         <td>inferredThemeVariables</td><td></td><td></td><td>object</td><td>{
+        'color-background': '',
+        'color-border': '',
+        'color-primary': '',
+        'color-action': '',
+        'color-action-secondary': '',
+        'color-action-contrast': '',
+        'color-action-contrast-secondary': '',
+        'color-card-header-background': '',
+        'color-card-header-color': '',
+    }</td>
        </tr>
      
        <tr>
@@ -290,6 +320,14 @@
      
        <tr>
          <td>loadPreferences</td><td></td><td></td><td></td>
+       </tr>
+     
+       <tr>
+         <td>__setUpThemeMightChangeObserver</td><td></td><td></td><td></td>
+       </tr>
+     
+       <tr>
+         <td>__suspendThemeMightChangeObserver</td><td></td><td></td><td></td>
        </tr>
      
    </table>

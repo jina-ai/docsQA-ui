@@ -12,7 +12,20 @@ export declare class QaBot extends LitElement {
     site?: string;
     target?: string;
     channel?: string;
-    theme?: 'auto' | 'dark' | 'light' | string;
+    theme?: 'auto' | 'dark' | 'light' | 'infer' | string;
+    fgColor?: string;
+    bgColor?: string;
+    inferredThemeVariables: {
+        'color-background': string;
+        'color-border': string;
+        'color-primary': string;
+        'color-action': string;
+        'color-action-secondary': string;
+        'color-action-contrast': string;
+        'color-action-contrast-secondary': string;
+        'color-card-header-background': string;
+        'color-card-header-color': string;
+    };
     poweredByIconSrc?: string;
     open?: boolean;
     get busy(): boolean;
@@ -23,6 +36,7 @@ export declare class QaBot extends LitElement {
     protected bottomLineDetector?: HTMLElement;
     protected lastBottomLineDetector?: HTMLElement;
     protected bottomLineObserver: IntersectionObserver;
+    protected themeMightChangeObserver: MutationObserver;
     scrolledToBottom?: boolean;
     smallViewPort?: boolean;
     protected slotName?: Array<HTMLElement>;
@@ -78,6 +92,19 @@ export declare class QaBot extends LitElement {
     protected renderAnswerBubble(qaPair: QAPair): any;
     __loadFromSlot(elems?: HTMLElement[], selector?: string): HTMLElement | undefined;
     loadPreferences(): void;
+    protected inferTheme(): ([number, number, number] | {
+        'color-background': string;
+        'color-border': string;
+        'color-primary': string;
+        'color-action': string;
+        'color-action-secondary': string;
+        'color-action-contrast': string;
+        'color-action-contrast-secondary': string;
+        'color-card-header-background': string;
+        'color-card-header-color': string;
+    } | "dark" | "light" | undefined)[];
+    private __setUpThemeMightChangeObserver;
+    private __suspendThemeMightChangeObserver;
     protected getAnswerBlock(): import("lit-html").TemplateResult<1>;
     protected onClickQuestion(e: Event): void;
     protected getAvatar(): import("lit-html").TemplateResult<1 | 2>;
