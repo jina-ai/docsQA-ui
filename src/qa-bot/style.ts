@@ -236,6 +236,7 @@ export const masterStyle = css`
     .card .card__title .card__title__content {
         display: inline-flex;
         flex-direction: column;
+        max-width: calc(100% - 5em);
     }
 
     .card .card__title .card__title__content .name {
