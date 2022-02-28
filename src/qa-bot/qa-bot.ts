@@ -811,8 +811,8 @@ export class QaBot extends LitElement {
 
         if (!fgHsl) {
             const cssVariablesToCheck = [
-                '--color-background-primary',
-                '--md-default-bg-color',
+                '--color-brand-primary',
+                '--md-primary-fg-color',
             ];
             for (const cssVar of cssVariablesToCheck) {
                 fgHsl = parseCssToHsl.call(this, cssVar);
@@ -849,14 +849,14 @@ export class QaBot extends LitElement {
             }
             tgt['color-background'] = hslVecToCss(bgHsl);
             tgt['color-action'] = hslVecToCss(fgHsl);
-            tgt['color-primary'] = bgHsl[2] > 50 ? '#000' : '#fff';
+            tgt['color-primary'] = bgHsl[2] > 75 ? '#000' : '#fff';
             // eslint-disable-next-line @typescript-eslint/no-magic-numbers
             tgt['color-action-secondary'] = hslVecToCss(fgHsl, 0.05);
             // tgt['color-border'] = hslVecToCss(fgHsl);
-            tgt['color-action-contrast'] = fgHsl[2] > 50 ? '#000' : '#fff';
+            tgt['color-action-contrast'] = fgHsl[2] > 75 ? '#000' : '#fff';
             tgt['color-action-contrast-secondary'] = hslVecToCss(bgHsl, 0.87);
             tgt['color-card-header-background'] = hslVecToCss(fgHsl);
-            tgt['color-card-header-color'] = fgHsl[2] > 50 ? '#000' : '#fff';
+            tgt['color-card-header-color'] = fgHsl[2] > 75 ? '#000' : '#fff';
 
         } else if (mode === 'dark') {
             if (!fgHsl) {
