@@ -1,6 +1,7 @@
 import { LitElement, html, PropertyValues } from 'lit';
 import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 import { property, query, queryAssignedElements, state } from 'lit/decorators.js';
+import cloneDeep from 'lodash-es/cloneDeep';
 import { perNextTick } from '../lib/decorators/per-tick';
 import { throttle } from '../lib/decorators/throttle';
 import { customTextFragmentsPolyfill } from '../lib/text-fragments-polyfill';
@@ -136,7 +137,7 @@ export class QaBot extends LitElement {
     @queryAssignedElements({ slot: 'texts' })
     protected slotTexts?: Array<HTMLElement>;
 
-    preferences = DEFAULT_PREFERENCE;
+    preferences = cloneDeep(DEFAULT_PREFERENCE);
 
     debugEnabled?: boolean = false;
 
