@@ -144,7 +144,7 @@ export const masterStyle = css`
         stroke: var(--qabot-color-action-contrast);
     }
 
-    button:active {
+    button:active:not([disabled]) {
         opacity: 0.8;
     }
 
@@ -617,6 +617,9 @@ export const masterStyle = css`
             transform: scale(1.2);
             filter: brightness(0.8);
         }
+    }
+    .feedback-tooltip .thumbs .thumb[disabled] {
+        cursor: auto;
     }
     .feedback-tooltip .thumbs .thumb[disabled]:not([active]) {
         display: none;
