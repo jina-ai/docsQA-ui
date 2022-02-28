@@ -801,8 +801,8 @@ export class QaBot extends LitElement {
             bgHsl = rgbHexToHslVec('#fff')!;
         }
 
-        if (!fgHsl) {
-            const fgCss = window.getComputedStyle(this).color.replace(/\s/g, '');
+        if (!fgHsl && this.style.color) {
+            const fgCss = this.style.color;
 
             if (fgCss !== 'rgb(0,0,0)') {
                 fgHsl = parseCssToHsl.call(this, fgCss);
@@ -820,6 +820,14 @@ export class QaBot extends LitElement {
                 if (fgHsl) {
                     break;
                 }
+            }
+        }
+
+        if (!fgHsl) {
+            const fgCss = window.getComputedStyle(this).color.replace(/\s/g, '');
+
+            if (fgCss !== 'rgb(0,0,0)') {
+                fgHsl = parseCssToHsl.call(this, fgCss);
             }
         }
 
