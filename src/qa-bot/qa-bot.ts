@@ -1,4 +1,5 @@
 import { LitElement, html, PropertyValues } from 'lit';
+import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 import { property, query, queryAssignedElements, state } from 'lit/decorators.js';
 import { perNextTick } from '../lib/decorators/per-tick';
 import { throttle } from '../lib/decorators/throttle';
@@ -17,6 +18,7 @@ import { delay } from '../lib/timeout';
 import { runOnce } from '../lib/decorators/once';
 import { debounce } from '../lib/decorators/debounce';
 import { DEFAULT_PREFERENCE } from './constants';
+import { hslVecToCss, parseCssToHsl, rgbHexToHslVec } from '../lib/color';
 
 const ABSPATHREGEXP = /^(https?:)?\/\/\S/;
 
@@ -67,7 +69,25 @@ export class QaBot extends LitElement {
     channel?: string;
 
     @property({ type: String, reflect: true })
-    theme?: 'auto' | 'dark' | 'light' | string = 'auto';
+    theme?: 'auto' | 'dark' | 'light' | 'infer' | string = 'auto';
+
+    @property({ type: String, reflect: true, attribute: 'fg-color' })
+    fgColor?: string;
+
+    @property({ type: String, reflect: true, attribute: 'bg-color' })
+    bgColor?: string;
+
+    inferredThemeVariables = {
+        'color-background': '',
+        'color-border': '',
+        'color-primary': '',
+        'color-action': '',
+        'color-action-secondary': '',
+        'color-action-contrast': '',
+        'color-action-contrast-secondary': '',
+        'color-card-header-background': '',
+        'color-card-header-color': '',
+    };
 
     @property({ attribute: 'powered-by-icon-src', type: String, reflect: true })
     poweredByIconSrc?: string;
@@ -96,6 +116,7 @@ export class QaBot extends LitElement {
     protected lastBottomLineDetector?: HTMLElement;
 
     protected bottomLineObserver: IntersectionObserver;
+    protected themeMightChangeObserver: MutationObserver;
 
     scrolledToBottom?: boolean;
     smallViewPort?: boolean;
@@ -148,6 +169,11 @@ export class QaBot extends LitElement {
             const lastEvent = intersectionEvents[0];
 
             this.scrolledToBottom = lastEvent?.isIntersecting;
+        });
+
+        this.themeMightChangeObserver = new MutationObserver((_mutations) => {
+            this.inferTheme();
+            this.requestUpdate();
         });
 
         customTextFragmentsPolyfill();
@@ -213,6 +239,12 @@ export class QaBot extends LitElement {
         super.connectedCallback();
         this.loadPreferences();
         this.__observeBottomLine();
+
+        if (this.theme === 'infer') {
+            this.__setUpThemeMightChangeObserver();
+            this.inferTheme();
+        }
+
         this.requestUpdate();
     }
 
@@ -221,6 +253,7 @@ export class QaBot extends LitElement {
         window.removeEventListener('resize', this.__onScreenResizeRoutine);
         super.disconnectedCallback();
 
+        this.__suspendThemeMightChangeObserver();
         if (this.lastBottomLineDetector) {
             this.bottomLineObserver.unobserve(this.lastBottomLineDetector!);
             this.lastBottomLineDetector = undefined;
@@ -248,6 +281,14 @@ export class QaBot extends LitElement {
         }
         if (changedProps.has('title')) {
             this.preferences.name = this.title;
+        }
+        if (changedProps.has('theme')) {
+            if (this.theme === 'infer') {
+                this.__setUpThemeMightChangeObserver();
+                this.inferTheme();
+            } else {
+                this.__suspendThemeMightChangeObserver();
+            }
         }
         super.update(changedProps);
     }
@@ -714,6 +755,127 @@ export class QaBot extends LitElement {
         }
     }
 
+    protected inferTheme() {
+        let fgHsl: [number, number, number] | undefined;
+        let bgHsl: [number, number, number] | undefined;
+
+        if (this.fgColor) {
+            fgHsl = parseCssToHsl.call(this, this.fgColor);
+        }
+        if (this.bgColor) {
+            bgHsl = parseCssToHsl.call(this, this.bgColor);
+        }
+
+        if (!bgHsl) {
+            const bgCss = window.getComputedStyle(document.body).backgroundColor.replace(/\s/g, '');
+
+            if (bgCss !== 'rgb(255,255,255)' && bgCss !== 'rgba(0,0,0,0)') {
+                bgHsl = parseCssToHsl.call(this, bgCss);
+            }
+        }
+
+        if (!bgHsl) {
+            const bgCss = window.getComputedStyle(this).backgroundColor.replace(/\s/g, '');
+
+            if (bgCss !== 'rgb(255,255,255)' && bgCss !== 'rgba(0,0,0,0)') {
+                bgHsl = parseCssToHsl.call(this, bgCss);
+            }
+        }
+
+        if (!bgHsl || bgHsl.reduce((x, a) => x + a) >= 255 * 3) {
+            const cssVariablesToCheck = [
+                '--color-background-primary',
+                '--md-default-bg-color',
+            ];
+            for (const cssVar of cssVariablesToCheck) {
+                bgHsl = parseCssToHsl.call(this, cssVar);
+
+                if (bgHsl) {
+                    break;
+                }
+            }
+        }
+
+        if (!bgHsl) {
+            bgHsl = rgbHexToHslVec('#fff')!;
+        }
+
+        if (!fgHsl) {
+            const fgCss = window.getComputedStyle(this).color.replace(/\s/g, '');
+
+            if (fgCss !== 'rgb(0,0,0)') {
+                fgHsl = parseCssToHsl.call(this, fgCss);
+            }
+        }
+
+        if (!fgHsl) {
+            const cssVariablesToCheck = [
+                '--color-background-primary',
+                '--md-default-bg-color',
+            ];
+            for (const cssVar of cssVariablesToCheck) {
+                fgHsl = parseCssToHsl.call(this, cssVar);
+
+                if (fgHsl) {
+                    break;
+                }
+            }
+        }
+
+        if (!fgHsl) {
+            const headerElem = document.querySelector('header,nav');
+            if (headerElem) {
+                fgHsl = parseCssToHsl.call(this, window.getComputedStyle(headerElem).backgroundColor);
+            }
+        }
+
+        let mode: 'light' | 'dark' = 'light';
+        if (bgHsl[2] <= 50) {
+            mode = 'dark';
+        }
+        const tgt: Partial<this['inferredThemeVariables']> = {};
+        if (mode === 'light') {
+            if (!fgHsl) {
+                fgHsl = rgbHexToHslVec('#009191')!;
+            }
+            tgt['color-background'] = hslVecToCss(bgHsl);
+            tgt['color-action'] = hslVecToCss(fgHsl);
+            tgt['color-primary'] = bgHsl[2] > 50 ? '#000' : '#fff';
+            // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+            tgt['color-action-secondary'] = hslVecToCss(fgHsl, 0.05);
+            // tgt['color-border'] = hslVecToCss(fgHsl);
+            tgt['color-action-contrast'] = fgHsl[2] > 50 ? '#000' : '#fff';
+            tgt['color-action-contrast-secondary'] = hslVecToCss(bgHsl, 0.87);
+            tgt['color-card-header-background'] = hslVecToCss(fgHsl);
+            tgt['color-card-header-color'] = fgHsl[2] > 50 ? '#000' : '#fff';
+
+        } else if (mode === 'dark') {
+            if (!fgHsl) {
+                fgHsl = rgbHexToHslVec('#FBCB67')!;
+            }
+            tgt['color-background'] = hslVecToCss(bgHsl);
+            tgt['color-action'] = hslVecToCss(fgHsl);
+            tgt['color-primary'] = bgHsl[2] > 50 ? '#000' : '#fff';
+            // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+            tgt['color-action-secondary'] = hslVecToCss(fgHsl, 0.05);
+            // tgt['color-border'] = hslVecToCss(fgHsl);
+            tgt['color-action-contrast'] = fgHsl[2] > 50 ? '#000' : '#fff';
+            tgt['color-action-contrast-secondary'] = hslVecToCss(bgHsl, 0.87);
+            tgt['color-card-header-background'] = '#ffffff1a';
+            tgt['color-card-header-color'] = '#fff';
+        }
+        this.inferredThemeVariables = tgt as any;
+
+        return [fgHsl, bgHsl, mode, this.inferredThemeVariables];
+    }
+    private __setUpThemeMightChangeObserver() {
+        this.themeMightChangeObserver.observe(this, { attributes: true, attributeFilter: ['style'] });
+        this.themeMightChangeObserver.observe(document.body, { attributes: true });
+    }
+    private __suspendThemeMightChangeObserver() {
+        this.themeMightChangeObserver.disconnect();
+    }
+
     protected getAnswerBlock() {
 
         return html`
@@ -756,12 +918,22 @@ export class QaBot extends LitElement {
     }
 
     override render() {
+        const inferredThemeVariables = Object.entries(this.inferredThemeVariables)
+            .filter(([_k, v]) => Boolean(v))
+            .map(([k, v]) => {
+                return `--qabot-${k}: ${v};`;
+            });
+
         return html`
         <style>
             .card .card__header {
                 background-image: ${this.headerBackground ? `url(${this.headerBackground})` : 'unset'};
             }
-        </style>
+
+            :host([theme='infer']){
+                ${unsafeHTML(inferredThemeVariables.join('\n'))};
+            }
+            </style>
         <div class="slots" style="display: none">
             <slot name="name"></slot>
             <slot name="description"></slot>

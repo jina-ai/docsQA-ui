@@ -3,7 +3,6 @@ import { css } from 'lit';
 
 export const masterStyle = css`
     :host {
-        --qabot-color-shadow: #0000000d;
         --qabot-color-background: #fff;
         --qabot-color-border: rgba(153, 153, 153, 0.25);
 
@@ -11,6 +10,7 @@ export const masterStyle = css`
         --qabot-color-action: #009191;
         --qabot-color-action-secondary: rgba(0, 145, 145, 0.05);
         --qabot-color-action-contrast: #fff;
+        --qabot-color-action-contrast-secondary: var(--qabot-color-action-contrast);
         --qabot-color-muted: #646776;
 
         --qabot-size-text-primary: 0.75em;
@@ -24,7 +24,6 @@ export const masterStyle = css`
     }
 
     :host([theme='dark']){
-      --qabot-color-shadow: #0000000d;
       --qabot-color-background: #181818;
       --qabot-color-border: rgba(153, 153, 153, 0.25);
 
@@ -32,6 +31,7 @@ export const masterStyle = css`
       --qabot-color-action: #FBCB67;
       --qabot-color-action-secondary: rgba(251, 203, 103, 0.1);
       --qabot-color-action-contrast: #181818;
+      --qabot-color-action-contrast-secondary: var(--qabot-color-action-contrast);
       --qabot-color-muted: #81868d;
 
       --qabot-color-card-header-background: rgba(255, 255, 255, 0.1);
@@ -40,7 +40,6 @@ export const masterStyle = css`
 
     @media (prefers-color-scheme: dark) {
         :host([theme='auto']){
-            --qabot-color-shadow: #0000000d;
             --qabot-color-background: #181818;
             --qabot-color-border: rgba(153, 153, 153, 0.25);
 
@@ -48,6 +47,7 @@ export const masterStyle = css`
             --qabot-color-action: #FBCB67;
             --qabot-color-action-secondary: rgba(251, 203, 103, 0.1);
             --qabot-color-action-contrast: #181818;
+            --qabot-color-action-contrast-secondary: var(--qabot-color-action-contrast);
             --qabot-color-muted: #81868d;
 
             --qabot-color-card-header-background: rgba(255, 255, 255, 0.1);
@@ -398,7 +398,7 @@ export const masterStyle = css`
     }
 
     .answer-hint .answer-hint__content .question {
-        background-color: var(--qabot-color-action-contrast);
+        background-color: var(--qabot-color-action-contrast-secondary);
         color: var(--qabot-color-action);
         font-size: var(--qabot-size-text-primary);
         line-height: var(--qabot-size-line-height);
@@ -537,7 +537,7 @@ export const masterStyle = css`
     }
 
     .qa-pair .talktext .multiple-links {
-        background-color: var(--qabot-color-action-contrast);
+        background-color: var(--qabot-color-action-contrast-secondary);
         color: var(--qabot-color-action);
     }
 
