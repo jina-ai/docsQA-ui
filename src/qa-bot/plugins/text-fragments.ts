@@ -5,6 +5,8 @@ function patchTextFragmentEncoding(text: string) {
     return encodeURIComponent(text).replace(/-/g, '%2D');
 }
 
+const nativeTextFragments = 'fragmentDirective' in document;
+
 export function makeTextFragmentUriFromPassage(text?: string, paragraph?: string, uri?: string) {
     if (!(text && paragraph && uri)) {
         return uri;
@@ -35,6 +37,10 @@ export function transformAnswerUriAddTextFragments(this: DocQAAnswer, _qaPair: Q
     }
 
     for (const match of this.matches) {
+
+        if (!(match.tags?.uri_same_origin) && !nativeTextFragments) {
+            continue;
+        }
 
         const paragraph: string = get(match, 'tags.paragraph', '');
 

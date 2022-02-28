@@ -216,6 +216,12 @@
            potentialMatch.endContainer, potentialMatch.endOffset);
        textEndRange.setEnd(searchRange.endContainer, searchRange.endOffset);
 
+       // Keep track of matches of the end term followed by suffix term
+       // (if needed).
+       // If no matches are found then there's no point in keeping looking for
+       // matches of the start term after the current start term occurrence.
+       let matchFound = false;
+
        // Search through the rest of the document to find a textEnd match. This
        // may take multiple iterations if a suffix needs to be found.
        while (!textEndRange.collapsed && results.length < 2) {
@@ -224,6 +230,7 @@
          if (textEndMatch == null) {
            break;
          }
+
          advanceRangeStartPastOffset(
              textEndRange, textEndMatch.startContainer,
              textEndMatch.startOffset);
@@ -239,6 +246,7 @@
            if (suffixResult === CheckSuffixResult.NO_SUFFIX_MATCH) {
              break;
            } else if (suffixResult === CheckSuffixResult.SUFFIX_MATCH) {
+             matchFound = true;
              results.push(potentialMatch.cloneRange());
              continue;
            } else if (suffixResult === CheckSuffixResult.MISPLACED_SUFFIX) {
@@ -246,9 +254,16 @@
            }
          } else {
            // If we've found textEnd and there's no suffix, then it's a match!
+           matchFound = true;
            results.push(potentialMatch.cloneRange());
          }
        }
+       // Stopping match search because suffix or textEnd are missing from the
+       // rest of the search space.
+       if (!matchFound) {
+         break;
+       }
+
      } else if (textFragment.suffix) {
        // If there's no textEnd but there is a suffix, search for the suffix
        // after potentialMatch
@@ -357,13 +372,8 @@
   * @param {Range} range - the range to mutate
   */
  const advanceRangeStartToNonWhitespace = (range) => {
-   const walker = document.createTreeWalker(
-       range.commonAncestorContainer,
-       NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT,
-       (node) => {
-         return acceptTextNodeIfVisibleInRange(node, range);
-       },
-   );
+   const walker = makeTextNodeWalker(range);
+
    let node = walker.nextNode();
    while (!range.collapsed && node != null) {
      if (node !== range.startContainer) {
@@ -389,6 +399,25 @@
      }
    }
  };
+
+ /**
+  * Creates a TreeWalker that traverses a range and emits visible text nodes in
+  * the range.
+  * @param {Range} range - Range to be traversed by the walker
+  * @return {TreeWalker}
+  */
+ const makeTextNodeWalker =
+     (range) => {
+       const walker = document.createTreeWalker(
+           range.commonAncestorContainer,
+           NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT,
+           (node) => {
+             return acceptTextNodeIfVisibleInRange(node, range);
+           },
+       );
+
+       return walker;
+     }
 
  /**
   * Given a Range, wraps its text contents in one or more <mark> elements.
@@ -481,7 +510,7 @@
   * the node's ancestors so even if the node is visible according to its style
   * it might not be visible on the page if one of its ancestors is not visible.
   * @param {Node} node - the Node to evaluate
-  * @returns {Boolean} - true if the node is visible. A node will be visible if
+  * @return {Boolean} - true if the node is visible. A node will be visible if
   * its computed style meets all of the following criteria:
   *  - non zero height, width, height and opacity
   *  - visibility not hidden
@@ -530,7 +559,7 @@
   * @param {Node} node - the Node to evaluate
   * @param {Range} range - the range in which node must fall. Optional;
   *     if null, the range check is skipped/
-  * @returns {NodeFilter} - NodeFilter value to be passed along to a TreeWalker.
+  * @return {NodeFilter} - NodeFilter value to be passed along to a TreeWalker.
   * Values returned:
   *  - FILTER_REJECT: Node not in range or not visible.
   *  - FILTER_SKIP: Non Text Node visible and in range
@@ -1008,7 +1037,9 @@
    normalizeString: normalizeString,
    makeNewSegmenter: makeNewSegmenter,
    forwardTraverse: forwardTraverse,
-   backwardTraverse: backwardTraverse
+   backwardTraverse: backwardTraverse,
+   makeTextNodeWalker: makeTextNodeWalker,
+   isNodeVisible: isNodeVisible
  }
 
  // Allow importing module from closure-compiler projects that haven't migrated
@@ -1052,7 +1083,12 @@
    const defaultStyle = `.${TEXT_FRAGMENT_CSS_CLASS_NAME} {
      background-color: ${backgroundColor};
      color: ${color};
-   }`
+   }
+
+   .${TEXT_FRAGMENT_CSS_CLASS_NAME} a, a .${TEXT_FRAGMENT_CSS_CLASS_NAME} {
+     text-decoration: underline;
+   }
+   `
    if (styles.length === 0) {
      document.head.insertAdjacentHTML(
          'beforeend', `<style type="text/css">${defaultStyle}</style>`);
