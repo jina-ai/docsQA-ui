@@ -188,6 +188,7 @@ td, th {
     border-radius: 0.25rem;
     background-color: #eee;
 
+    color: #009191;
     transition: background-color 0.2s;
 }
 
@@ -198,6 +199,7 @@ td, th {
 @media (prefers-color-scheme: dark) {
     .bot-container:not(.light) {
         background: #111;
+        color: #fbcb67;
     }
 }
 
