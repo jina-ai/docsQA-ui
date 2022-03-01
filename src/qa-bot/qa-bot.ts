@@ -179,7 +179,10 @@ export class QaBot extends LitElement {
         this.__inferThemeRoutine = async (_mutations) => {
             this.reInferTheme();
         };
-        this.themeMightChangeObserver = new MutationObserver(this.__inferThemeRoutine);
+        this.themeMightChangeObserver = new MutationObserver(()=> {
+            this.inferTheme();
+            this.requestUpdate();
+        });
 
         customTextFragmentsPolyfill();
 
@@ -360,9 +363,10 @@ export class QaBot extends LitElement {
         }
     }
 
+    @perNextTick()
     @throttle()
     async reInferTheme() {
-        await delay(2);
+        await delay(200);
         this.inferTheme();
         this.requestUpdate();
     }
