@@ -804,10 +804,18 @@ export class QaBot extends LitElement {
         }
 
         if (!bgHsl) {
-            const bgCss = window.getComputedStyle(this).backgroundColor.replace(/\s/g, '');
+            let ptr = this.parentElement;
+            const body = document.body;
 
-            if (bgCss !== 'rgb(255,255,255)' && bgCss !== 'rgba(0,0,0,0)') {
-                bgHsl = parseCssToHsl.call(this, bgCss);
+            while (ptr && ptr !== body) {
+                const bgCss = window.getComputedStyle(ptr).backgroundColor.replace(/\s/g, '');
+
+                if (bgCss !== 'rgba(0,0,0,0)') {
+                    bgHsl = parseCssToHsl.call(this, bgCss);
+                    break;
+                }
+
+                ptr = ptr.parentElement;
             }
         }
 
@@ -821,6 +829,11 @@ export class QaBot extends LitElement {
 
         if (!bgHsl) {
             bgHsl = rgbHexToHslVec('#fff')!;
+        }
+
+        let mode: 'light' | 'dark' = 'light';
+        if (bgHsl[2] <= 50) {
+            mode = 'dark';
         }
 
         if (!fgHsl && this.style.color) {
@@ -849,19 +862,28 @@ export class QaBot extends LitElement {
             if (fgCss !== 'rgb(0,0,0)') {
                 fgHsl = parseCssToHsl.call(this, fgCss);
             }
+            if (fgHsl) {
+                if (Math.abs(fgHsl[2] - bgHsl[2]) < 20) {
+                    fgHsl = undefined;
+                }
+            }
         }
 
         if (!fgHsl) {
             const headerElem = document.querySelector('header,nav');
             if (headerElem) {
-                fgHsl = parseCssToHsl.call(this, window.getComputedStyle(headerElem).backgroundColor);
+                const fgCss = window.getComputedStyle(headerElem).backgroundColor.replace(/\s/g, '');
+                if (fgCss !== 'rgba(0,0,0,0)') {
+                    fgHsl = parseCssToHsl.call(this, fgCss);
+                }
+            }
+            if (fgHsl) {
+                if (Math.abs(fgHsl[2] - bgHsl[2]) < 20) {
+                    fgHsl = undefined;
+                }
             }
         }
 
-        let mode: 'light' | 'dark' = 'light';
-        if (bgHsl[2] <= 50) {
-            mode = 'dark';
-        }
         const tgt: Partial<this['inferredThemeVariables']> = {};
         if (mode === 'light') {
             if (!fgHsl) {
@@ -869,14 +891,14 @@ export class QaBot extends LitElement {
             }
             tgt['color-background'] = hslVecToCss(bgHsl);
             tgt['color-action'] = hslVecToCss(fgHsl);
-            tgt['color-primary'] = bgHsl[2] > 75 ? '#000' : '#fff';
+            tgt['color-primary'] = bgHsl[2] > 60 ? '#000' : '#fff';
             // eslint-disable-next-line @typescript-eslint/no-magic-numbers
             tgt['color-action-secondary'] = hslVecToCss(fgHsl, 0.05);
             // tgt['color-border'] = hslVecToCss(fgHsl);
-            tgt['color-action-contrast'] = fgHsl[2] > 75 ? '#000' : '#fff';
+            tgt['color-action-contrast'] = fgHsl[2] > 60 ? '#000' : '#fff';
             tgt['color-action-contrast-secondary'] = hslVecToCss(bgHsl, 0.87);
             tgt['color-card-header-background'] = hslVecToCss(fgHsl);
-            tgt['color-card-header-color'] = fgHsl[2] > 75 ? '#000' : '#fff';
+            tgt['color-card-header-color'] = fgHsl[2] > 60 ? '#000' : '#fff';
 
         } else if (mode === 'dark') {
             if (!fgHsl) {
