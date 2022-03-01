@@ -2,12 +2,14 @@ import { LitElement, PropertyValues } from 'lit';
 import { JinaQABotController } from './controller';
 import { ANSWER_RENDER_TEMPLATE, QAPair } from './shared';
 import { AnswerRenderer } from './answer-renderers';
+import { xorDecryptB64EncodedUtf8, xorEncryptStringUtf8B64 } from '../lib/crypto';
 export declare class QaBot extends LitElement {
     botAvatar?: string;
     title: string;
     description?: string;
     headerBackground?: string;
     orientation: 'bottom-left' | 'bottom-right' | 'top-left' | 'top-right' | 'center';
+    token?: string;
     server?: string;
     site?: string;
     target?: string;
@@ -65,6 +67,7 @@ export declare class QaBot extends LitElement {
     };
     private __syncOptionsRoutine;
     private __onScreenResizeRoutine;
+    private __inferThemeRoutine;
     constructor();
     protected __detectViewPort(): void;
     protected __observeBottomLine(): Promise<void>;
@@ -77,6 +80,7 @@ export declare class QaBot extends LitElement {
     updated(): void;
     protected onTextAreaInput(event: KeyboardEvent): void;
     setQaPairTargeted(qaPair?: QAPair): void;
+    reInferTheme(): Promise<void>;
     protected setupDebugEventListener(flag?: boolean): void;
     debugCommands(input: string): void;
     submitQuestion(): Promise<void>;
@@ -105,6 +109,8 @@ export declare class QaBot extends LitElement {
     } | "dark" | "light" | undefined)[];
     private __setUpThemeMightChangeObserver;
     private __suspendThemeMightChangeObserver;
+    protected xorDecryptB64EncodedUtf8: typeof xorDecryptB64EncodedUtf8;
+    protected xorEncryptStringUtf8B64: typeof xorEncryptStringUtf8B64;
     protected getAnswerBlock(): import("lit-html").TemplateResult<1>;
     protected onClickQuestion(e: Event): void;
     protected getAvatar(): import("lit-html").TemplateResult<1 | 2>;

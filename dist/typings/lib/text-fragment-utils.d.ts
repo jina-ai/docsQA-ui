@@ -41,6 +41,8 @@ export namespace internal {
     export { makeNewSegmenter };
     export { forwardTraverse };
     export { backwardTraverse };
+    export { makeTextNodeWalker };
+    export { isNodeVisible };
 }
 export function applyTargetTextStyle(): void;
 export function setDefaultTextFragmentsStyle({ backgroundColor, color }: Object): void;
@@ -72,4 +74,6 @@ declare const BLOCK_ELEMENTS: string[];
 declare const BOUNDARY_CHARS: RegExp;
 declare const NON_BOUNDARY_CHARS: RegExp;
 declare function acceptNodeIfVisibleInRange(node: Node, range: Range | undefined): NodeFilter;
+declare function makeTextNodeWalker(range: Range): TreeWalker;
+declare function isNodeVisible(node: Node): boolean;
 export {};
