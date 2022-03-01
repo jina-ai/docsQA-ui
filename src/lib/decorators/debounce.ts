@@ -1,21 +1,27 @@
-export function debounce(waitMs: number = 1000) {
-    let lastRunAt = 0;
+let i = 1;
 
+export function debounce(waitMs: number = 1000) {
     return function debounceDecorator(_target: any, _propName: string | symbol, propDesc: PropertyDescriptor) {
+        const debounceSymbol = Symbol(`DEBOUNCE:${i++}`);
         const func: Function = propDesc.value;
 
         if (typeof func !== 'function') {
             throw new Error('Invalid use of debounce decorator');
         }
 
-        let resultPromise: Promise<any> | undefined;
-
         function newFunc(this: any, ...argv: any[]) {
-            if (lastRunAt + waitMs >= Date.now()) {
-                return resultPromise;
+            if (!this[debounceSymbol]) {
+                this[debounceSymbol] = {
+                    lastRunAt: 0,
+                    resultPromise: undefined,
+                };
             }
-            lastRunAt = Date.now();
-            resultPromise = new Promise((resolve, reject) => {
+            const conf = this[debounceSymbol];
+            if (conf.lastRunAt + waitMs >= Date.now()) {
+                return conf.resultPromise;
+            }
+            conf.lastRunAt = Date.now();
+            conf.resultPromise = new Promise((resolve, reject) => {
                 setTimeout(() => {
                     try {
                         const r = func.apply(this, argv);
@@ -28,7 +34,7 @@ export function debounce(waitMs: number = 1000) {
                 }, waitMs);
             });
 
-            return resultPromise;
+            return conf.resultPromise;
         }
 
         propDesc.value = newFunc;

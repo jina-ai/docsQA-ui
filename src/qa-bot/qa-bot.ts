@@ -362,7 +362,7 @@ export class QaBot extends LitElement {
 
     @throttle()
     async reInferTheme() {
-        await delay(1);
+        await delay(2);
         this.inferTheme();
         this.requestUpdate();
     }
