@@ -150,6 +150,7 @@ export class QaBot extends LitElement {
 
     private __syncOptionsRoutine: (event: Event) => void;
     private __onScreenResizeRoutine: (event: Event) => void;
+    private __inferThemeRoutine: (_: any) => void;
 
     constructor() {
         super();
@@ -175,10 +176,11 @@ export class QaBot extends LitElement {
             this.scrolledToBottom = lastEvent?.isIntersecting;
         });
 
-        this.themeMightChangeObserver = new MutationObserver((_mutations) => {
+        this.__inferThemeRoutine = (_mutations) => {
             this.inferTheme();
             this.requestUpdate();
-        });
+        };
+        this.themeMightChangeObserver = new MutationObserver(this.__inferThemeRoutine);
 
         customTextFragmentsPolyfill();
 
@@ -922,9 +924,11 @@ export class QaBot extends LitElement {
     private __setUpThemeMightChangeObserver() {
         this.themeMightChangeObserver.observe(this, { attributes: true, attributeFilter: ['style'] });
         this.themeMightChangeObserver.observe(document.body, { attributes: true });
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', this.__inferThemeRoutine);
     }
     private __suspendThemeMightChangeObserver() {
         this.themeMightChangeObserver.disconnect();
+        window.matchMedia('(prefers-color-scheme: dark)').removeEventListener('change', this.__inferThemeRoutine);
     }
 
     protected xorDecryptB64EncodedUtf8 = xorDecryptB64EncodedUtf8;
