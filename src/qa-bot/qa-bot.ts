@@ -176,9 +176,8 @@ export class QaBot extends LitElement {
             this.scrolledToBottom = lastEvent?.isIntersecting;
         });
 
-        this.__inferThemeRoutine = (_mutations) => {
-            this.inferTheme();
-            this.requestUpdate();
+        this.__inferThemeRoutine = async (_mutations) => {
+            this.reInferTheme();
         };
         this.themeMightChangeObserver = new MutationObserver(this.__inferThemeRoutine);
 
@@ -359,6 +358,13 @@ export class QaBot extends LitElement {
         if (this.smallViewPort && this.target === '_self') {
             this.closeCard();
         }
+    }
+
+    @throttle()
+    async reInferTheme() {
+        await delay(1);
+        this.inferTheme();
+        this.requestUpdate();
     }
 
     protected setupDebugEventListener(flag: boolean = true) {
