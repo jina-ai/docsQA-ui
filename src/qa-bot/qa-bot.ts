@@ -20,6 +20,7 @@ import { runOnce } from '../lib/decorators/once';
 import { debounce } from '../lib/decorators/debounce';
 import { DEFAULT_PREFERENCE } from './constants';
 import { hslVecToCss, parseCssToHsl, rgbHexToHslVec } from '../lib/color';
+import { xorDecryptB64EncodedUtf8, xorEncryptStringUtf8B64 } from '../lib/crypto';
 
 const ABSPATHREGEXP = /^(https?:)?\/\/\S/;
 
@@ -57,6 +58,8 @@ export class QaBot extends LitElement {
     @property({ attribute: 'orientation', type: String, reflect: true })
     orientation: 'bottom-left' | 'bottom-right' | 'top-left' | 'top-right' | 'center' = 'bottom-right';
 
+    @property({ type: String })
+    token?: string;
     @property({ type: String })
     server?: string;
 
@@ -268,8 +271,19 @@ export class QaBot extends LitElement {
     ];
 
     override update(changedProps: PropertyValues) {
-        if (changedProps.has('server') && this.server) {
-            this.qaControl = new JinaQABotController(this, this.server, this.channel);
+        if (
+            (changedProps.has('server') && this.server) ||
+            (changedProps.has('token') && this.token)
+        ) {
+            if (this.server) {
+                this.qaControl = new JinaQABotController(this, this.server, this.channel);
+            } else {
+                this.qaControl = new JinaQABotController(
+                    this,
+                    this.xorDecryptB64EncodedUtf8(this.token!),
+                    this.channel
+                );
+            }
 
             this.loadPreferences();
 
@@ -283,7 +297,14 @@ export class QaBot extends LitElement {
         if (changedProps.has('title')) {
             this.preferences.name = this.title;
         }
-        if (changedProps.has('theme')) {
+        if (
+            (changedProps.has('fgColor') && this.fgColor) ||
+            (changedProps.has('bgColor') && this.bgColor)
+        ) {
+            this.theme = 'infer';
+            this.__setUpThemeMightChangeObserver();
+            this.inferTheme();
+        } else if (changedProps.has('theme')) {
             if (this.theme === 'infer') {
                 this.__setUpThemeMightChangeObserver();
                 this.inferTheme();
@@ -768,22 +789,6 @@ export class QaBot extends LitElement {
             bgHsl = parseCssToHsl.call(this, this.bgColor);
         }
 
-        if (!bgHsl) {
-            const bgCss = window.getComputedStyle(document.body).backgroundColor.replace(/\s/g, '');
-
-            if (bgCss !== 'rgb(255,255,255)' && bgCss !== 'rgba(0,0,0,0)') {
-                bgHsl = parseCssToHsl.call(this, bgCss);
-            }
-        }
-
-        if (!bgHsl) {
-            const bgCss = window.getComputedStyle(this).backgroundColor.replace(/\s/g, '');
-
-            if (bgCss !== 'rgb(255,255,255)' && bgCss !== 'rgba(0,0,0,0)') {
-                bgHsl = parseCssToHsl.call(this, bgCss);
-            }
-        }
-
         if (!bgHsl || bgHsl.reduce((x, a) => x + a) >= 255 * 3) {
             const cssVariablesToCheck = [
                 '--color-background-primary',
@@ -799,15 +804,29 @@ export class QaBot extends LitElement {
         }
 
         if (!bgHsl) {
+            const bgCss = window.getComputedStyle(this).backgroundColor.replace(/\s/g, '');
+
+            if (bgCss !== 'rgb(255,255,255)' && bgCss !== 'rgba(0,0,0,0)') {
+                bgHsl = parseCssToHsl.call(this, bgCss);
+            }
+        }
+
+        if (!bgHsl) {
+            const bgCss = window.getComputedStyle(document.body).backgroundColor.replace(/\s/g, '');
+
+            if (bgCss !== 'rgb(255,255,255)' && bgCss !== 'rgba(0,0,0,0)') {
+                bgHsl = parseCssToHsl.call(this, bgCss);
+            }
+        }
+
+        if (!bgHsl) {
             bgHsl = rgbHexToHslVec('#fff')!;
         }
 
         if (!fgHsl && this.style.color) {
             const fgCss = this.style.color;
 
-            if (fgCss !== 'rgb(0,0,0)') {
-                fgHsl = parseCssToHsl.call(this, fgCss);
-            }
+            fgHsl = parseCssToHsl.call(this, fgCss);
         }
 
         if (!fgHsl) {
@@ -885,6 +904,9 @@ export class QaBot extends LitElement {
     private __suspendThemeMightChangeObserver() {
         this.themeMightChangeObserver.disconnect();
     }
+
+    protected xorDecryptB64EncodedUtf8 = xorDecryptB64EncodedUtf8;
+    protected xorEncryptStringUtf8B64 = xorEncryptStringUtf8B64;
 
     protected getAnswerBlock() {
 

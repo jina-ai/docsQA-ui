@@ -16,3 +16,13 @@ export function randomPick<T>(set: Iterable<T>) {
 
     return array[indx];
 }
+
+export function randomUint8Array(length: number) {
+    const arr = new Uint8Array(length);
+
+    for (let i = 0; i < length; i++) {
+        arr[i] = randomInt(0, 256);
+    }
+
+    return arr;
+}

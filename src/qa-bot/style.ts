@@ -65,6 +65,7 @@ export const masterStyle = css`
         right: 1.25em;
         max-width: calc(100vw - 2.5em);
         z-index: 101;
+        background-color: transparent;
     }
 
     @media (min-height: 90rem) {
