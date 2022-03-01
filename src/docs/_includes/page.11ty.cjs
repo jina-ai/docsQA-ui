@@ -15,6 +15,7 @@ module.exports = function (data) {
     <title>${title}</title>
     <link rel="stylesheet" href="${relative(page.url, '/docs.css')}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600|Roboto+Mono">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.css"/>
     <link href="${relative(page.url, '/prism-okaidia.css')}" rel="stylesheet" />
     <script src="/node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
     <script src="/node_modules/lit/polyfill-support.js"></script>

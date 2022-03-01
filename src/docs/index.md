@@ -64,80 +64,199 @@ title: <qa-bot> ⌲ Home
   </div>
 </section>
 
-## Declarative rendering
+## Configuration UI
 
-<section class="columns">
-  <div>
-
-`<qa-bot>` can be used with declarative rendering libraries like Angular, React, Vue, and lit-html
-
-For example, the following Vue code:
-```html
-<div id="demo-vue">
-    <div class="bot-container">
-        <qa-bot 
-            :open="Number.isInteger(Math.floor(timer / 3) / 2)"
-            :theme="Number.isInteger(Math.floor(timer / 5) / 2) ? 'light':'dark'"
-            :title="`+${timer}s`" 
-            :server="server"
-        ></qa-bot>
+<section>
+    <div id="vue-app" class="columns">
+        <form class="config-form">
+            <div class="config-form-item">
+                <label>Name</label><input v-model="model.name" />
+            </div>
+            <div class="config-form-item">
+                <label>Description</label><input v-model="model.description" @input="onUpdate('text')" />
+            </div>
+            <div class="config-form-item">
+                <label>Server</label>
+                <input :disabled="!!model.token" v-model="model.server" />
+            </div>
+            <div class="config-form-item">
+                <label>DQA-ID</label>
+                <input :disabled="!!model.server" v-model="model.token" />
+            </div>
+            <div class="config-form-item">
+                <label>Avatar Url</label><input type="url" v-model="model.avatarUrl" />
+            </div>
+            <div class="config-form-item">
+                <label>Header Background Url</label><input type="url" v-model="model.bgImageUrl" />
+            </div>
+            <div class="config-form-item">
+                <label>Theme</label>
+                <select v-model="model.theme">
+                <option v-for="item in themes" :key="item" :label="item" :value="item">{{item}}</option>
+                </select>
+            </div>
+            <div v-if="model.theme === 'infer'" class="config-form-item">
+                <label>Color</label><input v-model="model.fgColor" data-coloris @change="onUpdate('color')"/>
+            </div>
+            <div v-if="model.theme === 'infer'" class="config-form-item">
+                <label>Background Color</label><input v-model="model.bgColor" data-coloris @change="onUpdate('color')"/>
+            </div>
+            <div class="config-form-item">
+                <label>Orientation</label>
+                <select v-model="model.orientation">
+                <option v-for="item in orientations" :key="item.key" :label="item.value" :value="item.key">{{item.value}}</option>
+                </select>
+            </div>
+            <div class="config-form-item">
+                <label>Open</label>
+                <input class="radio-btn" type="radio" :value="true" name="open" v-model="model.open" /><span class="radio-label">Yes</span>
+                <input class="radio-btn" type="radio" :value="undefined" name="open" v-model="model.open" /><span class="radio-label">No</span>
+            </div>
+            <div class="config-form-item">
+                <label>Target</label>
+                <select v-model="model.target">
+                <option v-for="item in targets" :key="item" :label="item" :value="item">{{item}}</option>
+                </select>
+            </div>
+            <div class="config-form-item multi-rows">
+                <label>Greeting</label>
+                <div class="inline-block">
+                <label class="inner-label">Title</label>
+                <input v-model="model.greeting.title" @change="onUpdate('text', true)" placeholder="You can tryout qabot easily:" /><br />
+                <label class="inner-label">Questions</label>
+                <textarea rows="5" v-model="model.greeting.questions" @change="onUpdate('text', true)" placeholder="What is Jina?&#10;Does Jina support Kubernetes?&#10;What are the basic concepts in Jina?"></textarea>
+                </div>
+            </div>
+        </form>
+        <div class="config-preview">
+            <nav class="tabs">
+                <button :class="['tab-item', activeTab === 'preview' ? 'active' : '']" title="preview" @click="onClickTab('preview')">Preview</button>
+                <button :class="['tab-item', activeTab === 'source' ? 'active' : '']" title="source" @click="onClickTab('source')">Code</button>
+            </nav>
+            <div id="preview" class="qa-bot-container" v-show="activeTab === 'preview'">
+                <qa-bot :token="model.token"
+                :server="model.server"
+                :avatar-src="model.avatarUrl"
+                :header-background-src="model.bgImageUrl"
+                :bg-color="model.bgColor"
+                :fg-color="model.fgColor"
+                :theme="model.theme"
+                site="docs.jina.ai"
+                :target="model.target"
+                :orientation="model.orientation"
+                :title="model.name"
+                :description="model.description"
+                :open="model.open"><br/>
+                        &ensp;<dl slot="greetings" v-if="model.greeting.title || model.greeting.questions"><br/>
+                            &ensp;&ensp;<dt :textContent="model.greeting.title">{{model.greeting.title}}</dt><br/>
+                            &ensp;&ensp;<dd v-for="(question, index) in questions" :key="'q_' + index" :textContent="question">{{question}}</dd><br/>
+                        &ensp;</dl><br/>
+                </qa-bot>
+            </div>
+            <div id="source" class="source-container" v-show="activeTab === 'source'">
+                <div class="btn-container">
+                    <button class="action-btn" title="copy" @click="onCopy">Copy to clipboard</button>
+                    <button class="action-btn" title="refresh" @click="onRefresh">Refresh</button>
+                </div>
+                <textarea id="CODE" readonly v-model="source">
+                </textarea><div>{{questions}}</div>
+            </div>
+        </div>
     </div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/vue@next"></script>
-```
-
-```js
-const app = Vue.createApp({ 
-    data() {
-        return { 
-            server: '/', 
-            timer: 0 
+    <script src="https://cdn.jsdelivr.net/npm/vue@next"></script>
+    <script src="https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.js"></script>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', () => {
+            window.qabot = document.querySelector('#preview qa-bot');
+        });
+        const app = Vue.createApp({
+            data() {
+                return {
+                    model: {
+                        name: 'DocsQA',
+                        description: '@Jina AI',
+                        token: undefined,
+                        server: 'https://jina-ai-jina.docsqa.jina.ai',
+                        avatarUrl: undefined,
+                        bgImageUrl: undefined,
+                        fgColor: undefined,
+                        bgColor: undefined,
+                        theme: 'infer',
+                        orientation: 'bottom-right',
+                        open: undefined,
+                        target: '_blank',
+                        greetingTitle: 'Welcome to DocsQA! Please ask any question:',
+                        greeting: {
+                            title: '',
+                            questions: ''
+                        }
+                    },
+                    orientations: [
+                        { key: 'bottom-right', value: 'Bottom-Right' },
+                        { key: 'bottom-left', value: 'Bottom-Left' },
+                        { key: 'top-right', value: 'Top-Right' },
+                        { key: 'top-left', value: 'Top-Left' },
+                        { key: 'center', value: 'Center' }
+                    ],
+                    themes: ['light', 'dark', 'auto', 'infer'],
+                    targets: ['_blank', '_self', '_parent', '_top'],
+                    source: '',
+                    activeTab: 'preview'
+                }
+            },
+            computed: {
+                questions () {
+                    return this.model.greeting.questions ? this.model.greeting.questions.split('\n') : [];
+                },
+                source: {
+                    get () {
+                        return window.qabot?.outerHTML;
+                    }
+                }
+            },
+            methods: {
+                onClickTab(tabName) {
+                    this.activeTab = tabName;
+                    if (tabName === 'source') {
+                        this.onRefresh();
+                    }
+                },
+                insertInnerText() {
+                    if (window.qabot) {
+                        const slots = window.qabot.querySelectorAll('[textContent]')
+                        slots.forEach((slot) => {
+                            slot.innerText = slot.getAttribute('textContent')
+                            slot.removeAttribute('textContent');
+                        })
+                    }
+                },
+                onUpdate(type, isSlot = false) {
+                    if (type === 'text') {
+                        if (isSlot) {
+                            this.insertInnerText()
+                        }
+                        window.qabot.loadPreferences();
+                    } else if (type === 'color') {
+                        window.qabot.inferTheme();
+                    }
+                    window.qabot.requestUpdate();
+                },
+                onCopy() {
+                    const copyText = document.getElementById('CODE');
+                    copyText.select();
+                    copyText.setSelectionRange(0, 99999);
+                    navigator.clipboard.writeText(copyText.value);
+                },
+                onRefresh() {
+                    this.source = window.qabot.outerHTML.replace(/\<br\>/g, '\n');
+                }
+            },
+        });
+        app.config.compilerOptions.isCustomElement = (tag)=> {
+            return tag === 'qa-bot';
         };
-    },
-    created() {
-        setInterval(()=> {
-            this.timer += 1;
-        }, 1000);
-    }
-});
-app.config.compilerOptions.isCustomElement = (tag)=> {
-    return tag === 'qa-bot';
-};
-app.mount('#demo-vue');
-```
-
-  </div>
-  <div>
-Renders to:
-<div id="demo-vue">
-    <div class="bot-container" v-bind:class="Number.isInteger(Math.floor(timer / 5) / 2) ? 'light' : 'dark'">
-        <qa-bot 
-            :open="Number.isInteger(Math.floor(timer / 3) / 2)" 
-            :title="` +${timer}s`" 
-            :server="server"
-            :theme="Number.isInteger(Math.floor(timer / 5) / 2) ? 'light':'dark'"
-        ></qa-bot>
-    </div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/vue@next"></script>
-<script type="text/javascript">
-    const app = Vue.createApp({ 
-        data() {
-            return { server: 'baidu.com', timer: 0 };
-        },
-        created() {
-            setInterval(()=> {
-                this.timer += 1;
-            }, 1000);
-        }
-    });
-    app.config.compilerOptions.isCustomElement = (tag)=> {
-        return tag === 'qa-bot';
-    }
-    app.mount('#demo-vue');
-</script>
-
-  </div>
+        app.mount('#vue-app');
+    </script>
 </section>
 
 <style>
