@@ -73,7 +73,7 @@ export class QaBot extends LitElement {
     channel?: string;
 
     @property({ type: String, reflect: true })
-    theme?: 'auto' | 'dark' | 'light' | 'infer' | string = 'auto';
+    theme?: 'auto' | 'dark' | 'light' | 'infer' | string = 'infer';
 
     @property({ type: String, reflect: true, attribute: 'fg-color' })
     fgColor?: string;
