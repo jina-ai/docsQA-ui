@@ -297,6 +297,9 @@ export class QaBot extends LitElement {
         }
         if (changedProps.has('open')) {
             this.scrollDialogToBottomForTheVeryFirstTime();
+            if (this.open) {
+                this.closing = false;
+            }
         }
         if (changedProps.has('title')) {
             this.preferences.name = this.title;

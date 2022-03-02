@@ -104,10 +104,10 @@ export const masterStyle = css`
         left: 1.25em;
     }
     :host([orientation='center']) {
-        top: 50vh;
+        top: 50%;
         bottom: unset;
         right: unset;
-        left: 50vw;
+        left: 50%;
         transform: translate(-50%, -50%);
     }
 

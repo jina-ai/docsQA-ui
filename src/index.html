@@ -137,11 +137,11 @@
       </div>
       <div class="config-form-item">
         <label>Server</label>
-        <input v-model="model.server" />
+        <input v-model="model.server" @change="onUpdate('server')" />
       </div>
       <div class="config-form-item">
         <label>Token</label>
-        <input v-model="model.token" />
+        <input v-model="model.token" @change="onUpdate('token')" />
       </div>
       <div class="config-form-item">
         <label>Avatar Url</label><input type="url" v-model="model.avatarUrl" />
@@ -194,7 +194,6 @@
       <div id="preview" class="qa-bot-container" v-show="activeTab === 'preview'">
         <qa-bot
           :token="model.token"
-          :server="model.server"
           :avatar-src="model.avatarUrl"
           :header-background-src="model.bgImageUrl"
           :bg-color="model.bgColor"
@@ -231,7 +230,7 @@
               model: {
                 name: 'DocsQA',
                 description: '@Jina AI',
-                token: '',
+                token: undefined,
                 server: 'https://jina-ai-jina.docsqa.jina.ai',
                 avatarUrl: undefined,
                 bgImageUrl: undefined,
@@ -259,20 +258,40 @@
               activeTab: 'preview'
               };
           },
+          computed: {
+            questions() {
+                return this.model.greeting.questions ? this.model.greeting.questions.split('\n') : [];
+            }
+          },
           methods: {
             onClickTab(tabName) {
               this.activeTab = tabName;
               if (tabName === 'source') {
-                this.source = window.qabot.outerHTML; // document?.getElementById('preview')?.innerHTML;
+                const template = ` <template>\n  <dl>\n   <dt>${this.model.greeting.title}</dt>${this.questions.map(item => `\n   <dd>${item}</dd>`)}\n  </dl>\n </template>`;
+                    this.source = `<qa-bot${this.model.token ? `\ntoken="${this.model.token}"` : ''}${this.model.avatarUrl ? `\navatar-src="${this.model.avatarUrl}"` : ''}${this.model.bgImageUrl ? `\nheader-background-src="${this.model.bgImageUrl}"` : ''}${this.model.bgColor ? `\nbg-color="${this.model.bgColor}"` : ''}${this.model.fgColor ? `\nfg-color="${this.model.fgColor}"` : ''}${this.model.theme ? `\ntheme="${this.model.theme}"` : ''}${this.model.site ? `\nsite="${this.model.site}"` : ''}${this.model.target ? `\ntarget="${this.model.target}"` : ''}${this.model.orientation ? `\norientation="${this.model.orientation}"` : ''}${this.model.name ? `\ntitle="${this.model.name}"` : ''}${this.model.description ? `\ndescription="${this.model.description}"` : ''}${this.model.open ? '\nopen' : ''}>\n${this.model.greeting.title || this.model.greeting.questions ? template : ''}\n</qa-bot>`;
               }
             },
-            onUpdate(type) {
-              if (type === 'text') {
-              window.qabot.loadPreferences();
-              } else if (type === 'color') {
-                window.qabot.inferTheme();
-              }
-              window.qabot.requestUpdate();
+            onUpdate(type, isSlot = false) {
+                switch (type) {
+                    case 'text':
+                        if (isSlot) {
+                            this.insertInnerText();
+                        }
+                        window.qabot.loadPreferences();
+                        break;
+                    case 'color':
+                        window.qabot.inferTheme();
+                        break;
+                    case 'server':
+                        this.model.token = window.qabot.xorEncryptStringUtf8B64(this.model.server);
+                        break;
+                    case 'token':
+                        this.model.server = window.qabot.xorDecryptB64EncodedUtf8(this.model.token);
+                        break;
+                        default:
+                          break;
+                }
+                window.qabot.requestUpdate();
             },
             onCopy() {
               const copyText = document.getElementById('CODE');

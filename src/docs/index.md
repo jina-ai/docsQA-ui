@@ -77,11 +77,15 @@ title: <qa-bot> ⌲ Home
             </div>
             <div class="config-form-item">
                 <label>Server</label>
-                <input :disabled="!!model.token" v-model="model.server" />
+                <input v-model="model.server" @change="onUpdate('server')" />
             </div>
             <div class="config-form-item">
-                <label>DQA-ID</label>
-                <input :disabled="!!model.server" v-model="model.token" />
+                <label>Token</label>
+                <input v-model="model.token" @change="onUpdate('token')" />
+            </div>
+             <div class="config-form-item">
+                <label>Site</label>
+                <input v-model="model.site" />
             </div>
             <div class="config-form-item">
                 <label>Avatar Url</label><input type="url" v-model="model.avatarUrl" />
@@ -134,23 +138,24 @@ title: <qa-bot> ⌲ Home
                 <button :class="['tab-item', activeTab === 'source' ? 'active' : '']" title="source" @click="onClickTab('source')">Code</button>
             </nav>
             <div id="preview" class="qa-bot-container" v-show="activeTab === 'preview'">
-                <qa-bot :token="model.token"
+                <qa-bot
+                :token="model.token"
                 :server="model.server"
                 :avatar-src="model.avatarUrl"
                 :header-background-src="model.bgImageUrl"
                 :bg-color="model.bgColor"
                 :fg-color="model.fgColor"
                 :theme="model.theme"
-                site="docs.jina.ai"
+                :site="model.site"
                 :target="model.target"
                 :orientation="model.orientation"
                 :title="model.name"
                 :description="model.description"
-                :open="model.open"><br/>
-                        &ensp;<dl slot="greetings" v-if="model.greeting.title || model.greeting.questions"><br/>
-                            &ensp;&ensp;<dt :textContent="model.greeting.title">{{model.greeting.title}}</dt><br/>
-                            &ensp;&ensp;<dd v-for="(question, index) in questions" :key="'q_' + index" :textContent="question">{{question}}</dd><br/>
-                        &ensp;</dl><br/>
+                :open="model.open">
+                        <dl slot="greetings" v-if="model.greeting.title || model.greeting.questions">
+                            <dt :textContent="model.greeting.title">{{model.greeting.title}}</dt>
+                            <dd v-for="(question, index) in questions" :key="'q_' + index" :textContent="question">{{question}}</dd>
+                        </dl>
                 </qa-bot>
             </div>
             <div id="source" class="source-container" v-show="activeTab === 'source'">
@@ -159,7 +164,7 @@ title: <qa-bot> ⌲ Home
                     <button class="action-btn" title="refresh" @click="onRefresh">Refresh</button>
                 </div>
                 <textarea id="CODE" readonly v-model="source">
-                </textarea><div>{{questions}}</div>
+                </textarea>
             </div>
         </div>
     </div>
@@ -176,7 +181,8 @@ title: <qa-bot> ⌲ Home
                         name: 'DocsQA',
                         description: '@Jina AI',
                         token: undefined,
-                        server: 'https://jina-ai-jina.docsqa.jina.ai',
+                        server: undefined,
+                        site: undefined,
                         avatarUrl: undefined,
                         bgImageUrl: undefined,
                         fgColor: undefined,
@@ -207,11 +213,6 @@ title: <qa-bot> ⌲ Home
             computed: {
                 questions () {
                     return this.model.greeting.questions ? this.model.greeting.questions.split('\n') : [];
-                },
-                source: {
-                    get () {
-                        return window.qabot?.outerHTML;
-                    }
                 }
             },
             methods: {
@@ -231,13 +232,26 @@ title: <qa-bot> ⌲ Home
                     }
                 },
                 onUpdate(type, isSlot = false) {
-                    if (type === 'text') {
-                        if (isSlot) {
-                            this.insertInnerText()
-                        }
-                        window.qabot.loadPreferences();
-                    } else if (type === 'color') {
-                        window.qabot.inferTheme();
+                    switch (type) {
+                        case 'text':
+                            if (isSlot) {
+                                this.insertInnerText()
+                            }
+                            window.qabot.loadPreferences();
+                            break;
+                        case 'color':
+                            window.qabot.inferTheme();
+                            break;
+                        case 'server':
+                            if (this.model.server) {
+                                this.model.token = window.qabot.xorEncryptStringUtf8B64(this.model.server);
+                            }
+                            break;
+                        case 'token':
+                            if (this.model.token) {
+                                this.model.server = window.qabot.xorDecryptB64EncodedUtf8(this.model.token);
+                            }
+                            break;
                     }
                     window.qabot.requestUpdate();
                 },
@@ -248,7 +262,8 @@ title: <qa-bot> ⌲ Home
                     navigator.clipboard.writeText(copyText.value);
                 },
                 onRefresh() {
-                    this.source = window.qabot.outerHTML.replace(/\<br\>/g, '\n');
+                    const template = ` <template>\n  <dl>\n   <dt>${this.model.greeting.title}</dt>${this.questions.map(item => `\n   <dd>${item}</dd>`)}\n  </dl>\n </template>`;
+                    this.source = `<qa-bot${this.model.token ? `\ntoken="${this.model.token}"` : ''}${this.model.avatarUrl ? `\navatar-src="${this.model.avatarUrl}"` : ''}${this.model.bgImageUrl ? `\nheader-background-src="${this.model.bgImageUrl}"` : ''}${this.model.bgColor ? `\nbg-color="${this.model.bgColor}"` : ''}${this.model.fgColor ? `\nfg-color="${this.model.fgColor}"` : ''}${this.model.theme ? `\ntheme="${this.model.theme}"` : ''}${this.model.site ? `\nsite="${this.model.site}"` : ''}${this.model.target ? `\ntarget="${this.model.target}"` : ''}${this.model.orientation ? `\norientation="${this.model.orientation}"` : ''}${this.model.name ? `\ntitle="${this.model.name}"` : ''}${this.model.description ? `\ndescription="${this.model.description}"` : ''}${this.model.open ? '\nopen' : ''}>\n${this.model.greeting.title || this.model.greeting.questions ? template : ''}\n</qa-bot>`;
                 }
             },
         });
