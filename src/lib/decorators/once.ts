@@ -1,4 +1,4 @@
-const NOT_RUN = Symbol('NOT RUN');
+let i = 1;
 
 export function runOnce() {
     return function runOnceDecorator(_target: any, _propName: string | symbol, propDesc: PropertyDescriptor) {
@@ -8,22 +8,27 @@ export function runOnce() {
             throw new Error('Invalid use of runOnce decorator');
         }
 
-        let result: any = NOT_RUN;
-        let thrown: any = NOT_RUN;
-
         function newFunc(this: any, ...argv: any[]) {
-            if (thrown !== NOT_RUN) {
-                throw thrown;
-            }
-            if (result !== NOT_RUN) {
-                return result;
-            }
-            try {
-                result = func.apply(this, argv);
+            const runOnceSymbol = Symbol(`RUN_ONCE:${i++}`);
 
-                return result;
+            const conf = this[runOnceSymbol];
+            if (conf) {
+                if (conf.hasOwnProperty('thrown')) {
+                    throw conf.thrown;
+                }
+
+                return conf.result;
+            }
+
+            const conf2: any = {};
+            this[runOnceSymbol] = conf2;
+
+            try {
+                conf2.result = func.apply(this, argv);
+
+                return conf2.result;
             } catch (err) {
-                thrown = err;
+                conf2.thrown = err;
                 throw err;
             }
         }

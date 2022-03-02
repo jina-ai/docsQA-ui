@@ -1,36 +1,43 @@
-export function throttle(cap: number = 1) {
-    let s = 0;
+let i = 1;
 
+export function throttle(cap: number = 1) {
     return function throttleDecorator(_target: any, _propName: string | symbol, propDesc: PropertyDescriptor) {
+        const throttleSymbol = Symbol(`THROTTLE:${i++}`);
+
         const func: Function = propDesc.value;
 
         if (typeof func !== 'function') {
             throw new Error('Invalid use of throttle decorator');
         }
 
-        let lastPromise: Promise<any> | undefined;
-
         function newFunc(this: any, ...argv: any[]) {
-            if (s >= cap) {
-                return lastPromise;
+            if (!this[throttleSymbol]) {
+                this[throttleSymbol] = {
+                    s: 0,
+                    lastPromise: undefined,
+                };
             }
-            s += 1;
+            const conf = this[throttleSymbol];
+            if (conf.s >= cap) {
+                return conf.lastPromise;
+            }
+            conf.s += 1;
 
             try {
                 const r = func.apply(this, argv);
                 if (r.then && typeof r.then === 'function') {
                     r.then(
-                        () => (s -= 1),
-                        () => (s -= 1)
+                        () => (conf.s -= 1),
+                        () => (conf.s -= 1)
                     );
-                    lastPromise = r;
+                    conf.lastPromise = r;
                 } else {
-                    s -= 1;
+                    conf.s -= 1;
                 }
 
                 return r;
             } catch (err) {
-                s -= 1;
+                conf.s -= 1;
                 throw err;
             }
         }

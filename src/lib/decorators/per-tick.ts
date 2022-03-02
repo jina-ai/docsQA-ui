@@ -1,36 +1,42 @@
-const NOT_RUN = Symbol('NOT RUN');
+let i = 1;
 
 const tickFunction = setTimeout;
 
 export function perTick() {
     return function perTickDecorator(_target: any, _propName: string | symbol, propDesc: PropertyDescriptor) {
+        const perTickSymbol = Symbol(`PER_TICK:${i++}`);
         const func: Function = propDesc.value;
 
         if (typeof func !== 'function') {
             throw new Error('Invalid use of perTick decorator');
         }
 
-        let tickActive = false;
-        let lastResult: any = NOT_RUN;
-        let lastThrown: any = NOT_RUN;
-
         function newFunc(this: any, ...argv: any[]) {
-            if (tickActive) {
-                if (lastThrown !== NOT_RUN) {
-                    throw lastThrown;
+            if (!this[perTickSymbol]) {
+                this[perTickSymbol] = {
+                    tickActive: false,
+                    lastThrown: perTickSymbol
+                };
+            }
+            const conf = this[perTickSymbol];
+            if (conf.tickActive) {
+                if (conf.lastThrown !== perTickSymbol) {
+                    throw conf.lastThrown;
                 }
 
-                return lastResult;
+                return conf.lastResult;
             }
 
-            tickActive = true;
-            tickFunction(() => (tickActive = false));
+            conf.tickActive = true;
+            conf.lastThrown = perTickSymbol;
+            conf.lastResult = undefined;
+            tickFunction(() => (conf.tickActive = false));
             try {
-                lastResult = func.apply(this, argv);
+                conf.lastResult = func.apply(this, argv);
 
-                return lastResult;
+                return conf.lastResult;
             } catch (err) {
-                lastThrown = err;
+                conf.lastThrown = err;
                 throw err;
             }
         }
@@ -41,24 +47,30 @@ export function perTick() {
     };
 }
 
+let j = 1;
 export function perNextTick() {
-    return function perTickDecorator(_target: any, _propName: string | symbol, propDesc: PropertyDescriptor) {
+    return function perNextTickDecorator(_target: any, _propName: string | symbol, propDesc: PropertyDescriptor) {
+        const perNextTickSymbol = Symbol(`PER_NEXT_TICK:${j++}`);
         const func: Function = propDesc.value;
 
         if (typeof func !== 'function') {
             throw new Error('Invalid use of perNextTick decorator');
         }
 
-        let tickActive = false;
-
         function newFunc(this: any, ...argv: any[]) {
-            if (tickActive) {
+            if (!this[perNextTickSymbol]) {
+                this[perNextTickSymbol] = {
+                    tickActive: false,
+                };
+            }
+            const conf = this[perNextTickSymbol];
+            if (conf.tickActive) {
                 return;
             }
 
-            tickActive = true;
+            conf.tickActive = true;
             tickFunction(() => {
-                tickActive = false;
+                conf.tickActive = false;
 
                 try {
                     func.apply(this, argv);

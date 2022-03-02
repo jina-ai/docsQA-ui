@@ -2,7 +2,7 @@ import { Defer } from '../defer';
 
 const NOOP = () => undefined;
 
-const DEFAULT_SERIAL_SYMBOL = Symbol('Default serial ops');
+const DEFAULT_SERIAL_SYMBOL = Symbol('SERIAL_OP');
 
 export function serialOperation(id: symbol = DEFAULT_SERIAL_SYMBOL) {
     return function serialOperationDecorator(_target: any, _propName: string | symbol, propDesc: PropertyDescriptor) {
