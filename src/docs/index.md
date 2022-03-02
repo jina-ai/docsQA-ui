@@ -66,9 +66,9 @@ title: <qa-bot> ⌲ Home
 
 ## Configuration UI
 
-<section>
+<section id="configuration">
     <div id="vue-app" class="columns">
-        <form class="config-form">
+        <form class="config-form" action="">
             <div class="config-form-item">
                 <label>Name</label><input v-model="model.name" />
             </div>
@@ -77,7 +77,10 @@ title: <qa-bot> ⌲ Home
             </div>
             <div class="config-form-item">
                 <label>Server</label>
-                <input v-model="model.server" @change="onUpdate('server')" />
+                <input list="projects" v-model="model.server" @change="onUpdate('server')" />
+                <datalist id="projects">
+                    <option v-for="item in projects" :value="item">
+                </datalist>
             </div>
             <div class="config-form-item">
                 <label>Token</label>
@@ -207,13 +210,26 @@ title: <qa-bot> ⌲ Home
                     themes: ['light', 'dark', 'auto', 'infer'],
                     targets: ['_blank', '_self', '_parent', '_top'],
                     source: '',
-                    activeTab: 'preview'
+                    activeTab: 'preview',
+                    projects: []
                 }
             },
             computed: {
                 questions () {
                     return this.model.greeting.questions ? this.model.greeting.questions.split('\n') : [];
                 }
+            },
+            created() {
+                const http = new XMLHttpRequest();
+                http.responseType = 'json';
+                http.onreadystatechange = () => {
+                    if (http.readyState === 4 && http.status === 200) {
+                        const result = http.response;
+                        this.projects = result.map((item) => item.host);
+                    }
+                }
+                http.open('GET', 'https://apidocsqa.jina.ai/projects');
+                http.send();
             },
             methods: {
                 onClickTab(tabName) {

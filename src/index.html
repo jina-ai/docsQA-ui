@@ -137,7 +137,10 @@
       </div>
       <div class="config-form-item">
         <label>Server</label>
-        <input v-model="model.server" @change="onUpdate('server')" />
+        <input list="projects" v-model="model.server" @change="onUpdate('server')" />
+        <datalist id="projects">
+          <option v-for="item in projects" :value="item">
+        </datalist>
       </div>
       <div class="config-form-item">
         <label>Token</label>
@@ -255,7 +258,8 @@
               themes: ['light', 'dark', 'auto', 'infer'],
               targets: ['_blank', '_self', '_parent', '_top'],
               source: '',
-              activeTab: 'preview'
+              activeTab: 'preview',
+              projects: []
               };
           },
           computed: {
@@ -263,12 +267,25 @@
                 return this.model.greeting.questions ? this.model.greeting.questions.split('\n') : [];
             }
           },
+          created() {
+            const http = new XMLHttpRequest();
+            http.responseType = 'json';
+            http.onreadystatechange = () => {
+              if (http.readyState === 4 && http.status === 200) {
+                const result = http.response;
+                this.projects = result.map((item) => item.host);
+              }
+            };
+            const url = 'https://apidocsqa.jina.ai/projects';
+            http.open('GET', url);
+            http.send();
+          },
           methods: {
             onClickTab(tabName) {
               this.activeTab = tabName;
               if (tabName === 'source') {
                 const template = ` <template>\n  <dl>\n   <dt>${this.model.greeting.title}</dt>${this.questions.map(item => `\n   <dd>${item}</dd>`)}\n  </dl>\n </template>`;
-                    this.source = `<qa-bot${this.model.token ? `\ntoken="${this.model.token}"` : ''}${this.model.avatarUrl ? `\navatar-src="${this.model.avatarUrl}"` : ''}${this.model.bgImageUrl ? `\nheader-background-src="${this.model.bgImageUrl}"` : ''}${this.model.bgColor ? `\nbg-color="${this.model.bgColor}"` : ''}${this.model.fgColor ? `\nfg-color="${this.model.fgColor}"` : ''}${this.model.theme ? `\ntheme="${this.model.theme}"` : ''}${this.model.site ? `\nsite="${this.model.site}"` : ''}${this.model.target ? `\ntarget="${this.model.target}"` : ''}${this.model.orientation ? `\norientation="${this.model.orientation}"` : ''}${this.model.name ? `\ntitle="${this.model.name}"` : ''}${this.model.description ? `\ndescription="${this.model.description}"` : ''}${this.model.open ? '\nopen' : ''}>\n${this.model.greeting.title || this.model.greeting.questions ? template : ''}\n</qa-bot>`;
+                this.source = `<qa-bot${this.model.token ? `\ntoken="${this.model.token}"` : ''}${this.model.avatarUrl ? `\navatar-src="${this.model.avatarUrl}"` : ''}${this.model.bgImageUrl ? `\nheader-background-src="${this.model.bgImageUrl}"` : ''}${this.model.bgColor ? `\nbg-color="${this.model.bgColor}"` : ''}${this.model.fgColor ? `\nfg-color="${this.model.fgColor}"` : ''}${this.model.theme ? `\ntheme="${this.model.theme}"` : ''}${this.model.site ? `\nsite="${this.model.site}"` : ''}${this.model.target ? `\ntarget="${this.model.target}"` : ''}${this.model.orientation ? `\norientation="${this.model.orientation}"` : ''}${this.model.name ? `\ntitle="${this.model.name}"` : ''}${this.model.description ? `\ndescription="${this.model.description}"` : ''}${this.model.open ? '\nopen' : ''}>\n${this.model.greeting.title || this.model.greeting.questions ? template : ''}\n</qa-bot>`;
               }
             },
             onUpdate(type, isSlot = false) {
