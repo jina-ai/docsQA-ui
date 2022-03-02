@@ -20,7 +20,7 @@
     open
     site="https://docs.jina.ai" 
     target="_blank"
-    bot-avatar="https://jina.ai/assets/images/logo.svg"
+    avatar-src="https://jina.ai/assets/images/logo.svg"
     >
 </qa-bot>
 ```

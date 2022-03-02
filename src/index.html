@@ -7,38 +7,323 @@
   <meta name="Description" content="Put your description here.">
   <base href="/">
   <title>qa-bot</title>
+  <style>
+    body {
+      font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;
+      font-size: 1rem;
+      max-width: 1200px;
+      min-width: 768px;
+      margin: auto;
+    }
+    #app {
+      display: flex;
+      justify-content: space-between;
+    }
+    .config-form, .config-preview {
+      display: inline-block;
+      position: relative;
+      width: 48%;
+    }
+    .config-form {
+      border: 0.0625em solid #eaeaea;
+      padding: 1em;
+    }
+    .config-form-item {
+      margin-top: 1em;
+      display: flex;
+    }
+    .config-form label {
+      display: inline-block;
+      width: 35%;
+      white-space: pre-wrap;
+      line-height: 2em;
+    }
+
+    .config-form label.inner-label {
+      display: block;
+      font-size: 0.8em;
+      margin: 0.5em 0;
+    }
+
+    .radio-btn + .radio-btn {
+      margin-left: 1em;
+    }
+
+    .config-form input:not([type="radio"]) {
+      width: 65%;
+      height: 2em;
+    }
+
+    .config-form select {
+      min-width: 30%;
+      height: 2.125em;
+    }
+
+    .config-form .inline-block {
+      width: 65%;
+    }
+    .config-form .inline-block input, .config-form .inline-block textarea {
+      width: 100%;
+      resize: none;
+    }
+    .tabs {
+      height: 2em;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      width: 100%;
+    }
+    .tabs .tab-item {
+      border: none;
+      background-color: transparent;
+      height: 100%;
+      padding: 0.5em 1em;
+    }
+    .tabs .tab-item.active {
+      font-weight: bold;
+      color: #fff;
+      background-color: #009191;
+    }
+    .qa-bot-container, .source-container {
+      border: 0.0625em solid #eaeaea;
+      height: calc(100% - 2em);
+      position: relative;
+    }
+    .qa-bot-container qa-bot {
+      position: absolute;
+      right: 2em;
+    }
+    .copy-btn {
+      margin: 1em;
+      height: 2em;
+      background-color: #009191;
+      color: #fff;
+      display: block;
+      border: none;
+      border-radius: 0.25em;
+    }
+    .copy-btn:hover {
+      filter: brightness(0.8);
+    }
+    textarea#CODE {
+      margin: 0 1em 1em;
+      height: calc(100% - 5em);
+      width: calc(100% - 2em);
+      resize: none;
+      border: none;
+      border-width: 0;
+      border-color: transparent;
+    }
+    textarea::focus {
+      border: none;
+      border-width: 0;
+      border-color: transparent;
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/vue@next"></script>
+  <script src="https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.js"></script>
 </head>
 
 <body>
-  <p>
-    Need some text here.
-  </p>
-  <p>
-    Jina Finetuner Docarray
-    Document
-
-  </p>
-  <div>
-    <qa-bot token="8GXsk2dqmBGY4xRQ30qG-gkL3QSFvg0DngTC9wgJgxSNvQ0DngTC8g4=" theme="infer" site="docs.jina.ai" target="_blank"
-      orientation="center" title="DocsQA">
-      <template slot="greetings">
-        <dl>
-          <dt>Welcome to DocsQA! Please ask any question:</dt>
-          <dd>What is Jina</dd>
-          <dd>Does Jina support Kubernetes?</dd>
-          <dd>How can I traverse a nested DocumentArray?</dd>
-        </dl>
-      </template>
-      <template slot="description"><span>@@JinaAI</span></template>
-    </qa-bot>
+  <p>Configuration</p>
+  <div id="app">
+    <form class="config-form">
+      <div class="config-form-item">
+        <label>Name</label><input v-model="model.name" />
+      </div>
+      <div class="config-form-item">
+        <label>Description</label><input v-model="model.description" @change="onUpdate('text')" />
+      </div>
+      <div class="config-form-item">
+        <label>Server</label>
+        <input list="projects" v-model="model.server" @change="onUpdate('server')" />
+        <datalist id="projects">
+          <option v-for="item in projects" :value="item">
+        </datalist>
+      </div>
+      <div class="config-form-item">
+        <label>Token</label>
+        <input v-model="model.token" @change="onUpdate('token')" />
+      </div>
+      <div class="config-form-item">
+        <label>Avatar Url</label><input type="url" v-model="model.avatarUrl" />
+      </div>
+      <div class="config-form-item">
+        <label>Header Background Url</label><input type="url" v-model="model.bgImageUrl" />
+      </div>
+      <div class="config-form-item">
+        <label>Theme</label>
+        <select v-model="model.theme">
+          <option v-for="item in themes" :key="item" :value="item">{{item}}</option>
+        </select>
+      </div>
+      <div v-if="model.theme === 'infer'" class="config-form-item">
+        <label>Color</label><input v-model="model.fgColor" data-coloris @change="onUpdate('color')"/>
+      </div>
+      <div v-if="model.theme === 'infer'" class="config-form-item">
+        <label>Background Color</label><input v-model="model.bgColor" data-coloris @change="onUpdate('color')"/>
+      </div>
+      <div class="config-form-item">
+        <label>Orientation</label>
+        <select v-model="model.orientation">
+          <option v-for="item in orientations" :key="item.key" :value="item.key">{{item.value}}</option>
+        </select>
+      </div>
+      <div class="config-form-item">
+        <label>Open</label>
+        <input class="radio-btn" type="radio" :value="true" name="open" v-model="model.open" />Yes
+        <input class="radio-btn" type="radio" :value="undefined" name="open" v-model="model.open" />No
+      </div>
+      <div class="config-form-item">
+        <label>Target</label>
+        <select v-model="model.target">
+          <option v-for="item in targets" :key="item" :value="item">{{item}}</option>
+        </select>
+      </div>
+      <div class="config-form-item multi-rows">
+        <label>Greeting</label>
+        <div class="inline-block">
+          <label class="inner-label">Title</label><input v-model="model.greeting.title" @change="onUpdate('text')" /><br />
+          <label class="inner-label">Questions</label><textarea rows="3" v-model="model.greeting.questions" @change="onUpdate('text')"></textarea>
+        </div>
+      </div>
+    </form>
+    <div class="config-preview">
+      <nav class="tabs">
+        <button :class="['tab-item', activeTab === 'preview' ? 'active' : '']" title="preview" @click="onClickTab('preview')">Preview</button>
+        <button :class="['tab-item', activeTab === 'source' ? 'active' : '']" title="source" @click="onClickTab('source')">Code</button>
+      </nav>
+      <div id="preview" class="qa-bot-container" v-show="activeTab === 'preview'">
+        <qa-bot
+          :token="model.token"
+          :avatar-src="model.avatarUrl"
+          :header-background-src="model.bgImageUrl"
+          :bg-color="model.bgColor"
+          :fg-color="model.fgColor"
+          :theme="model.theme"
+          site="docs.jina.ai"
+          :target="model.target"
+          :orientation="model.orientation"
+          :title="model.name"
+          :description="model.description"
+          :open="model.open">
+          <dl slot="greetings">
+            <dt>{{model.greeting.title}}</dt>
+            <dd v-for="item in model.greeting.questions.split('\n')" :key="item">{{item}}</dd>
+          </dl>
+        </qa-bot>
+      </div>
+      <div id="source" class="source-container" v-show="activeTab === 'source'">
+        <button class="copy-btn" title="copy" @click="onCopy">Copy to clipboard</button>
+        <textarea id="CODE" readonly v-model="source">
+        </textarea>
+      </div>
+    </div>
   </div>
 
-
   <script type="module" src="./qabot.js"></script>
-  <script>
+  <script type="text/javascript">
     document.addEventListener('DOMContentLoaded', () => {
       window.qabot = document.querySelector('qa-bot');
     });
+    const app = Vue.createApp({
+        data() {
+            return {
+              model: {
+                name: 'DocsQA',
+                description: '@Jina AI',
+                token: undefined,
+                server: 'https://jina-ai-jina.docsqa.jina.ai',
+                avatarUrl: undefined,
+                bgImageUrl: undefined,
+                fgColor: undefined,
+                bgColor: undefined,
+                theme: 'light',
+                orientation: 'bottom-right',
+                open: undefined,
+                target: '_blank',
+                greeting: {
+                  title: 'Welcome to DocsQA! Please ask any question:',
+                  questions: 'What is Jina\nDoes Jina support Kubernetes?\nHow can I traverse a nested DocumentArray?'
+                }
+              },
+              orientations: [
+                { key: 'bottom-right', value: 'Bottom-Right' },
+                { key: 'bottom-left', value: 'Bottom-Left' },
+                { key: 'top-right', value: 'Top-Right' },
+                { key: 'top-left', value: 'Top-Left' },
+                { key: 'center', value: 'Center' }
+              ],
+              themes: ['light', 'dark', 'auto', 'infer'],
+              targets: ['_blank', '_self', '_parent', '_top'],
+              source: '',
+              activeTab: 'preview',
+              projects: []
+              };
+          },
+          computed: {
+            questions() {
+                return this.model.greeting.questions ? this.model.greeting.questions.split('\n') : [];
+            }
+          },
+          created() {
+            const http = new XMLHttpRequest();
+            http.responseType = 'json';
+            http.onreadystatechange = () => {
+              if (http.readyState === 4 && http.status === 200) {
+                const result = http.response;
+                this.projects = result.map((item) => item.host);
+              }
+            };
+            const url = 'https://apidocsqa.jina.ai/projects';
+            http.open('GET', url);
+            http.send();
+          },
+          methods: {
+            onClickTab(tabName) {
+              this.activeTab = tabName;
+              if (tabName === 'source') {
+                const template = ` <template>\n  <dl>\n   <dt>${this.model.greeting.title}</dt>${this.questions.map(item => `\n   <dd>${item}</dd>`)}\n  </dl>\n </template>`;
+                this.source = `<qa-bot${this.model.token ? `\ntoken="${this.model.token}"` : ''}${this.model.avatarUrl ? `\navatar-src="${this.model.avatarUrl}"` : ''}${this.model.bgImageUrl ? `\nheader-background-src="${this.model.bgImageUrl}"` : ''}${this.model.bgColor ? `\nbg-color="${this.model.bgColor}"` : ''}${this.model.fgColor ? `\nfg-color="${this.model.fgColor}"` : ''}${this.model.theme ? `\ntheme="${this.model.theme}"` : ''}${this.model.site ? `\nsite="${this.model.site}"` : ''}${this.model.target ? `\ntarget="${this.model.target}"` : ''}${this.model.orientation ? `\norientation="${this.model.orientation}"` : ''}${this.model.name ? `\ntitle="${this.model.name}"` : ''}${this.model.description ? `\ndescription="${this.model.description}"` : ''}${this.model.open ? '\nopen' : ''}>\n${this.model.greeting.title || this.model.greeting.questions ? template : ''}\n</qa-bot>`;
+              }
+            },
+            onUpdate(type, isSlot = false) {
+                switch (type) {
+                    case 'text':
+                        if (isSlot) {
+                            this.insertInnerText();
+                        }
+                        window.qabot.loadPreferences();
+                        break;
+                    case 'color':
+                        window.qabot.inferTheme();
+                        break;
+                    case 'server':
+                        this.model.token = window.qabot.xorEncryptStringUtf8B64(this.model.server);
+                        break;
+                    case 'token':
+                        this.model.server = window.qabot.xorDecryptB64EncodedUtf8(this.model.token);
+                        break;
+                        default:
+                          break;
+                }
+                window.qabot.requestUpdate();
+            },
+            onCopy() {
+              const copyText = document.getElementById('CODE');
+
+              copyText.select();
+              copyText.setSelectionRange(0, 99999);
+
+              navigator.clipboard.writeText(copyText.value);
+              }
+          },
+    });
+    app.config.compilerOptions.isCustomElement = (tag)=> {
+        return tag === 'qa-bot';
+    };
+    app.mount('#app');
   </script>
 
 </body>
