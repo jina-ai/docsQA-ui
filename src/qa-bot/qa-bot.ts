@@ -872,6 +872,30 @@ export class QaBot extends LitElement {
         }
 
         if (!fgHsl) {
+            const themeElements = document.querySelectorAll('meta[name="theme-color"]');
+            let themeColor;
+            let media;
+            if (themeElements.length === 1) {
+                themeColor = themeElements[0].getAttribute('content');
+                media = themeElements[0].getAttribute('media');
+                if (themeColor && (!media || window.matchMedia(media).matches)) {
+                    fgHsl = parseCssToHsl.call(this, themeColor);
+                }
+            } else if (themeElements.length > 1) {
+                for (const ele of Array.from(themeElements)) {
+                    media = ele.getAttribute('media');
+                    if (media && window.matchMedia(media).matches) {
+                        themeColor = ele.getAttribute('content');
+                        if (themeColor) {
+                            fgHsl = parseCssToHsl.call(this, themeColor);
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (!fgHsl) {
             const fgCss = window.getComputedStyle(this).color.replace(/\s/g, '');
 
             if (fgCss !== 'rgb(0,0,0)') {
