@@ -140,7 +140,7 @@ nav.collection a:hover {
   text-decoration: underline;
 }
 
-section.columns {
+section.columns, div.columns {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(400px, 488px));
   grid-gap: 48px;
@@ -148,7 +148,7 @@ section.columns {
   align-items: center;
 }
 
-section.columns > div {
+section.columns > div, div.columns > div, div.columns > form {
   flex: 1;
 }
 
@@ -210,4 +210,110 @@ p > code {
     background: #eee;
     border-radius: 0.25rem;
     padding: 0 0.25em;
+}
+
+.config-form, .config-preview {
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 25em;
+}
+.config-form {
+    border: 0.0625em solid gray;
+    padding: 1em;
+}
+.config-form-item {
+    margin-top: 1em;
+    display: flex;
+}
+.config-form label {
+    display: inline-block;
+    width: 35%;
+    white-space: pre-wrap;
+    line-height: 2em;
+    font-size: 0.75em;
+}
+
+.config-form label.inner-label {
+    display: block;
+    font-size: 0.7em;
+    margin: 0.5em 0;
+}
+
+.radio-label {
+    font-size: 0.8em;
+    margin-left: 0.125em;
+    margin-right: 1em;
+}
+
+.config-form input:not([type="radio"]) {
+    width: 65%;
+    height: 2em;
+}
+
+.config-form select {
+    min-width: 30%;
+    height: 2.125em;
+}
+
+.config-form .inline-block {
+    width: 65%;
+}
+.config-form .inline-block input, .config-form .inline-block textarea {
+    width: 100%;
+    resize: none;
+}
+.config-preview .tabs {
+    height: 2em;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+}
+.config-preview .tabs .tab-item {
+    border: 0.0625em solid gray;
+    background-color: transparent;
+    height: 100%;
+    padding: 0.5em 1em;
+}
+.config-preview .tabs .tab-item.active {
+    font-weight: bold;
+    color: #fff;
+    background-color: #009191;
+    border: 0.0625em solid #009191;
+}
+.qa-bot-container, .source-container {
+    border: 0.0625em solid gray;
+    height: calc(100% - 2em);
+    position: relative;
+}
+.qa-bot-container qa-bot {
+    position: absolute;
+    right: 2em;
+}
+.config-preview .action-btn {
+    margin: 1em;
+    height: 2em;
+    background-color: #009191;
+    color: #fff;
+    border: none;
+    border-radius: 0.25em;
+}
+.config-preview .action-btn:hover {
+    filter: brightness(0.8);
+}
+.config-preview textarea#CODE {
+    margin: 0 1em 1em;
+    height: calc(100% - 5em);
+    width: calc(100% - 2em);
+    resize: none;
+    border: none;
+    border-width: 0;
+    border-color: transparent;
+}
+.config-preview textarea::focus {
+    border: none;
+    border-width: 0;
+    border-color: transparent;
 }
