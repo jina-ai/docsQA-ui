@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { LitElement, html, PropertyValues } from 'lit';
 import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 import { property, query, queryAssignedElements, state } from 'lit/decorators.js';
@@ -21,8 +22,8 @@ import { debounce } from '../lib/decorators/debounce';
 import { DEFAULT_PREFERENCE } from './constants';
 import { hslVecToCss, parseCssToHsl, rgbHexToHslVec } from '../lib/color';
 import { xorDecryptB64EncodedUtf8, xorEncryptStringUtf8B64 } from '../lib/crypto';
-
-const ABSPATHREGEXP = /^(https?:)?\/\/\S/;
+import { isAbsoluteUrl } from '../lib/url';
+import DEFAULT_PATCHES, { PatchFunction } from './patches';
 
 /**
  * QABot custom element
@@ -148,6 +149,8 @@ export class QaBot extends LitElement {
 
     answerRenderer: { [k in ANSWER_RENDER_TEMPLATE]: AnswerRenderer } = ANSWER_RENDERER_MAP;
 
+    patches: PatchFunction[] = [...DEFAULT_PATCHES];
+
     private __syncOptionsRoutine: (event: Event) => void;
     private __onScreenResizeRoutine: (event: Event) => void;
     private __inferThemeRoutine: (_: any) => void;
@@ -179,7 +182,7 @@ export class QaBot extends LitElement {
         this.__inferThemeRoutine = async (_mutations) => {
             this.reInferTheme();
         };
-        this.themeMightChangeObserver = new MutationObserver(()=> {
+        this.themeMightChangeObserver = new MutationObserver(() => {
             this.inferTheme();
             this.requestUpdate();
         });
@@ -188,6 +191,7 @@ export class QaBot extends LitElement {
 
         this.__syncOptionsRoutine = () => {
             this.loadPreferences();
+            this.applyPatches();
             this.requestUpdate();
         };
         this.__onScreenResizeRoutine = () => {
@@ -199,8 +203,15 @@ export class QaBot extends LitElement {
             this.debouncedScrollToBottom();
         };
         this.__detectViewPort();
+        this.applyPatches();
 
         this.loadPreferences();
+    }
+
+    protected applyPatches() {
+        for (const patch of this.patches) {
+            patch.call(this);
+        }
     }
 
     protected __detectViewPort() {
@@ -626,13 +637,13 @@ export class QaBot extends LitElement {
             return '#';
         }
 
-        if (ABSPATHREGEXP.test(uri)) {
+        if (isAbsoluteUrl(uri)) {
             return uri;
         }
 
         if (this.site) {
             const fixedLink = `/${uri}`.replace(/^\/+/, '/');
-            if (ABSPATHREGEXP.test(this.site)) {
+            if (isAbsoluteUrl(this.site)) {
                 return `${this.site}${fixedLink}`;
             }
 
