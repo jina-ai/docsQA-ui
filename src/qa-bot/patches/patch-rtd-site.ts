@@ -21,7 +21,7 @@ export default function patchRtdSite(this: QaBot) {
     this.makeReferenceLink = function makeReferenceLink(input: string) {
         let uri = input;
         if (!isAbsoluteUrl(input)) {
-            const url = new URL(`/${rtdData.language}/${rtdData.latest}/${input}`, window.location.href);
+            const url = new URL(`/${rtdData.language}/${rtdData.version}${input}`, window.location.href);
             url.pathname = url.pathname.replace(/\/*$/, '.html');
             uri = url.toString().replace(url.origin, '');
         }
