@@ -182,7 +182,7 @@ export class QaBot extends LitElement {
         this.__inferThemeRoutine = async (_mutations) => {
             this.reInferTheme();
         };
-        this.themeMightChangeObserver = new MutationObserver(()=> {
+        this.themeMightChangeObserver = new MutationObserver(() => {
             this.inferTheme();
             this.requestUpdate();
         });
@@ -191,6 +191,7 @@ export class QaBot extends LitElement {
 
         this.__syncOptionsRoutine = () => {
             this.loadPreferences();
+            this.applyPatches();
             this.requestUpdate();
         };
         this.__onScreenResizeRoutine = () => {
@@ -202,8 +203,15 @@ export class QaBot extends LitElement {
             this.debouncedScrollToBottom();
         };
         this.__detectViewPort();
+        this.applyPatches();
 
         this.loadPreferences();
+    }
+
+    protected applyPatches() {
+        for (const patch of this.patches) {
+            patch.call(this);
+        }
     }
 
     protected __detectViewPort() {
