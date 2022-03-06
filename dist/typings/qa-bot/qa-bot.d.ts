@@ -1,8 +1,10 @@
+import 'reflect-metadata';
 import { LitElement, PropertyValues } from 'lit';
 import { JinaQABotController } from './controller';
 import { ANSWER_RENDER_TEMPLATE, QAPair } from './shared';
 import { AnswerRenderer } from './answer-renderers';
 import { xorDecryptB64EncodedUtf8, xorEncryptStringUtf8B64 } from '../lib/crypto';
+import { PatchFunction } from './patches';
 export declare class QaBot extends LitElement {
     botAvatar?: string;
     title: string;
@@ -65,10 +67,12 @@ export declare class QaBot extends LitElement {
     answerRenderer: {
         [k in ANSWER_RENDER_TEMPLATE]: AnswerRenderer;
     };
+    patches: PatchFunction[];
     private __syncOptionsRoutine;
     private __onScreenResizeRoutine;
     private __inferThemeRoutine;
     constructor();
+    protected applyPatches(): void;
     protected __detectViewPort(): void;
     protected __observeBottomLine(): Promise<void>;
     protected debouncedScrollToBottom(): void;
