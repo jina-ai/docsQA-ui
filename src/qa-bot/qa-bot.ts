@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { LitElement, html, PropertyValues } from 'lit';
 import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 import { property, query, queryAssignedElements, state } from 'lit/decorators.js';
@@ -21,8 +22,8 @@ import { debounce } from '../lib/decorators/debounce';
 import { DEFAULT_PREFERENCE } from './constants';
 import { hslVecToCss, parseCssToHsl, rgbHexToHslVec } from '../lib/color';
 import { xorDecryptB64EncodedUtf8, xorEncryptStringUtf8B64 } from '../lib/crypto';
-
-const ABSPATHREGEXP = /^(https?:)?\/\/\S/;
+import { isAbsoluteUrl } from '../lib/url';
+import DEFAULT_PATCHES, { PatchFunction } from './patches';
 
 /**
  * QABot custom element
@@ -147,6 +148,8 @@ export class QaBot extends LitElement {
     private __debugEventListener?: (evt: CustomEvent) => void;
 
     answerRenderer: { [k in ANSWER_RENDER_TEMPLATE]: AnswerRenderer } = ANSWER_RENDERER_MAP;
+
+    patches: PatchFunction[] = [...DEFAULT_PATCHES];
 
     private __syncOptionsRoutine: (event: Event) => void;
     private __onScreenResizeRoutine: (event: Event) => void;
@@ -626,13 +629,13 @@ export class QaBot extends LitElement {
             return '#';
         }
 
-        if (ABSPATHREGEXP.test(uri)) {
+        if (isAbsoluteUrl(uri)) {
             return uri;
         }
 
         if (this.site) {
             const fixedLink = `/${uri}`.replace(/^\/+/, '/');
-            if (ABSPATHREGEXP.test(this.site)) {
+            if (isAbsoluteUrl(this.site)) {
                 return `${this.site}${fixedLink}`;
             }
 
