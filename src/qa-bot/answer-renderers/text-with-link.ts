@@ -3,10 +3,10 @@ import { QAPair } from '../shared';
 import type { QaBot } from '../qa-bot';
 
 export function renderTextWithLink(this: QaBot, qa: QAPair) {
-    // Note that `\u200b` and `&#8203;` stands for zero-width white space.
+    // Note that `\ufeff` and `&#xfeff;` stands for zero-width white space.
     // This is to prevent highlighting the answer text itself. If the chat bot is on the same page with the source.
     let answerText = qa.answer?.text || '';
-    answerText = `${answerText.substring(0, answerText.length - 1)}\u200b${answerText[answerText.length - 1] || ''}`;
+    answerText = `${answerText.substring(0, answerText.length - 1)}\ufeff${answerText[answerText.length - 1] || ''}`;
 
     let textVec = html`<p style="white-space: pre-line">${answerText}</p>`;
 
@@ -20,10 +20,10 @@ export function renderTextWithLink(this: QaBot, qa: QAPair) {
             }
         }
         if (`${a}${c}`.replace(/\s/g, '').length === 0) {
-            b = `${b.substring(0, i + 1)}\u200b${b.substring(i + 1)}`;
+            b = `${b.substring(0, i + 1)}\ufeff${b.substring(i + 1)}`;
         }
-        textVec = html`<p class="hl-enabled" style="white-space: pre-line">${a}&#8203;<span class="hl"
-        style="font-weight: bold">${b}</span>&#8203;${c}</p>`;
+        textVec = html`<p class="hl-enabled" style="white-space: pre-line">${a}&#xfeff;<span class="hl"
+        style="font-weight: bold">${b}</span>&#xfeff;${c}</p>`;
     }
 
 

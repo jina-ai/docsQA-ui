@@ -63,6 +63,19 @@ export function transformAnswerUriAddTextFragments(this: DocQAAnswer, _qaPair: Q
             sentence = paragraph.slice(sentenceStart, sentenceEnd);
         }
 
+        if (answerText !== match.text) {
+            // ??? Potentially problematic sentence/match.text
+            const patched = makeTextFragmentUriFromPassage(match.text, match.text, match.uri);
+            if (patched) {
+                if (!match.tags) {
+                    match.tags = {};
+                }
+                match.tags.original_uri = match.uri;
+                match.uri = patched;
+                continue;
+            }
+        }
+
         if (sentence && sentence.length > (answerText.length + 5)) {
             const patched = makeTextFragmentUriFromPassage(answerText, sentence, match.uri);
             if (patched) {
