@@ -304,10 +304,6 @@ export class QaBot extends LitElement {
             }
 
             this.loadPreferences();
-
-            if (this.qaControl.qaPairs.length) {
-                this.scrollDialogToBottom();
-            }
         }
         if (changedProps.has('open')) {
             if (this.open) {
