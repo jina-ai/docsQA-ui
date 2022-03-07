@@ -334,7 +334,7 @@ export class QaBot extends LitElement {
 
     @throttle()
     protected async autoScrollTo() {
-        if (!this.qaControl) {
+        if (!this.qaControl?.active) {
             return;
         }
         if (this.qaControl.qaPairToFocus) {
@@ -588,11 +588,10 @@ export class QaBot extends LitElement {
     @perNextTick()
     @serialOperation()
     async scrollToAnswerByRequestId(requestId: string, behavior?: 'smooth' | 'auto') {
+        await this.updateComplete;
         if (!this.qaControl) {
             return;
         }
-
-        await this.updateComplete;
 
         let targetIdx = -1;
 
