@@ -343,7 +343,6 @@ export class QaBot extends LitElement {
                 this.open = true;
                 this.requestUpdate();
                 const targetRequestId = this.qaControl.qaPairToFocus;
-                await delay(200);
                 await this.scrollToAnswerByRequestId(targetRequestId, 'auto');
                 this.__everScrolledToBottom = true;
             }
