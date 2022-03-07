@@ -341,8 +341,8 @@ export class QaBot extends LitElement {
             this.__detectViewPort();
             if (!this.smallViewPort) {
                 this.open = true;
+                this.requestUpdate();
                 const targetRequestId = this.qaControl.qaPairToFocus;
-                await this.updateComplete;
                 this.scrollToAnswerByRequestId(targetRequestId);
                 this.__everScrolledToBottom = true;
             }
@@ -352,7 +352,6 @@ export class QaBot extends LitElement {
         }
 
         if (this.open && !this.__everScrolledToBottom) {
-            await this.updateComplete;
             this.scrollDialogToBottom();
             this.__everScrolledToBottom = true;
         }
