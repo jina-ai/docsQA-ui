@@ -17,7 +17,6 @@ import {
 } from './svg-icons';
 import { AnswerRenderer, ANSWER_RENDERER_MAP } from './answer-renderers';
 import { delay } from '../lib/timeout';
-import { runOnce } from '../lib/decorators/once';
 import { debounce } from '../lib/decorators/debounce';
 import { DEFAULT_PREFERENCE } from './constants';
 import { hslVecToCss, parseCssToHsl, rgbHexToHslVec } from '../lib/color';
@@ -151,7 +150,7 @@ export class QaBot extends LitElement {
 
     patches: PatchFunction[] = [...DEFAULT_PATCHES];
 
-    protected __everOpened = false;
+    protected __everScrolledToBottom = false;
     private __syncOptionsRoutine: (event: Event) => void;
     private __onScreenResizeRoutine: (event: Event) => void;
     private __inferThemeRoutine: (_: any) => void;
@@ -266,7 +265,7 @@ export class QaBot extends LitElement {
         }
 
         this.applyPatches();
-
+        this.autoScrollTo();
         this.requestUpdate();
     }
 
@@ -311,11 +310,7 @@ export class QaBot extends LitElement {
         }
         if (changedProps.has('open')) {
             if (this.open) {
-                if (!this.__everOpened) {
-                    this.scrollDialogToBottom();
-                }
-                this.__everOpened = true;
-                this.closing = false;
+                this.autoScrollTo();
             }
         }
         if (changedProps.has('title')) {
@@ -339,21 +334,32 @@ export class QaBot extends LitElement {
         super.update(changedProps);
     }
 
+    protected autoScrollTo() {
+        if (this.qaControl?.qaPairToFocus) {
+            this.scrollToAnswerByRequestId(this.qaControl.qaPairToFocus);
+            this.__detectViewPort();
+            if (!this.smallViewPort) {
+                this.open = true;
+            }
+            this.__everScrolledToBottom = true;
+            this.qaControl.qaPairToFocus = undefined;
+
+            return;
+        }
+
+        if (!this.__everScrolledToBottom) {
+            this.scrollDialogToBottom();
+            this.__everScrolledToBottom = true;
+        }
+    }
+
     override updated() {
         if (!this.qaControl) {
             return;
         }
         this.__observeBottomLine();
 
-        if (this.qaControl.qaPairToFocus) {
-            this.scrollToAnswerByRequestId(this.qaControl.qaPairToFocus);
-            this.__everOpened = true;
-            this.__detectViewPort();
-            if (!this.smallViewPort) {
-                this.open = true;
-            }
-            this.qaControl.qaPairToFocus = undefined;
-        }
+        this.autoScrollTo();
     }
 
     protected onTextAreaInput(event: KeyboardEvent) {
