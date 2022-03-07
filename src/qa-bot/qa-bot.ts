@@ -151,6 +151,7 @@ export class QaBot extends LitElement {
 
     patches: PatchFunction[] = [...DEFAULT_PATCHES];
 
+    protected __everOpened = false;
     private __syncOptionsRoutine: (event: Event) => void;
     private __onScreenResizeRoutine: (event: Event) => void;
     private __inferThemeRoutine: (_: any) => void;
@@ -309,8 +310,11 @@ export class QaBot extends LitElement {
             }
         }
         if (changedProps.has('open')) {
-            this.scrollDialogToBottomForTheVeryFirstTime();
             if (this.open) {
+                if (!this.__everOpened) {
+                    this.scrollDialogToBottom();
+                }
+                this.__everOpened = true;
                 this.closing = false;
             }
         }
@@ -335,11 +339,6 @@ export class QaBot extends LitElement {
         super.update(changedProps);
     }
 
-    @runOnce()
-    scrollDialogToBottomForTheVeryFirstTime() {
-        return this.scrollDialogToBottom();
-    }
-
     override updated() {
         if (!this.qaControl) {
             return;
@@ -348,6 +347,7 @@ export class QaBot extends LitElement {
 
         if (this.qaControl.qaPairToFocus) {
             this.scrollToAnswerByRequestId(this.qaControl.qaPairToFocus);
+            this.__everOpened = true;
             this.__detectViewPort();
             if (!this.smallViewPort) {
                 this.open = true;
