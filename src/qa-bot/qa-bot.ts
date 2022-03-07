@@ -1070,7 +1070,7 @@ export class QaBot extends LitElement {
                     <textarea maxlength="200" rows="1" tabindex="0" ?disabled="${this.busy}"
                         @keydown="${this.onTextAreaInput}"
                         @input="${this.onInputQuestion}"
-                        placeholder="${this.server ? 'Type your question here...' : 'Waiting for server configuration...'}"></textarea>
+                        placeholder="${this.qaControl ? 'Type your question here...' : 'Waiting for server configuration...'}"></textarea>
                     <button title="Submit" ?disabled="${this.busy}" ?active="${this.typing}" @click="${this.submitQuestion}">
                         <i class="icon icon-plane">${paperPlane}</i>
                     </button>
