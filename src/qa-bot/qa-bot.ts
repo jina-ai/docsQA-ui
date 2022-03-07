@@ -23,6 +23,7 @@ import { hslVecToCss, parseCssToHsl, rgbHexToHslVec } from '../lib/color';
 import { xorDecryptB64EncodedUtf8, xorEncryptStringUtf8B64 } from '../lib/crypto';
 import { isAbsoluteUrl } from '../lib/url';
 import DEFAULT_PATCHES, { PatchFunction } from './patches';
+import { serialOperation } from '../lib/decorators/serial-op';
 
 /**
  * QABot custom element
@@ -343,8 +344,7 @@ export class QaBot extends LitElement {
                 this.open = true;
                 this.requestUpdate();
                 const targetRequestId = this.qaControl.qaPairToFocus;
-                await delay(1500);
-                await this.scrollToAnswerByRequestId(targetRequestId, 'auto');
+                await this.scrollToAnswerByRequestId(targetRequestId);
                 this.__everScrolledToBottom = true;
             }
             this.qaControl.qaPairToFocus = undefined;
@@ -568,6 +568,7 @@ export class QaBot extends LitElement {
     }
 
     @perNextTick()
+    @serialOperation()
     async scrollDialogToBottom(behavior?: 'smooth' | 'auto') {
         await this.updateComplete;
         const elem = this.renderRoot?.querySelector('.qabot__answer-block');
@@ -584,6 +585,7 @@ export class QaBot extends LitElement {
     }
 
     @perNextTick()
+    @serialOperation()
     async scrollToAnswerByRequestId(requestId: string, behavior?: 'smooth' | 'auto') {
         if (!this.qaControl) {
             return;
