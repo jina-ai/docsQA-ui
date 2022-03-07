@@ -264,6 +264,8 @@ export class QaBot extends LitElement {
             this.inferTheme();
         }
 
+        this.applyPatches();
+
         this.requestUpdate();
     }
 
