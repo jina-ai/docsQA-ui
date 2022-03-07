@@ -13,7 +13,7 @@ export function transformAnswerUriFixUri(this: DocQAAnswer, _qaPair: QAPair) {
             parsedUri = new URL(match.uri || '', window.location.href);
         } catch (err) {
             // Try to fix the uri.
-            parsedUri = new URL(`${window.location.href}${match.uri}`);
+            parsedUri = new URL((match.uri || '').replace(/https?\:/g, '').replace(/\/+/g, '/'), window.location.href);
             parsedUri.pathname = parsedUri.pathname.replace(/\/+/g, '/');
             match.uri = parsedUri.toString();
         }
