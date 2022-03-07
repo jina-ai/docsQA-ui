@@ -335,7 +335,7 @@ export class QaBot extends LitElement {
     }
 
 
-    @throttle()
+    @perNextTick()
     protected async autoScrollTo() {
         if (this.qaControl?.qaPairToFocus) {
             this.__detectViewPort();
@@ -568,7 +568,6 @@ export class QaBot extends LitElement {
     }
 
     @perNextTick()
-    @throttle()
     async scrollDialogToBottom() {
         await this.updateComplete;
         const elem = this.renderRoot?.querySelector('.qabot__answer-block');
@@ -585,7 +584,6 @@ export class QaBot extends LitElement {
     }
 
     @perNextTick()
-    @throttle()
     async scrollToAnswerByRequestId(requestId: string) {
         if (!this.qaControl) {
             return;
