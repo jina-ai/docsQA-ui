@@ -336,18 +336,18 @@ export class QaBot extends LitElement {
 
     protected autoScrollTo() {
         if (this.qaControl?.qaPairToFocus) {
-            this.scrollToAnswerByRequestId(this.qaControl.qaPairToFocus);
             this.__detectViewPort();
             if (!this.smallViewPort) {
                 this.open = true;
+                this.scrollToAnswerByRequestId(this.qaControl.qaPairToFocus);
+                this.__everScrolledToBottom = true;
             }
-            this.__everScrolledToBottom = true;
             this.qaControl.qaPairToFocus = undefined;
 
             return;
         }
 
-        if (!this.__everScrolledToBottom) {
+        if (this.open && !this.__everScrolledToBottom) {
             this.scrollDialogToBottom();
             this.__everScrolledToBottom = true;
         }
