@@ -310,7 +310,7 @@ export class QaBot extends LitElement {
         }
         if (changedProps.has('open')) {
             if (this.open) {
-                this.autoScrollTo();
+                this.closing = false;
             }
         }
         if (changedProps.has('title')) {
