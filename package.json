@@ -1,6 +1,6 @@
 {
   "name": "qabot",
-  "version": "0.4.18",
+  "version": "0.4.19",
   "description": "WebComponent <qa-bot> for Jina DocsQA",
   "main": "dist/qabot.js",
   "module": "dist/qabot.js",
