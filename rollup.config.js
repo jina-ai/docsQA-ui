@@ -31,6 +31,7 @@ export default {
     minifyHTML({
       options: {
         minifyOptions: {
+          removeEmptyAttributes: false,
           minifyCSS: {
             level: {
               1: {
