@@ -344,7 +344,7 @@ export class QaBot extends LitElement {
                 this.requestUpdate();
                 const targetRequestId = this.qaControl.qaPairToFocus;
                 await delay(200);
-                await this.scrollToAnswerByRequestId(targetRequestId);
+                await this.scrollToAnswerByRequestId(targetRequestId, 'auto');
                 this.__everScrolledToBottom = true;
             }
             this.qaControl.qaPairToFocus = undefined;
@@ -568,7 +568,7 @@ export class QaBot extends LitElement {
     }
 
     @perNextTick()
-    async scrollDialogToBottom() {
+    async scrollDialogToBottom(behavior?: 'smooth' | 'auto') {
         await this.updateComplete;
         const elem = this.renderRoot?.querySelector('.qabot__answer-block');
 
@@ -579,12 +579,12 @@ export class QaBot extends LitElement {
         elem.scroll({
             top: elem.scrollHeight,
             left: 0,
-            behavior: this.open ? 'smooth' : 'auto'
+            behavior: behavior ?? this.open ? 'smooth' : 'auto'
         });
     }
 
     @perNextTick()
-    async scrollToAnswerByRequestId(requestId: string) {
+    async scrollToAnswerByRequestId(requestId: string, behavior?: 'smooth' | 'auto') {
         if (!this.qaControl) {
             return;
         }
@@ -615,7 +615,7 @@ export class QaBot extends LitElement {
 
         elem.scrollIntoView({
             block: 'start',
-            behavior: this.open ? 'smooth' : 'auto'
+            behavior: behavior ?? this.open ? 'smooth' : 'auto'
         });
     }
 
