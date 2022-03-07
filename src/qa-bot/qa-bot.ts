@@ -335,6 +335,7 @@ export class QaBot extends LitElement {
     @throttle()
     protected async autoScrollTo() {
         if (!this.qaControl?.active) {
+            await this.scrollDialogToBottom('auto');
             return;
         }
         if (this.qaControl.qaPairToFocus) {
@@ -343,7 +344,7 @@ export class QaBot extends LitElement {
                 this.open = true;
                 this.requestUpdate();
                 const targetRequestId = this.qaControl.qaPairToFocus;
-                await this.scrollToAnswerByRequestId(targetRequestId);
+                await this.scrollToAnswerByRequestId(targetRequestId, 'auto');
                 this.__everScrolledToBottom = true;
             }
             this.qaControl.qaPairToFocus = undefined;
@@ -352,7 +353,7 @@ export class QaBot extends LitElement {
         }
 
         if (this.open && !this.__everScrolledToBottom) {
-            await this.scrollDialogToBottom();
+            await this.scrollDialogToBottom('auto');
             this.__everScrolledToBottom = true;
         }
     }
@@ -576,13 +577,16 @@ export class QaBot extends LitElement {
             return;
         }
 
+        const finalBehavior = behavior ?? (this.open ? 'smooth' : 'auto');
         elem.scroll({
             top: elem.scrollHeight,
             left: 0,
-            behavior: behavior ?? (this.open ? 'smooth' : 'auto')
+            behavior: finalBehavior
         });
 
-        await delay(800);
+        if (finalBehavior) {
+            await delay(800);
+        }
     }
 
     @perNextTick()
@@ -614,13 +618,15 @@ export class QaBot extends LitElement {
         if (!elem) {
             return;
         }
-
+        const finalBehavior = behavior ?? (this.open ? 'smooth' : 'auto');
         elem.scrollIntoView({
             block: 'start',
-            behavior: behavior ?? (this.open ? 'smooth' : 'auto')
+            behavior: finalBehavior
         });
 
-        await delay(800);
+        if (finalBehavior === 'smooth') {
+            await delay(800);
+        }
     }
 
     @throttle()
