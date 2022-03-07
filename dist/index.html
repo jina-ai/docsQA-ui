@@ -194,7 +194,7 @@
         <button :class="['tab-item', activeTab === 'source' ? 'active' : '']" title="source" @click="onClickTab('source')">Code</button>
       </nav>
       <div id="preview" class="qa-bot-container" v-show="activeTab === 'preview'">
-        <qa-bot :token="model.token" :avatar-src="model.avatarUrl" :header-background-src="model.bgImageUrl" :bg-color="model.bgColor" :fg-color="model.fgColor" :theme="model.theme" site="docs.jina.ai" :target="model.target" :orientation="model.orientation" :title="model.name" :description="model.description" :open="model.open">
+        <qa-bot :token="model.token" :server="model.server" :avatar-src="model.avatarUrl" :header-background-src="model.bgImageUrl" :bg-color="model.bgColor" :fg-color="model.fgColor" :theme="model.theme" site="docs.jina.ai" :target="model.target" :orientation="model.orientation" :title="model.name" :description="model.description" :open="model.open">
           <dl slot="greetings">
             <dt>{{model.greeting.title}}</dt>
             <dd v-for="item in model.greeting.questions.split('\n')" :key="item">{{item}}</dd>

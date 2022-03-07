@@ -68,6 +68,7 @@ export declare class QaBot extends LitElement {
         [k in ANSWER_RENDER_TEMPLATE]: AnswerRenderer;
     };
     patches: PatchFunction[];
+    protected __everScrolledToBottom: boolean;
     private __syncOptionsRoutine;
     private __onScreenResizeRoutine;
     private __inferThemeRoutine;
@@ -80,7 +81,7 @@ export declare class QaBot extends LitElement {
     disconnectedCallback(): void;
     static styles: import("lit").CSSResult[];
     update(changedProps: PropertyValues): void;
-    scrollDialogToBottomForTheVeryFirstTime(): Promise<void>;
+    protected autoScrollTo(): Promise<void>;
     updated(): void;
     protected onTextAreaInput(event: KeyboardEvent): void;
     setQaPairTargeted(qaPair?: QAPair): void;
@@ -89,8 +90,8 @@ export declare class QaBot extends LitElement {
     debugCommands(input: string): void;
     submitQuestion(): Promise<void>;
     protected submitFeedback(qaPair: QAPair, feedback?: 'up' | 'down' | 'none'): Promise<void>;
-    scrollDialogToBottom(): Promise<void>;
-    scrollToAnswerByRequestId(requestId: string): Promise<void>;
+    scrollDialogToBottom(behavior?: 'smooth' | 'auto'): Promise<void>;
+    scrollToAnswerByRequestId(requestId: string, behavior?: 'smooth' | 'auto'): Promise<void>;
     toggleOpen(): Promise<void>;
     closeCard(): Promise<void>;
     openCard(): void;
