@@ -335,7 +335,7 @@ export class QaBot extends LitElement {
     }
 
 
-    @perNextTick()
+    @throttle()
     protected async autoScrollTo() {
         if (this.qaControl?.qaPairToFocus) {
             this.__detectViewPort();
@@ -343,7 +343,8 @@ export class QaBot extends LitElement {
                 this.open = true;
                 this.requestUpdate();
                 const targetRequestId = this.qaControl.qaPairToFocus;
-                this.scrollToAnswerByRequestId(targetRequestId);
+                await delay(200);
+                await this.scrollToAnswerByRequestId(targetRequestId);
                 this.__everScrolledToBottom = true;
             }
             this.qaControl.qaPairToFocus = undefined;
@@ -352,7 +353,7 @@ export class QaBot extends LitElement {
         }
 
         if (this.open && !this.__everScrolledToBottom) {
-            this.scrollDialogToBottom();
+            await this.scrollDialogToBottom();
             this.__everScrolledToBottom = true;
         }
     }
