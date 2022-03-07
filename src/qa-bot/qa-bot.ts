@@ -18,12 +18,12 @@ import {
 import { AnswerRenderer, ANSWER_RENDERER_MAP } from './answer-renderers';
 import { delay } from '../lib/timeout';
 import { debounce } from '../lib/decorators/debounce';
+import { serialOperation } from '../lib/decorators/serial-op';
 import { DEFAULT_PREFERENCE } from './constants';
 import { hslVecToCss, parseCssToHsl, rgbHexToHslVec } from '../lib/color';
 import { xorDecryptB64EncodedUtf8, xorEncryptStringUtf8B64 } from '../lib/crypto';
 import { isAbsoluteUrl } from '../lib/url';
 import DEFAULT_PATCHES, { PatchFunction } from './patches';
-import { serialOperation } from '../lib/decorators/serial-op';
 
 /**
  * QABot custom element
@@ -582,6 +582,8 @@ export class QaBot extends LitElement {
             left: 0,
             behavior: behavior ?? (this.open ? 'smooth' : 'auto')
         });
+
+        await delay(500);
     }
 
     @perNextTick()
@@ -619,6 +621,8 @@ export class QaBot extends LitElement {
             block: 'start',
             behavior: behavior ?? (this.open ? 'smooth' : 'auto')
         });
+
+        await delay(500);
     }
 
     @throttle()
