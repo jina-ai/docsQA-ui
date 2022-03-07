@@ -343,6 +343,7 @@ export class QaBot extends LitElement {
                 this.open = true;
                 this.requestUpdate();
                 const targetRequestId = this.qaControl.qaPairToFocus;
+                await delay(1500);
                 await this.scrollToAnswerByRequestId(targetRequestId, 'auto');
                 this.__everScrolledToBottom = true;
             }
@@ -578,7 +579,7 @@ export class QaBot extends LitElement {
         elem.scroll({
             top: elem.scrollHeight,
             left: 0,
-            behavior: behavior ?? this.open ? 'smooth' : 'auto'
+            behavior: behavior ?? (this.open ? 'smooth' : 'auto')
         });
     }
 
@@ -614,7 +615,7 @@ export class QaBot extends LitElement {
 
         elem.scrollIntoView({
             block: 'start',
-            behavior: behavior ?? this.open ? 'smooth' : 'auto'
+            behavior: behavior ?? (this.open ? 'smooth' : 'auto')
         });
     }
 
