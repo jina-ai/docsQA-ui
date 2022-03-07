@@ -13,7 +13,7 @@ export function renderTextWithLink(this: QaBot, qa: QAPair) {
     if (qa.answer?.tags?.answerVec) {
         const [a, _b, c] = qa.answer.tags.answerVec;
         let b: string = _b;
-        if (!a && !c) {
+        if (`${a}${c}`.replace(/\s/g, '').length === 0) {
             b = `${b.substring(0, b.length - 1)}\u200b${b[b.length - 1] || ''}`;
         }
         textVec = html`<p class="hl-enabled" style="white-space: pre-line">${a}&#8203;<span class="hl"
