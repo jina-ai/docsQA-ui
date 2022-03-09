@@ -88,7 +88,8 @@ export declare class QaBot extends LitElement {
     reInferTheme(): Promise<void>;
     protected setupDebugEventListener(flag?: boolean): void;
     debugCommands(input: string): void;
-    submitQuestion(): Promise<void>;
+    submitQuestion(etc?: object): Promise<void>;
+    submitTypedQuestion(): Promise<void>;
     protected submitFeedback(qaPair: QAPair, feedback?: 'up' | 'down' | 'none'): Promise<void>;
     scrollDialogToBottom(behavior?: 'smooth' | 'auto'): Promise<void>;
     scrollToAnswerByRequestId(requestId: string, behavior?: 'smooth' | 'auto'): Promise<void>;

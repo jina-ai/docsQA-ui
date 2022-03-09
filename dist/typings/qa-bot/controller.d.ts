@@ -23,7 +23,7 @@ export declare class JinaQABotController implements ReactiveController {
     setTargeted(requestId: string): void;
     dispatchEvent(eventName: string, detail?: object): void;
     askQuestion(text: string): Promise<QAPair>;
-    sendFeedback(qaPair: QAPair, feedback: 'up' | 'down' | 'none', overrideURI?: string): Promise<Response & {
+    sendFeedback(qaPair: QAPair, feedback: 'up' | 'down' | 'none', overrideURI?: string, etc?: object): Promise<Response & {
         data: any;
     } & {
         serial: number;
