@@ -63,9 +63,32 @@ export function transformAnswerUriAddTextFragments(this: DocQAAnswer, _qaPair: Q
             sentence = paragraph.slice(sentenceStart, sentenceEnd);
         }
 
-        if (answerText !== match.text) {
-            // ??? Potentially problematic sentence/match.text
-            const patched = makeTextFragmentUriFromPassage(match.text, match.text, match.uri);
+        const sentenceWords = sentence.split(/\s+/g);
+        const answerWords = answerText.split(/\s+/g);
+
+        let textFragmentContext = paragraph;
+
+        if (sentence && (sentenceWords.length - answerWords.length >= 3)) {
+            // Sentence have 3 more words than answer. Sentence is enough to be the context.
+            textFragmentContext = sentence;
+        }
+
+        if (answerWords.length >= 6) {
+            // If the answer have enough words, dont use the context at all.
+            textFragmentContext = '';
+        }
+
+        if (answerText.match(/([\s\W]+)\s*$/)) {
+            // Answer ends with punctuation
+            // Don't trust the punctuation. Could be added by transformers.
+            answerText = answerText.replace(/([\s\W]+)\s*$/, '');
+
+            // We've modified the answer text, context doesn't make sense anymore.
+            textFragmentContext = '';
+        }
+
+        if (!textFragmentContext) {
+            const patched = makeTextFragmentUriFromPassage(answerText, answerText, match.uri);
             if (patched) {
                 if (!match.tags) {
                     match.tags = {};
@@ -76,19 +99,7 @@ export function transformAnswerUriAddTextFragments(this: DocQAAnswer, _qaPair: Q
             }
         }
 
-        if (sentence && sentence.length > (answerText.length + 5)) {
-            const patched = makeTextFragmentUriFromPassage(answerText, sentence, match.uri);
-            if (patched) {
-                if (!match.tags) {
-                    match.tags = {};
-                }
-                match.tags.original_uri = match.uri;
-                match.uri = patched;
-                continue;
-            }
-        }
-
-        const patched = makeTextFragmentUriFromPassage(answerText, paragraph, match.uri);
+        const patched = makeTextFragmentUriFromPassage(answerText, textFragmentContext, match.uri);
         if (patched) {
             if (!match.tags) {
                 match.tags = {};

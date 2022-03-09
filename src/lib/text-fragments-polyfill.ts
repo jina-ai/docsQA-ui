@@ -28,6 +28,25 @@ export function markAndScrollToTextFragment() {
                 behavior: 'smooth',
             });
         });
+    } else {
+        window.setTimeout(() => {
+            const traditionalHash = hash.split(':~:')[0];
+            if (traditionalHash.length <= 1) {
+                return;
+            }
+            try {
+                const elem = document.querySelector(traditionalHash);
+                if (elem) {
+                    elem.scrollIntoView({
+                        block: 'center',
+                        inline: 'nearest',
+                        behavior: 'smooth',
+                    });
+                }
+            } catch (_err) {
+                return;
+            }
+        });
     }
 }
 
