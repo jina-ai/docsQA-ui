@@ -7,7 +7,7 @@ function patchTextFragmentEncoding(text: string) {
 
 const nativeTextFragments = 'fragmentDirective' in document;
 
-export function makeTextFragmentUriFromPassage(text?: string, paragraph?: string, uri?: string) {
+export function makeTextFragmentUriFromPassage(text?: string, paragraph?: string, uri?: string, omitSuffix?: boolean) {
     if (!(text && paragraph && uri)) {
         return uri;
     }
@@ -15,7 +15,7 @@ export function makeTextFragmentUriFromPassage(text?: string, paragraph?: string
     const [prefix, suffix] = paragraph.split(text);
 
     const prefixFragment = prefix.match(/\b\w.{0,15}$/)?.[0].trim();
-    const suffixFragment = (suffix || '').trim().match(/^\S.{0,14}\b/)?.[0].trim();
+    const suffixFragment = omitSuffix ? '' : (suffix || '').trim().match(/^\S.{0,14}\b/)?.[0].trim();
 
     const fragment = `:~:text=${prefixFragment ? `${patchTextFragmentEncoding(prefixFragment)}-,` : ''}${patchTextFragmentEncoding(text)}${suffixFragment ? `,-${patchTextFragmentEncoding(suffixFragment)}` : ''}`;
 
@@ -61,7 +61,7 @@ export function transformAnswerUriAddTextFragments(this: DocQAAnswer, _qaPair: Q
                 if (spanStart >= spanEnd) {
                     break;
                 }
-                if (paragraph[spanStart]?.match(/\s/)) {
+                if (paragraph[spanStart]?.match(/[\s\W]/)) {
                     spanStart++;
                     continue;
                 }
@@ -92,6 +92,7 @@ export function transformAnswerUriAddTextFragments(this: DocQAAnswer, _qaPair: Q
         const answerWords = answerText.split(/\s+/g);
 
         let textFragmentContext = paragraph;
+        let omitSuffix = false;
 
         if (sentence && (sentenceWords.length - answerWords.length >= 3)) {
             // Sentence have 3 more words than answer. Sentence is enough to be the context.
@@ -108,8 +109,8 @@ export function transformAnswerUriAddTextFragments(this: DocQAAnswer, _qaPair: Q
             // Don't trust the punctuation. Could be added by transformers.
             answerText = answerText.replace(/([\s\W]+)\s*$/, '');
 
-            // We've modified the answer text, context doesn't make sense anymore.
-            textFragmentContext = '';
+            // We've modified the answer text, suffix doesn't make sense anymore.
+            omitSuffix = true;
         }
 
         if (!textFragmentContext) {
@@ -124,7 +125,7 @@ export function transformAnswerUriAddTextFragments(this: DocQAAnswer, _qaPair: Q
             }
         }
 
-        const patched = makeTextFragmentUriFromPassage(answerText, textFragmentContext, match.uri);
+        const patched = makeTextFragmentUriFromPassage(answerText, textFragmentContext, match.uri, omitSuffix);
         if (patched) {
             if (!match.tags) {
                 match.tags = {};
