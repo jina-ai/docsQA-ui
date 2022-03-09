@@ -377,7 +377,7 @@ export class QaBot extends LitElement {
         }
         event.preventDefault();
 
-        this.submitQuestion();
+        this.submitQuestion({ questionType: 'typed' });
     }
 
     setQaPairTargeted(qaPair?: QAPair) {
@@ -509,7 +509,7 @@ export class QaBot extends LitElement {
     }
 
     @throttle()
-    async submitQuestion() {
+    async submitQuestion(etc?: object) {
         if (!this.qaControl) {
             return;
         }
@@ -534,7 +534,8 @@ export class QaBot extends LitElement {
                 qaPair,
                 'none',
                 qaPair.answer?.uri ?
-                    new URL(this.makeReferenceLink(qaPair.answer.uri), window.location.href).toString() : undefined
+                    new URL(this.makeReferenceLink(qaPair.answer.uri), window.location.href).toString() : undefined,
+                etc
             ).catch(() => 'swallow');
             this.textarea!.value = '';
             this.textarea!.setAttribute('style', `height: auto;`);
@@ -547,6 +548,9 @@ export class QaBot extends LitElement {
         if (this.open && !this.smallViewPort) {
             this.textarea?.focus();
         }
+    }
+    submitTypedQuestion() {
+        return this.submitQuestion({ questionType: 'typed' });
     }
 
     @throttle()
@@ -1024,7 +1028,7 @@ export class QaBot extends LitElement {
     protected onClickQuestion(e: Event) {
         const text = (e.target as HTMLElement).innerText;
         this.textarea!.value = text.trim();
-        this.submitQuestion();
+        this.submitQuestion({ questionType: 'suggested' });
     }
 
     protected getAvatar() {
@@ -1090,7 +1094,7 @@ export class QaBot extends LitElement {
                         @keydown="${this.onTextAreaInput}"
                         @input="${this.onInputQuestion}"
                         placeholder="${this.qaControl ? 'Type your question here...' : 'Waiting for server configuration...'}"></textarea>
-                    <button title="Submit" ?disabled="${this.busy}" ?active="${this.typing}" @click="${this.submitQuestion}">
+                    <button title="Submit" ?disabled="${this.busy}" ?active="${this.typing}" @click="${this.submitTypedQuestion}">
                         <i class="icon icon-plane">${paperPlane}</i>
                     </button>
                     ${this.poweredByIconSrc ? html`<div class="powered-by"><i class="icon"><img src="${this.poweredByIconSrc}"

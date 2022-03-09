@@ -228,7 +228,7 @@ export class JinaQABotController implements ReactiveController {
         }
     }
 
-    async sendFeedback(qaPair: QAPair, feedback: 'up' | 'down' | 'none', overrideURI?: string) {
+    async sendFeedback(qaPair: QAPair, feedback: 'up' | 'down' | 'none', overrideURI?: string, etc?: object) {
         const thumbUpMap = {
             up: true,
             down: false,
@@ -248,7 +248,8 @@ export class JinaQABotController implements ReactiveController {
                 question: qaPair.question,
                 answer: answerText,
                 answer_uri: overrideURI || qaPair.answer?.uri,
-                thumbup: thumbUpVal
+                thumbup: thumbUpVal,
+                ...etc
             });
 
             switch (feedback) {
