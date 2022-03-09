@@ -77,7 +77,6 @@ export class JinaQABotController implements ReactiveController {
             if (!this.active) {
                 const parsedUrl = new URL(window.location.href);
                 const hash = parsedUrl.hash.slice(1).replace(/:~:.*$/, '');
-                const pathname = parsedUrl.pathname;
                 for (const x of this.qaPairs) {
                     if (!x.requestId) {
                         continue;
@@ -87,9 +86,6 @@ export class JinaQABotController implements ReactiveController {
                     }
 
                     const parsedUri = new URL(x.answer?.uri || '/', window.location.href);
-                    if (!pathname.endsWith(parsedUri.pathname)) {
-                        continue;
-                    }
                     if (hash && !parsedUri.hash.includes(hash)) {
                         continue;
                     }
