@@ -50,17 +50,42 @@ export function transformAnswerUriAddTextFragments(this: DocQAAnswer, _qaPair: Q
 
         const sentenceStart = get(match, 'tags.sentence_start');
         const sentenceEnd = get(match, 'tags.sentence_end');
-        const spanStart = get(match, 'tags.span_start');
-        const spanEnd = get(match, 'tags.span_end');
+        let spanStart = get(match, 'tags.span_start');
+        let spanEnd = get(match, 'tags.span_end');
 
         let answerText = match.text || '';
         if (Number.isInteger(spanStart) && Number.isInteger(spanEnd)) {
-            answerText = paragraph.slice(spanStart, spanEnd);
+            // Fix potential span issue
+
+            while (true) {
+                if (spanStart >= spanEnd) {
+                    break;
+                }
+                if (paragraph[spanStart]?.match(/\s/)) {
+                    spanStart++;
+                    continue;
+                }
+                break;
+            }
+            while (true) {
+                if (spanEnd >= paragraph.length) {
+                    break;
+                }
+                if (paragraph[spanEnd]?.match(/\S/)) {
+                    spanEnd++;
+                    continue;
+                }
+                break;
+            }
+            const fromSpans = paragraph.substring(spanStart, spanEnd);
+            if (fromSpans) {
+                answerText = fromSpans;
+            }
         }
 
         let sentence = '';
         if (Number.isInteger(sentenceStart) && Number.isInteger(sentenceEnd)) {
-            sentence = paragraph.slice(sentenceStart, sentenceEnd);
+            sentence = paragraph.substring(sentenceStart, sentenceEnd);
         }
 
         const sentenceWords = sentence.split(/\s+/g);
