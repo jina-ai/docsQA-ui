@@ -87,7 +87,7 @@ export class JinaQABotController implements ReactiveController {
                     }
 
                     const parsedUri = new URL(x.answer?.uri || '/', window.location.href);
-                    if (parsedUri.pathname !== pathname) {
+                    if (!pathname.endsWith(parsedUri.pathname)) {
                         continue;
                     }
                     if (hash && !parsedUri.hash.includes(hash)) {
