@@ -1,70 +1,68 @@
 ---
 layout: page.11ty.cjs
-title: <qa-bot> ⌲ Home
+title: <qa-bot> ⌲ Integration
 ---
 
-# &lt;qa-bot&gt;
+## Install
+Install `<qa-bot>` via npm or CDN, see [details](/install/).
 
-`<qa-bot>` is the UI part of DocsQA. It's a web component built with [Lit](https://lit.dev).
-```html
-<script src="https://cdn.jsdelivr.net/npm/qabot"></script>
-```
+## Configuration
 
-## As easy as HTML
+### Name
+By default the name is `DocsQA`, shown in qa bot header, you can input some text to override it.
 
-<section class="columns">
-  <div>
+### Description
+By default the description is `@Jina AI`, shown in qa bot header, you can input some text to override it.
 
-`<qa-bot>` is just an HTML element. You can it anywhere you can use HTML!
+### Server(Required)
+Select/Input one server address(you can index the docs by [api](https://github.com/jina-ai/docsQA/tree/main/service), once it is done, you can get an server url from your email). The list is including all projects which are ready to use `<qa-bot>`. 
 
-```html
-<qa-bot></qa-bot>
-```
+### Token
+Once you select/input a server, the related token will be generated and shown in the code snippet, prevent exposing server url directly.
 
-  </div>
-<div class="bot-container">
-    <qa-bot></qa-bot>
-</div>
+### Site
+QA answers of `<qa-bot>` will give you a reference link to the original source.
+You can customize the base URL of the reference link by inputting a url. 
+If left blank, the reference links will be treated relative to current location. 
 
-</section>
+### Avatar Url
+You can override the avatar by inputting an image url.
 
-## Configure with attributes
+### Header Background Url
+If you want to use an image as the header background, could set it by inputting the image url.
 
-<section class="columns">
-  <div>
+### Theme
+By default it will refer the system theme color.
+You can select `light` or `dark` to intentionally set the theme, but `refer` is suggested, which help to keep the same style with the website.
 
-`<qa-bot>` can be configured with attributes in plain HTML.
+### Color
+Only be configurable when `theme="refer"`. By default it will refer to the system theme color, you can override it by selecting new color.
 
-```html
-<qa-bot 
-    label="Try custom title ✨"
-    server="https://jina-ai-jina.docsqa.jina.ai" 
-    open
-    site="https://docs.jina.ai" 
-    target="_blank">
-    <dl>
-        <dt>You can tryout qabot easily:</dt>
-        <dd>What is Jina?</dd>
-        <dd>Does Jina support Kubernetes?</dd>
-        <dd>What are the basic concepts in Jina?</dd>
-    </dl>
-</qa-bot>
-```
+### Background Color
+Only be configurable when `theme="refer"`. By default it will refer to the system theme bg color, if no theme bg color, will use the background color of its parent element, if the bg color is white or transparent, will continue checking the elements upwards until `body`. you can override it by selecting new color.
 
-  </div>
-  <div class="bot-container">
-        <qa-bot label="Try custom title ✨" server="https://jina-ai-jina.docsqa.jina.ai" site="https://docs.jina.ai" target="_blank" open>
-            <dl>
-                <dt>You can tryout qabot easily:</dt>
-                <dd>What is Jina?</dd>
-                <dd>Does Jina support Kubernetes?</dd>
-                <dd>What are the basic concepts in Jina?</dd>
-            </dl>
-        </qa-bot>
-  </div>
-</section>
+### Orientation
+By default `<doc-bot>` is fixed at bottom-right, if you intend to have it fixed at the left bottom of the page, you can select `bottom-top` to decide the animation origin, the supported values: `bottom-left`, `bottom-right`, `top-left`, `top-right` and `center`.
 
-## Configuration UI
+### Open
+By default the chat box is collapsed after load. If you want it to be open by default, check the `yes` option.
+
+### Target
+By default the reference links open to `_self`. You can override this behavior by selecting other options.
+Just like a normal `<a>` tag, for example `target="_blank"` will open the reference links in a new tab.
+
+
+### Greeting
+When you open the `<doc-bot>`, you will find a short intro headline and a set of sample questions.
+These were intended to be customized by the users to fit their own needs.
+
+### Preview & Code
+After the configuration is finished, you could preview the qabot on right section, and go to code tab you see the related code snippet
+
+### Integration
+Copy the code snippet and insert to your website html body. Congratulations, you have completed the integration now!
+For most docs projects, you could add the code snippet to `_template/page.html`.
+
 
 <section id="configuration">
     <div id="vue-app" class="columns">
@@ -193,7 +191,7 @@ title: <qa-bot> ⌲ Home
                         theme: 'infer',
                         orientation: 'bottom-right',
                         open: undefined,
-                        target: '_blank',
+                        target: undefined,
                         greetingTitle: 'Welcome to DocsQA! Please ask any question:',
                         greeting: {
                             title: '',

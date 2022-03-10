@@ -9,7 +9,7 @@ sort: 2
 ## Choose between built-in light/dark themes
 `<doc-bot>` have two built-in themes: `light` and `dark`.
 
-By default it will follow the system light/dark preference. This is equivalent to setting `theme="auto"`.
+By default it will follow the system light/dark preference. This is equivalent to setting `theme="refer"`.
 
 You can specify `theme="light"` or `theme="dark"` to intentionally set the theme.
 
