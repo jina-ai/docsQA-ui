@@ -19,33 +19,26 @@ export function markAndScrollToTextFragment() {
         utils.removeMarks(createdMarks.flat());
     }, { once: true });
 
+    const traditionalHash = hash.split(':~:')[0];
+    const elemId = traditionalHash?.substring(1);
+    const elem = elemId ? document.querySelector(`#${elemId}`) : null;
+    const scrollParam: any = {
+        block: 'center',
+        inline: 'nearest',
+        behavior: 'smooth',
+    };
     const firstFoundMatch = createdMarks.find((marks) => marks.length)?.[0];
-    if (firstFoundMatch) {
+    if (firstFoundMatch && elem && elem.contains(firstFoundMatch)) {
         window.setTimeout(() => {
-            firstFoundMatch.scrollIntoView({
-                block: 'center',
-                inline: 'nearest',
-                behavior: 'smooth',
-            });
+            firstFoundMatch.scrollIntoView(scrollParam);
         });
-    } else {
+    } else if (elem) {
         window.setTimeout(() => {
-            const traditionalHash = hash.split(':~:')[0];
-            if (traditionalHash.length <= 1) {
-                return;
-            }
-            try {
-                const elem = document.querySelector(traditionalHash);
-                if (elem) {
-                    elem.scrollIntoView({
-                        block: 'center',
-                        inline: 'nearest',
-                        behavior: 'smooth',
-                    });
-                }
-            } catch (_err) {
-                return;
-            }
+            elem.scrollIntoView(scrollParam);
+        });
+    } else if (firstFoundMatch) {
+        window.setTimeout(() => {
+            firstFoundMatch.scrollIntoView(scrollParam);
         });
     }
 }
