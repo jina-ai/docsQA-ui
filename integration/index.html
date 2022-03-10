@@ -5,14 +5,14 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><qa-bot> ⌲ Home</title>
-    <link rel="stylesheet" href="docs.css">
+    <title><qa-bot> ⌲ Integration</title>
+    <link rel="stylesheet" href="../docs.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600|Roboto+Mono">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.css"/>
-    <link href="prism-okaidia.css" rel="stylesheet" />
+    <link href="../prism-okaidia.css" rel="stylesheet" />
     <script src="/node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
     <script src="/node_modules/lit/polyfill-support.js"></script>
-    <script type="module" src="dist/qabot.js"></script>
+    <script type="module" src="../dist/qabot.js"></script>
   </head>
   <body>
     
@@ -22,45 +22,55 @@
 </header>
     
 <nav>
-  <a href="">Home</a>
-  <a href="documentation/">Documentation</a>
-  <a href="api/">API</a>
-  <a href="install/">Install</a>
-  <a href="integration/">Integration</a>
+  <a href="../">Home</a>
+  <a href="../documentation/">Documentation</a>
+  <a href="../api/">API</a>
+  <a href="../install/">Install</a>
+  <a href="">Integration</a>
 </nav>
     <div id="main-wrapper">
       <main>
-        <h1>&lt;qa-bot&gt;</h1>
-<p><code>&lt;qa-bot&gt;</code> is the UI part of DocsQA. It's a web component built with <a href="https://lit.dev">Lit</a>.</p>
-<pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>https://cdn.jsdelivr.net/npm/qabot<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span></code></pre>
-<h2>As easy as HTML</h2>
-<section class="columns">
-  <div>
-<p><code>&lt;qa-bot&gt;</code> is just an HTML element. You can it anywhere you can use HTML!</p>
-<pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>qa-bot</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>qa-bot</span><span class="token punctuation">></span></span></code></pre>
-  </div>
-<div class="bot-container">
-    <qa-bot></qa-bot>
-</div>
-</section>
-<h2>Configure with attributes</h2>
-<section class="columns">
-  <div>
-<p><code>&lt;qa-bot&gt;</code> can be configured with attributes in plain HTML.</p>
-<pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>qa-bot</span> <br>    <span class="token attr-name">label</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Try custom title ✨<span class="token punctuation">"</span></span><br>    <span class="token attr-name">server</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>https://jina-ai-jina.docsqa.jina.ai<span class="token punctuation">"</span></span> <br>    <span class="token attr-name">open</span><br>    <span class="token attr-name">site</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>https://docs.jina.ai<span class="token punctuation">"</span></span> <br>    <span class="token attr-name">target</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>_blank<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><br>    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dl</span><span class="token punctuation">></span></span><br>        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dt</span><span class="token punctuation">></span></span>You can tryout qabot easily:<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dt</span><span class="token punctuation">></span></span><br>        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dd</span><span class="token punctuation">></span></span>What is Jina?<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dd</span><span class="token punctuation">></span></span><br>        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dd</span><span class="token punctuation">></span></span>Does Jina support Kubernetes?<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dd</span><span class="token punctuation">></span></span><br>        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dd</span><span class="token punctuation">></span></span>What are the basic concepts in Jina?<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dd</span><span class="token punctuation">></span></span><br>    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dl</span><span class="token punctuation">></span></span><br><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>qa-bot</span><span class="token punctuation">></span></span></code></pre>
-  </div>
-  <div class="bot-container">
-        <qa-bot label="Try custom title ✨" server="https://jina-ai-jina.docsqa.jina.ai" site="https://docs.jina.ai" target="_blank" open>
-            <dl>
-                <dt>You can tryout qabot easily:</dt>
-                <dd>What is Jina?</dd>
-                <dd>Does Jina support Kubernetes?</dd>
-                <dd>What are the basic concepts in Jina?</dd>
-            </dl>
-        </qa-bot>
-  </div>
-</section>
-<h2>Configuration UI</h2>
+        <h2>Install</h2>
+<p>Install <code>&lt;qa-bot&gt;</code> via npm or CDN, see <a href="/install/">details</a>.</p>
+<h2>Configuration</h2>
+<h3>Name</h3>
+<p>By default the name is <code>DocsQA</code>, shown in qa bot header, you can input some text to override it.</p>
+<h3>Description</h3>
+<p>By default the description is <code>@Jina AI</code>, shown in qa bot header, you can input some text to override it.</p>
+<h3>Server(Required)</h3>
+<p>Select/Input one server address(you can index the docs by <a href="https://github.com/jina-ai/docsQA/tree/main/service">api</a>, once it is done, you can get an server url from your email). The list is including all projects which are ready to use <code>&lt;qa-bot&gt;</code>.</p>
+<h3>Token</h3>
+<p>Once you select/input a server, the related token will be generated and shown in the code snippet, prevent exposing server url directly.</p>
+<h3>Site</h3>
+<p>QA answers of <code>&lt;qa-bot&gt;</code> will give you a reference link to the original source.
+You can customize the base URL of the reference link by inputting a url.
+If left blank, the reference links will be treated relative to current location.</p>
+<h3>Avatar Url</h3>
+<p>You can override the avatar by inputting an image url.</p>
+<h3>Header Background Url</h3>
+<p>If you want to use an image as the header background, could set it by inputting the image url.</p>
+<h3>Theme</h3>
+<p>By default it will refer the system theme color.
+You can select <code>light</code> or <code>dark</code> to intentionally set the theme, but <code>refer</code> is suggested, which help to keep the same style with the website.</p>
+<h3>Color</h3>
+<p>Only be configurable when <code>theme=&quot;refer&quot;</code>. By default it will refer to the system theme color, you can override it by selecting new color.</p>
+<h3>Background Color</h3>
+<p>Only be configurable when <code>theme=&quot;refer&quot;</code>. By default it will refer to the system theme bg color, if no theme bg color, will use the background color of its parent element, if the bg color is white or transparent, will continue checking the elements upwards until <code>body</code>. you can override it by selecting new color.</p>
+<h3>Orientation</h3>
+<p>By default <code>&lt;doc-bot&gt;</code> is fixed at bottom-right, if you intend to have it fixed at the left bottom of the page, you can select <code>bottom-top</code> to decide the animation origin, the supported values: <code>bottom-left</code>, <code>bottom-right</code>, <code>top-left</code>, <code>top-right</code> and <code>center</code>.</p>
+<h3>Open</h3>
+<p>By default the chat box is collapsed after load. If you want it to be open by default, check the <code>yes</code> option.</p>
+<h3>Target</h3>
+<p>By default the reference links open to <code>_self</code>. You can override this behavior by selecting other options.
+Just like a normal <code>&lt;a&gt;</code> tag, for example <code>target=&quot;_blank&quot;</code> will open the reference links in a new tab.</p>
+<h3>Greeting</h3>
+<p>When you open the <code>&lt;doc-bot&gt;</code>, you will find a short intro headline and a set of sample questions.
+These were intended to be customized by the users to fit their own needs.</p>
+<h3>Preview &amp; Code</h3>
+<p>After the configuration is finished, you could preview the qabot on right section, and go to code tab you see the related code snippet</p>
+<h3>Integration</h3>
+<p>Copy the code snippet and insert to your website html body. Congratulations, you have completed the integration now!
+For most docs projects, you could add the code snippet to <code>_template/page.html</code>.</p>
 <section id="configuration">
     <div id="vue-app" class="columns">
         <form class="config-form" action="">
@@ -188,7 +198,7 @@
                         theme: 'infer',
                         orientation: 'bottom-right',
                         open: undefined,
-                        target: '_blank',
+                        target: undefined,
                         greetingTitle: 'Welcome to DocsQA! Please ask any question:',
                         greeting: {
                             title: '',
