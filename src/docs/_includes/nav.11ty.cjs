@@ -7,5 +7,6 @@ module.exports = function ({page}) {
   <a href="${relative(page.url, '/documentation/')}">Documentation</a>
   <a href="${relative(page.url, '/api/')}">API</a>
   <a href="${relative(page.url, '/install/')}">Install</a>
+  <a href="${relative(page.url, '/integration/')}">Integration</a>
 </nav>`;
 };
