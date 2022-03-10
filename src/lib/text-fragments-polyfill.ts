@@ -21,24 +21,31 @@ export function markAndScrollToTextFragment() {
 
     const traditionalHash = hash.split(':~:')[0];
     const elemId = traditionalHash?.substring(1);
-    const elem = elemId ? document.querySelector(`#${elemId}`) : null;
-    const scrollParam: any = {
-        block: 'center',
-        inline: 'nearest',
-        behavior: 'smooth',
-    };
+    const elem = elemId ? document.querySelector(`#${elemId}`) : null;;
     const firstFoundMatch = createdMarks.find((marks) => marks.length)?.[0];
     if (firstFoundMatch && elem && elem.contains(firstFoundMatch)) {
         window.setTimeout(() => {
-            firstFoundMatch.scrollIntoView(scrollParam);
+            firstFoundMatch.scrollIntoView({
+                block: 'center',
+                inline: 'nearest',
+                behavior: 'smooth',
+            });
         });
     } else if (elem) {
         window.setTimeout(() => {
-            elem.scrollIntoView(scrollParam);
+            elem.scrollIntoView({
+                block: 'start',
+                inline: 'nearest',
+                behavior: 'smooth',
+            });
         });
     } else if (firstFoundMatch) {
         window.setTimeout(() => {
-            firstFoundMatch.scrollIntoView(scrollParam);
+            firstFoundMatch.scrollIntoView({
+                block: 'center',
+                inline: 'nearest',
+                behavior: 'smooth',
+            });
         });
     }
 }
