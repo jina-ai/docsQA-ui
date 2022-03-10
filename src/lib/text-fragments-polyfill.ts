@@ -20,8 +20,12 @@ export function markAndScrollToTextFragment() {
     }, { once: true });
 
     const traditionalHash = hash.split(':~:')[0];
-    const elemId = traditionalHash?.substring(1);
-    const elem = elemId ? document.querySelector(`#${elemId}`) : null;;
+    let elem: Element | null;
+    try {
+        elem = document.querySelector(traditionalHash);
+    } catch (_err) {
+        elem = null;
+    }
     const firstFoundMatch = createdMarks.find((marks) => marks.length)?.[0];
     if (firstFoundMatch && elem && elem.contains(firstFoundMatch)) {
         window.setTimeout(() => {
@@ -33,7 +37,7 @@ export function markAndScrollToTextFragment() {
         });
     } else if (elem) {
         window.setTimeout(() => {
-            elem.scrollIntoView({
+            elem!.scrollIntoView({
                 block: 'start',
                 inline: 'nearest',
                 behavior: 'smooth',
