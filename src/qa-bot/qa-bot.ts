@@ -92,6 +92,7 @@ export class QaBot extends LitElement {
         'color-action-contrast-secondary': '',
         'color-card-header-background': '',
         'color-card-header-color': '',
+        'color-shadow': ''
     };
 
     @property({ attribute: 'powered-by-icon-src', type: String, reflect: true })
@@ -974,6 +975,7 @@ export class QaBot extends LitElement {
             tgt['color-action-contrast-secondary'] = hslVecToCss(bgHsl, 0.87);
             tgt['color-card-header-background'] = hslVecToCss(fgHsl);
             tgt['color-card-header-color'] = fgHsl[2] > 60 ? '#000' : '#fff';
+            tgt['color-shadow'] = fgHsl[2] > 60 ? '#555' : '#333';
 
         } else if (mode === 'dark') {
             if (!fgHsl) {
@@ -989,6 +991,7 @@ export class QaBot extends LitElement {
             tgt['color-action-contrast-secondary'] = hslVecToCss(bgHsl, 0.87);
             tgt['color-card-header-background'] = '#ffffff1a';
             tgt['color-card-header-color'] = '#fff';
+            tgt['color-shadow'] = fgHsl[2] > 50 ? '#555' : '#333';
         }
         this.inferredThemeVariables = tgt as any;
 
