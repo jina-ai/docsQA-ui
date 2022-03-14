@@ -21,6 +21,8 @@ export const masterStyle = css`
         --qabot-color-card-header-background: #009191;
         --qabot-color-card-header-color: #fff;
         --qabot-card-header-height: calc(var(--qabot-size-text-title) + 4.5em);
+
+        --qabot-color-shadow: #333;
     }
 
     :host([theme='dark']){
@@ -36,6 +38,8 @@ export const masterStyle = css`
 
       --qabot-color-card-header-background: rgba(255, 255, 255, 0.1);
       --qabot-color-card-header-color: #fff;
+
+      --qabot-color-shadow: #555;
     }
 
     @media (prefers-color-scheme: dark) {
@@ -52,6 +56,8 @@ export const masterStyle = css`
 
             --qabot-color-card-header-background: rgba(255, 255, 255, 0.1);
             --qabot-color-card-header-color: #fff;
+
+            --qabot-color-shadow: #555;
         }
     }
 
@@ -135,6 +141,7 @@ export const masterStyle = css`
     .qabot.widget svg {
         max-width: 80%;
         max-height: 80%;
+        filter: drop-shadow(0.1rem 0.1rem 0.1rem var(--qabot-color-shadow));
     }
 
     .qabot.widget [fill]:not([fill='none']) {
@@ -239,6 +246,10 @@ export const masterStyle = css`
         display: inline-flex;
         flex-direction: column;
         max-width: calc(100% - 5em);
+        text-shadow:
+            -0.03em -0.03em 0 var(--qabot-color-action-secondary),
+            0.03em 0.03em 0 var(--qabot-color-action-secondary),
+            0.06em 0.06em 0.0625em var(--qabot-color-shadow);
     }
 
     .card .card__title .card__title__content .name {
@@ -709,8 +720,8 @@ export const masterStyle = css`
     }
     @keyframes avatar_eye_left_blink {
         0% {
-        transform: translate(98.6207px, 144.137956px) scale(1, 1);
-        animation-timing-function: cubic-bezier(0.42, 0, 0.58, 1)
+            transform: translate(98.6207px, 144.137956px) scale(1, 1);
+            animation-timing-function: cubic-bezier(0.42, 0, 0.58, 1)
         }
         2% {
             transform: translate(98.6207px, 144.137956px) scale(1, 0.291967);
