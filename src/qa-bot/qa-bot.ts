@@ -126,6 +126,7 @@ export class QaBot extends LitElement {
 
     scrolledToBottom?: boolean;
     smallViewPort?: boolean;
+    firstLoading?: boolean = !sessionStorage.getItem('isTouched');
 
     @queryAssignedElements({ slot: 'name' })
     protected slotName?: Array<HTMLElement>;
@@ -636,6 +637,8 @@ export class QaBot extends LitElement {
 
     @throttle()
     async toggleOpen() {
+        this.firstLoading = false;
+        sessionStorage.setItem('isTouched', 'true');
         if (this.open) {
             this.closeCard();
         } else {
@@ -1075,8 +1078,10 @@ export class QaBot extends LitElement {
             <slot name="greetings"></slot>
             <slot></slot>
         </div>
-        <button ?visible="${!this.open}" title="${this.preferences.name}" class="qabot widget"
-            @click="${this.toggleOpen}">${this.getAvatar()}</button>
+        <button title="${this.preferences.name}" ?visible="${!this.open}" class="qabot widget" ?first-loading="${!this.smallViewPort && this.firstLoading}" @click="${this.toggleOpen}">
+            ${!this.smallViewPort && this.firstLoading ? html`<span class="tip">Hi there 👋<br/>Ask our docs!</span>` : ''}
+            <span class="badge">${this.getAvatar()}</span>
+        </button>
         <div class="qabot card" title="" ?busy="${this.busy}" ?visible="${this.open}" ?closing="${this.closing}">
             <button class="card__header" @click="${this.toggleOpen}">
                 <span class="card__title">

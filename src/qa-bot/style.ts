@@ -122,20 +122,42 @@ export const masterStyle = css`
         width: 3.75em;
         height: 3.75em;
         border-radius: 50%;
-        background-color: var(--qabot-color-action);
-        text-align: center;
         box-shadow: 0 0.125em 0.9375em 0.0625em var(--qabot-color-border);
         opacity: 0;
         transform-origin: inherit;
         animation: 0.3s ease-in-out 0s forwards running slideIn;
         display: flex;
         align-items: center;
-        justify-content: center;
         cursor: pointer;
+        padding: 0;
+    }
+
+    .qabot.widget[first-loading] {
+        width: 10.75em;
+        border-radius: 3.75em;
+        padding-left: 1.25em;
+        justify-content: space-between;
+        border: solid 0.0625em var(--qabot-color-action);
+        line-height: 1.125em;
+    }
+
+    .qabot.widget[first-loading] .tip {
+        font-size: var(--qabot-size-text-primary);
     }
 
     .qabot.widget:hover {
         filter: brightness(0.8);
+    }
+
+    .qabot.widget .badge {
+        width: 3.75em;
+        height: 3.75em;
+        border-radius: 50%;
+        background-color: var(--qabot-color-action);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
     }
 
     .qabot.widget svg {
