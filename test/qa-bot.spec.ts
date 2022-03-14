@@ -15,7 +15,13 @@ describe('QaBot', () => {
     expect(container).to.exist;
   });
 
-  it('passes the a11y audit', async () => {
-    await expect(element).shadowDom.to.be.accessible();
+  it('passes the a11y audit on widget', async () => {
+    const widget = element.shadowRoot?.querySelector('.qabot.widget');
+    expect(widget).to.be.accessible();
+  });
+
+  it('passes the a11y audit on card', async () => {
+    const card = element.shadowRoot?.querySelector('.qabot.card');
+    expect(card).to.be.accessible();
   });
 });

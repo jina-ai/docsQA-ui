@@ -119,6 +119,7 @@ export const masterStyle = css`
         height: 3.75em;
         border-radius: 1.875em;
         background-color: var(--qabot-color-background);
+        color: var(--qabot-color-primary);
         box-shadow: 0 0.125em 0.9375em 0.0625em var(--qabot-color-border);
         opacity: 0;
         transform-origin: inherit;
@@ -138,12 +139,11 @@ export const masterStyle = css`
     }
 
     .qabot.widget .tip {
-        font-size: var(--qabot-size-text-primary);
-        color: var(--qabot-color-primary);
         display: none;
     }
 
     .qabot.widget[first-loading] .tip {
+        font-size: var(--qabot-size-text-primary);
         display: inline-block;
     }
 
