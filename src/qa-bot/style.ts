@@ -22,7 +22,7 @@ export const masterStyle = css`
         --qabot-color-card-header-color: #fff;
         --qabot-card-header-height: calc(var(--qabot-size-text-title) + 4.5em);
 
-        --qabot-color-shadow: #333;
+        --qabot-color-shadow: #000000b3;
     }
 
     :host([theme='dark']){
@@ -38,8 +38,6 @@ export const masterStyle = css`
 
       --qabot-color-card-header-background: rgba(255, 255, 255, 0.1);
       --qabot-color-card-header-color: #fff;
-
-      --qabot-color-shadow: #555;
     }
 
     @media (prefers-color-scheme: dark) {
@@ -56,8 +54,6 @@ export const masterStyle = css`
 
             --qabot-color-card-header-background: rgba(255, 255, 255, 0.1);
             --qabot-color-card-header-color: #fff;
-
-            --qabot-color-shadow: #555;
         }
     }
 
@@ -121,7 +117,8 @@ export const masterStyle = css`
     .qabot.widget {
         width: 3.75em;
         height: 3.75em;
-        border-radius: 50%;
+        border-radius: 1.875em;
+        background-color: var(--qabot-color-background);
         box-shadow: 0 0.125em 0.9375em 0.0625em var(--qabot-color-border);
         opacity: 0;
         transform-origin: inherit;
@@ -134,15 +131,20 @@ export const masterStyle = css`
 
     .qabot.widget[first-loading] {
         width: 10.75em;
-        border-radius: 3.75em;
         padding-left: 1.25em;
         justify-content: space-between;
         border: solid 0.0625em var(--qabot-color-action);
         line-height: 1.125em;
     }
 
-    .qabot.widget[first-loading] .tip {
+    .qabot.widget .tip {
         font-size: var(--qabot-size-text-primary);
+        color: var(--qabot-color-primary);
+        display: none;
+    }
+
+    .qabot.widget[first-loading] .tip {
+        display: inline-block;
     }
 
     .qabot.widget:hover {

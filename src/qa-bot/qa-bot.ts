@@ -91,8 +91,7 @@ export class QaBot extends LitElement {
         'color-action-contrast': '',
         'color-action-contrast-secondary': '',
         'color-card-header-background': '',
-        'color-card-header-color': '',
-        'color-shadow': ''
+        'color-card-header-color': ''
     };
 
     @property({ attribute: 'powered-by-icon-src', type: String, reflect: true })
@@ -126,7 +125,6 @@ export class QaBot extends LitElement {
 
     scrolledToBottom?: boolean;
     smallViewPort?: boolean;
-    firstLoading?: boolean = !sessionStorage.getItem('isTouched');
 
     @queryAssignedElements({ slot: 'name' })
     protected slotName?: Array<HTMLElement>;
@@ -153,7 +151,7 @@ export class QaBot extends LitElement {
 
     patches: PatchFunction[] = [...DEFAULT_PATCHES];
 
-    protected __everScrolledToBottom = false;
+    protected __everTouchedContent = false;
     private __syncOptionsRoutine: (event: Event) => void;
     private __onScreenResizeRoutine: (event: Event) => void;
     private __inferThemeRoutine: (_: any) => void;
@@ -347,16 +345,16 @@ export class QaBot extends LitElement {
                 this.requestUpdate();
                 const targetRequestId = this.qaControl.qaPairToFocus;
                 await this.scrollToAnswerByRequestId(targetRequestId, 'auto');
-                this.__everScrolledToBottom = true;
+                this.__everTouchedContent = true;
             }
             this.qaControl.qaPairToFocus = undefined;
 
             return;
         }
 
-        if (this.open && !this.__everScrolledToBottom) {
+        if (this.open && !this.__everTouchedContent) {
             await this.scrollDialogToBottom('auto');
-            this.__everScrolledToBottom = true;
+            this.__everTouchedContent = true;
         }
     }
 
@@ -637,8 +635,6 @@ export class QaBot extends LitElement {
 
     @throttle()
     async toggleOpen() {
-        this.firstLoading = false;
-        sessionStorage.setItem('isTouched', 'true');
         if (this.open) {
             this.closeCard();
         } else {
@@ -978,7 +974,6 @@ export class QaBot extends LitElement {
             tgt['color-action-contrast-secondary'] = hslVecToCss(bgHsl, 0.87);
             tgt['color-card-header-background'] = hslVecToCss(fgHsl);
             tgt['color-card-header-color'] = fgHsl[2] > 60 ? '#000' : '#fff';
-            tgt['color-shadow'] = fgHsl[2] > 60 ? '#555' : '#333';
 
         } else if (mode === 'dark') {
             if (!fgHsl) {
@@ -994,7 +989,6 @@ export class QaBot extends LitElement {
             tgt['color-action-contrast-secondary'] = hslVecToCss(bgHsl, 0.87);
             tgt['color-card-header-background'] = '#ffffff1a';
             tgt['color-card-header-color'] = '#fff';
-            tgt['color-shadow'] = fgHsl[2] > 50 ? '#555' : '#333';
         }
         this.inferredThemeVariables = tgt as any;
 
@@ -1078,9 +1072,13 @@ export class QaBot extends LitElement {
             <slot name="greetings"></slot>
             <slot></slot>
         </div>
-        <button title="${this.preferences.name}" ?visible="${!this.open}" class="qabot widget" ?first-loading="${!this.smallViewPort && this.firstLoading}" @click="${this.toggleOpen}">
-            ${!this.smallViewPort && this.firstLoading ? html`<span class="tip">Hi there 👋<br/>Ask our docs!</span>` : ''}
-            <span class="badge">${this.getAvatar()}</span>
+        <button title="${this.preferences.name}"
+            ?visible="${!this.open}"
+            class="qabot widget"
+            ?first-loading="${!this.smallViewPort && !this.__everTouchedContent}"
+            @click="${this.toggleOpen}">
+                <span class="tip">Hi there 👋<br/>Ask our docs!</span>
+                <span class="badge">${this.getAvatar()}</span>
         </button>
         <div class="qabot card" title="" ?busy="${this.busy}" ?visible="${this.open}" ?closing="${this.closing}">
             <button class="card__header" @click="${this.toggleOpen}">
