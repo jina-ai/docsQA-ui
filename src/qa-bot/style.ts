@@ -145,6 +145,11 @@ export const masterStyle = css`
     .qabot.widget[first-loading] .tip {
         font-size: var(--qabot-size-text-primary);
         display: inline-block;
+        white-space: pre-line;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
     }
 
     :host([orientation='bottom-left']) .qabot.widget[first-loading],

@@ -31,7 +31,7 @@ import DEFAULT_PATCHES, { PatchFunction } from './patches';
  *
  * @attr avatar-src - Customize chatbot avatar url
  * @attr header-background-src - Customize chatbot header background image with url
- * @attr animation-origin - Set the transform origin for the animation
+ * @attr orientation - Set the transform origin for the animation
  * @attr server - REQUIRED, specify the server url bot talks to.
  * @attr site - Specify site base location the links refer to, if not relative to current location.
  * @attr target - Specify <a target=""> of reference links.
@@ -41,6 +41,7 @@ import DEFAULT_PATCHES, { PatchFunction } from './patches';
  * @attr description - Description of the bot.
  * @attr orientation - Orientation of the bot widget and animation.
  * @attr channel - Key for chat history storage.
+ * @attr show-tip - Show or hide the tip beside badge, doesn't work on mobile view
  * @attr powered-by-icon-src - Image url for `powered-by` footer.
  */
 export class QaBot extends LitElement {
@@ -99,6 +100,9 @@ export class QaBot extends LitElement {
 
     @property({ type: Boolean, reflect: true })
     open?: boolean;
+
+    @property({ attribute: 'show-tip', type: Boolean, reflect: true })
+    showTip?: boolean = false;
 
     @state()
     get busy() {
@@ -1075,9 +1079,9 @@ export class QaBot extends LitElement {
         <button title="${this.preferences.name}"
             ?visible="${!this.open}"
             class="qabot widget"
-            ?first-loading="${!this.smallViewPort && !this.__everTouchedContent}"
+            ?first-loading="${this.showTip && !this.smallViewPort && !this.__everTouchedContent}"
             @click="${this.toggleOpen}">
-                <span class="tip">Hi there 👋<br/>Ask our docs!</span>
+                <span class="tip">${this.preferences.texts.tip}</span>
                 <span class="badge">${this.getAvatar()}</span>
         </button>
         <div class="qabot card" title="" ?busy="${this.busy}" ?visible="${this.open}" ?closing="${this.closing}">

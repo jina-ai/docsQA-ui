@@ -47,6 +47,12 @@ By default `<doc-bot>` is fixed at bottom-right, if you intend to have it fixed 
 ### Open
 By default the chat box is collapsed after load. If you want it to be open by default, check the `yes` option.
 
+### Show tip
+By default the chat box is badge only. If you want add a tip beside it, check the `yes` option.
+
+### Tip text
+By default the tip text is "Hi there 👋 Ask our docs!". If you want override it, input some new text.
+
 ### Target
 By default the reference links open to `_self`. You can override this behavior by selecting other options.
 Just like a normal `<a>` tag, for example `target="_blank"` will open the reference links in a new tab.
@@ -118,6 +124,14 @@ For most docs projects, you could add the code snippet to `_template/page.html`.
                 <input class="radio-btn" type="radio" :value="undefined" name="open" v-model="model.open" /><span class="radio-label">No</span>
             </div>
             <div class="config-form-item">
+                <label>Show Tip</label>
+                <input class="radio-btn" type="radio" :value="true" name="tip" v-model="model.showTip" /><span class="radio-label">Yes</span>
+                <input class="radio-btn" type="radio" :value="undefined" name="tip" v-model="model.showTip" /><span class="radio-label">No</span>
+            </div>
+            <div v-if="model.showTip" class="config-form-item">
+                <label>Tip Text</label><input v-model="model.tipText" placeholder="Hi there 👋 Ask our docs!" @change="onUpdate('text', true)"></input>
+            </div>
+            <div class="config-form-item">
                 <label>Target</label>
                 <select v-model="model.target">
                 <option v-for="item in targets" :key="item" :label="item" :value="item">{{item}}</option>
@@ -152,11 +166,13 @@ For most docs projects, you could add the code snippet to `_template/page.html`.
                 :orientation="model.orientation"
                 :title="model.name"
                 :description="model.description"
+                :show-tip="model.showTip"
                 :open="model.open">
                         <dl slot="greetings" v-if="model.greeting.title || model.greeting.questions">
                             <dt :textContent="model.greeting.title">{{model.greeting.title}}</dt>
                             <dd v-for="(question, index) in questions" :key="'q_' + index" :textContent="question">{{question}}</dd>
                         </dl>
+                         <span slot="texts" for="tip" :textContent="model.tipText">{{model.tipText}}</span>
                 </qa-bot>
             </div>
             <div id="source" class="source-container" v-show="activeTab === 'source'">
@@ -191,6 +207,8 @@ For most docs projects, you could add the code snippet to `_template/page.html`.
                         theme: 'infer',
                         orientation: 'bottom-right',
                         open: undefined,
+                        showTip: undefined,
+                        tipText: '',
                         target: undefined,
                         greetingTitle: 'Welcome to DocsQA! Please ask any question:',
                         greeting: {
@@ -276,8 +294,8 @@ For most docs projects, you could add the code snippet to `_template/page.html`.
                     navigator.clipboard.writeText(copyText.value);
                 },
                 onRefresh() {
-                    const template = ` <template>\n  <dl>\n   <dt>${this.model.greeting.title}</dt>${this.questions.map(item => `\n   <dd>${item}</dd>`).join('')}\n  </dl>\n </template>`;
-                    this.source = `<qa-bot${this.model.token ? `\ntoken="${this.model.token}"` : ''}${this.model.avatarUrl ? `\navatar-src="${this.model.avatarUrl}"` : ''}${this.model.bgImageUrl ? `\nheader-background-src="${this.model.bgImageUrl}"` : ''}${this.model.bgColor ? `\nbg-color="${this.model.bgColor}"` : ''}${this.model.fgColor ? `\nfg-color="${this.model.fgColor}"` : ''}${this.model.theme ? `\ntheme="${this.model.theme}"` : ''}${this.model.site ? `\nsite="${this.model.site}"` : ''}${this.model.target ? `\ntarget="${this.model.target}"` : ''}${this.model.orientation ? `\norientation="${this.model.orientation}"` : ''}${this.model.name ? `\ntitle="${this.model.name}"` : ''}${this.model.description ? `\ndescription="${this.model.description}"` : ''}${this.model.open ? '\nopen' : ''}>\n${this.model.greeting.title || this.model.greeting.questions ? template : ''}\n</qa-bot>`;
+                    const template = ` <template>\n  <dl>\n   <dt>${this.model.greeting.title}</dt>${this.questions.map(item => `\n   <dd>${item}</dd>`).join('')}\n  </dl>${this.model.showTip ? `\n   <span slot="texts" for="tip">${this.model.tipText}</span>` : ''}\n </template>`;
+                    this.source = `<qa-bot${this.model.token ? `\ntoken="${this.model.token}"` : ''}${this.model.avatarUrl ? `\navatar-src="${this.model.avatarUrl}"` : ''}${this.model.bgImageUrl ? `\nheader-background-src="${this.model.bgImageUrl}"` : ''}${this.model.bgColor ? `\nbg-color="${this.model.bgColor}"` : ''}${this.model.fgColor ? `\nfg-color="${this.model.fgColor}"` : ''}${this.model.theme ? `\ntheme="${this.model.theme}"` : ''}${this.model.site ? `\nsite="${this.model.site}"` : ''}${this.model.target ? `\ntarget="${this.model.target}"` : ''}${this.model.orientation ? `\norientation="${this.model.orientation}"` : ''}${this.model.name ? `\ntitle="${this.model.name}"` : ''}${this.model.description ? `\ndescription="${this.model.description}"` : ''}${this.model.open ? '\nopen' : ''} ${this.model.showTip ? '\nshow-tip' : ''}>\n${this.model.greeting.title || this.model.greeting.questions || this.model.tipText ? template : ''}\n</qa-bot>`;
                 }
             },
         });

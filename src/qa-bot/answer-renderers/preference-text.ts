@@ -9,12 +9,10 @@ export function renderPreferenceText(this: QaBot, qa: QAPair) {
     let text = qa?.answer?.text;
     if (!text && qa?.answer?.textKey) {
         const preferenceText: string | string[] | void = (this.preferences.texts as any)[qa.answer.textKey];
-        const preferenceTextPrefix: string | void = (this.preferences.texts as any)[qa.answer.textKey + '_Prefix'];
-        const preferenceTextSuffix: string | void = (this.preferences.texts as any)[qa.answer.textKey + '_Suffix'];
         if (Array.isArray(preferenceText)) {
-            text = (preferenceTextPrefix || '') + randomPick(preferenceText) + (preferenceTextSuffix || '');
+            text = randomPick(preferenceText);
         } else if (preferenceText) {
-            text = (preferenceTextPrefix || '') + preferenceText + (preferenceTextSuffix || '');
+            text = preferenceText;
         }
 
         if (text) {
