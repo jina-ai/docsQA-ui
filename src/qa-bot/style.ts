@@ -147,6 +147,13 @@ export const masterStyle = css`
         display: inline-block;
     }
 
+    :host([orientation='bottom-left']) .qabot.widget[first-loading],
+    :host([orientation='top-left']) .qabot.widget[first-loading] {
+        flex-direction: row-reverse;
+        padding-left: 0;
+        padding-right: 1.25em
+    }
+
     .qabot.widget:hover {
         filter: brightness(0.8);
     }
