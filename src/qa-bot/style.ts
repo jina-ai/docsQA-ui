@@ -177,7 +177,7 @@ export const masterStyle = css`
     .qabot.widget svg {
         max-width: 80%;
         max-height: 80%;
-        filter: drop-shadow(0.1rem 0.1rem 0.1rem var(--qabot-color-shadow));
+        filter: drop-shadow(0px 1px 2px var(--qabot-color-shadow));
     }
 
     .qabot.widget [fill]:not([fill='none']) {
@@ -282,10 +282,6 @@ export const masterStyle = css`
         display: inline-flex;
         flex-direction: column;
         max-width: calc(100% - 5em);
-        text-shadow:
-            -0.03em -0.03em 0 var(--qabot-color-action-secondary),
-            0.03em 0.03em 0 var(--qabot-color-action-secondary),
-            0.06em 0.06em 0.0625em var(--qabot-color-shadow);
     }
 
     .card .card__title .card__title__content .name {

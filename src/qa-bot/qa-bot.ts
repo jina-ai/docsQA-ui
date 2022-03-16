@@ -1068,6 +1068,11 @@ export class QaBot extends LitElement {
                 background-image: ${this.headerBackground ? `url(${this.headerBackground})` : 'unset'};
             }
 
+            .card .card__title .card__title__content {
+                text-shadow: ${this.headerBackground ?
+                `-0.5px -0.5px 0 var(--qabot-color-action-secondary), 1px 1px 0 var(--qabot-color-action-secondary), 1px 1px 2px var(--qabot-color-shadow);` : 'unset'};
+            }
+
             :host([theme='infer']){
                 ${unsafeHTML(inferredThemeVariables.join('\n'))};
             }
