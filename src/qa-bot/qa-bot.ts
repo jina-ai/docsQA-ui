@@ -643,7 +643,10 @@ export class QaBot extends LitElement {
             this.closeCard();
         } else {
             this.openCard();
-            this.textarea?.focus();
+            if (!this.smallViewPort) {
+                await this.updateComplete;
+                this.textarea?.focus();
+            }
         }
     }
 
