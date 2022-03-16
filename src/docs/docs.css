@@ -252,6 +252,10 @@ p > code {
     height: 2em;
 }
 
+.radio-btn + .radio-btn {
+    margin-left: 1em;
+  }
+
 .config-form select {
     min-width: 30%;
     height: 2.125em;

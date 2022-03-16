@@ -31,7 +31,7 @@ import DEFAULT_PATCHES, { PatchFunction } from './patches';
  *
  * @attr avatar-src - Customize chatbot avatar url
  * @attr header-background-src - Customize chatbot header background image with url
- * @attr animation-origin - Set the transform origin for the animation
+ * @attr orientation - Set the transform origin for the animation
  * @attr server - REQUIRED, specify the server url bot talks to.
  * @attr site - Specify site base location the links refer to, if not relative to current location.
  * @attr target - Specify <a target=""> of reference links.
@@ -41,6 +41,7 @@ import DEFAULT_PATCHES, { PatchFunction } from './patches';
  * @attr description - Description of the bot.
  * @attr orientation - Orientation of the bot widget and animation.
  * @attr channel - Key for chat history storage.
+ * @attr show-tip - Show or hide the tip beside badge, doesn't work on mobile view
  * @attr powered-by-icon-src - Image url for `powered-by` footer.
  */
 export class QaBot extends LitElement {
@@ -91,8 +92,7 @@ export class QaBot extends LitElement {
         'color-action-contrast': '',
         'color-action-contrast-secondary': '',
         'color-card-header-background': '',
-        'color-card-header-color': '',
-        'color-shadow': ''
+        'color-card-header-color': ''
     };
 
     @property({ attribute: 'powered-by-icon-src', type: String, reflect: true })
@@ -100,6 +100,9 @@ export class QaBot extends LitElement {
 
     @property({ type: Boolean, reflect: true })
     open?: boolean;
+
+    @property({ attribute: 'show-tip', type: Boolean, reflect: true })
+    showTip?: boolean = false;
 
     @state()
     get busy() {
@@ -152,7 +155,7 @@ export class QaBot extends LitElement {
 
     patches: PatchFunction[] = [...DEFAULT_PATCHES];
 
-    protected __everScrolledToBottom = false;
+    protected __everTouchedContent = false;
     private __syncOptionsRoutine: (event: Event) => void;
     private __onScreenResizeRoutine: (event: Event) => void;
     private __inferThemeRoutine: (_: any) => void;
@@ -346,16 +349,16 @@ export class QaBot extends LitElement {
                 this.requestUpdate();
                 const targetRequestId = this.qaControl.qaPairToFocus;
                 await this.scrollToAnswerByRequestId(targetRequestId, 'auto');
-                this.__everScrolledToBottom = true;
+                this.__everTouchedContent = true;
             }
             this.qaControl.qaPairToFocus = undefined;
 
             return;
         }
 
-        if (this.open && !this.__everScrolledToBottom) {
+        if (this.open && !this.__everTouchedContent) {
             await this.scrollDialogToBottom('auto');
-            this.__everScrolledToBottom = true;
+            this.__everTouchedContent = true;
         }
     }
 
@@ -975,7 +978,6 @@ export class QaBot extends LitElement {
             tgt['color-action-contrast-secondary'] = hslVecToCss(bgHsl, 0.87);
             tgt['color-card-header-background'] = hslVecToCss(fgHsl);
             tgt['color-card-header-color'] = fgHsl[2] > 60 ? '#000' : '#fff';
-            tgt['color-shadow'] = fgHsl[2] > 60 ? '#555' : '#333';
 
         } else if (mode === 'dark') {
             if (!fgHsl) {
@@ -991,7 +993,6 @@ export class QaBot extends LitElement {
             tgt['color-action-contrast-secondary'] = hslVecToCss(bgHsl, 0.87);
             tgt['color-card-header-background'] = '#ffffff1a';
             tgt['color-card-header-color'] = '#fff';
-            tgt['color-shadow'] = fgHsl[2] > 50 ? '#555' : '#333';
         }
         this.inferredThemeVariables = tgt as any;
 
@@ -1075,8 +1076,14 @@ export class QaBot extends LitElement {
             <slot name="greetings"></slot>
             <slot></slot>
         </div>
-        <button ?visible="${!this.open}" title="${this.preferences.name}" class="qabot widget"
-            @click="${this.toggleOpen}">${this.getAvatar()}</button>
+        <button title="${this.preferences.name}"
+            ?visible="${!this.open}"
+            class="qabot widget"
+            ?first-loading="${this.showTip && !this.smallViewPort && !this.__everTouchedContent}"
+            @click="${this.toggleOpen}">
+                <span class="tip">${this.preferences.texts.tip}</span>
+                <span class="badge">${this.getAvatar()}</span>
+        </button>
         <div class="qabot card" title="" ?busy="${this.busy}" ?visible="${this.open}" ?closing="${this.closing}">
             <button class="card__header" @click="${this.toggleOpen}">
                 <span class="card__title">
