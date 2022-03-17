@@ -1086,7 +1086,7 @@ export class QaBot extends LitElement {
         </div>
         <button title="${this.preferences.name}"
             ?visible="${!this.open}"
-            class="qabot widget"
+            class="qabot widget ${this.smallViewPort ? 'mobile' : ''}"
             ?first-loading="${this.showTip && !this.smallViewPort && !this.__everTouchedContent}"
             @click="${this.toggleOpen}">
                 <span class="tip">${this.preferences.texts.tip}</span>

@@ -162,8 +162,17 @@ export const masterStyle = css`
         padding-right: 1.25em
     }
 
-    .qabot.widget:hover {
+    .qabot.widget:not(.mobile):hover {
         top: -0.25em;
+    }
+    /* fix the jitter issue caused by the click region changes */
+    .qabot.widget:not(.mobile):hover:after {
+        content: "";
+        height: calc(100% + 0.25em);
+        position: absolute;
+        width: 100%;
+        z-index: -1;
+        bottom: -0.25em;
     }
 
     .qabot.widget .badge {
@@ -737,7 +746,7 @@ export const masterStyle = css`
     .avatar_eye_left {
         animation: avatar_eye_left_blink 10000ms linear infinite normal forwards
     }
-    .qabot.widget:hover .avatar_eye_left {
+    .qabot.widget:not(.mobile):hover .avatar_eye_left {
         animation: avatar_eye_left_hover 1000ms linear normal forwards;
     }
     .card .avatar_eye_left {
@@ -746,7 +755,7 @@ export const masterStyle = css`
     .avatar_eye_right {
         animation: avatar_eye_right_blink 10000ms linear infinite normal forwards
     }
-    .qabot.widget:hover .avatar_eye_right {
+    .qabot.widget:not(.mobile):hover .avatar_eye_right {
         animation: avatar_eye_right_hover 1000ms linear normal forwards;
     }
     .card .avatar_eye_right {
@@ -755,7 +764,9 @@ export const masterStyle = css`
     .avatar_header {
         animation: avatar_header_blink 10000ms linear infinite normal forwards
     }
-    .qabot.widget:hover .avatar_header, .qabot.widget:hover .eOogTejGVnl11_ts, .qabot.widget:hover .eOogTejGVnl11 {
+    .qabot.widget:not(.mobile):hover .avatar_header,
+    .qabot.widget:not(.mobile):hover .eOogTejGVnl11_ts,
+    .qabot.widget:not(.mobile):hover .eOogTejGVnl11 {
         animation: none;
     }
     .card .avatar_header {
