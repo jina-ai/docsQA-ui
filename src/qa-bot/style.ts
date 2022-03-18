@@ -128,6 +128,9 @@ export const masterStyle = css`
         align-items: center;
         cursor: pointer;
         padding: 0;
+        position: relative;
+        top: 0;
+        transition: top 200ms linear;
     }
 
     .qabot.widget[first-loading] {
@@ -159,8 +162,17 @@ export const masterStyle = css`
         padding-right: 1.25em
     }
 
-    .qabot.widget:hover {
-        filter: brightness(0.8);
+    .qabot.widget:not(.mobile):hover {
+        top: -0.25em;
+    }
+    /* fix the jitter issue caused by the click region changes */
+    .qabot.widget:not(.mobile):hover:after {
+        content: "";
+        height: calc(100% + 0.25em);
+        position: absolute;
+        width: 100%;
+        z-index: -1;
+        bottom: -0.25em;
     }
 
     .qabot.widget .badge {
@@ -177,7 +189,6 @@ export const masterStyle = css`
     .qabot.widget svg {
         max-width: 80%;
         max-height: 80%;
-        filter: drop-shadow(0px 1px 2px var(--qabot-color-shadow));
     }
 
     .qabot.widget [fill]:not([fill='none']) {
@@ -735,11 +746,17 @@ export const masterStyle = css`
     .avatar_eye_left {
         animation: avatar_eye_left_blink 10000ms linear infinite normal forwards
     }
+    .qabot.widget:not(.mobile):hover .avatar_eye_left {
+        animation: avatar_eye_left_hover 1000ms linear normal forwards;
+    }
     .card .avatar_eye_left {
         animation: none;
     }
     .avatar_eye_right {
         animation: avatar_eye_right_blink 10000ms linear infinite normal forwards
+    }
+    .qabot.widget:not(.mobile):hover .avatar_eye_right {
+        animation: avatar_eye_right_hover 1000ms linear normal forwards;
     }
     .card .avatar_eye_right {
         animation: none;
@@ -747,9 +764,57 @@ export const masterStyle = css`
     .avatar_header {
         animation: avatar_header_blink 10000ms linear infinite normal forwards
     }
+    .qabot.widget:not(.mobile):hover .avatar_header,
+    .qabot.widget:not(.mobile):hover .eOogTejGVnl11_ts,
+    .qabot.widget:not(.mobile):hover .eOogTejGVnl11 {
+        animation: none;
+    }
     .card .avatar_header {
         animation: none;
     }
+    @keyframes avatar_eye_left_hover {
+        0% {
+            transform: translate(98.6207px, 144.137956px) scale(1, 1);
+            animation-timing-function: cubic-bezier(0.42, 0, 0.58, 1)
+        }
+        20% {
+            transform: translate(98.6207px, 144.137956px) scale(1, 0.291967);
+            animation-timing-function: cubic-bezier(0.42, 0, 0.58, 1);
+        }
+        40% {
+            transform: translate(98.6207px, 144.137956px) scale(1, 1);
+            animation-timing-function: cubic-bezier(0.42, 0, 0.58, 1);
+        }
+        60% {
+            transform: translate(98.6207px, 144.137956px) scale(1, 0.291967);
+            animation-timing-function: cubic-bezier(0.42, 0, 0.58, 1);
+        }
+        100% {
+            transform: translate(98.6207px, 144.137956px) scale(1, 1);
+        }
+    }
+    @keyframes avatar_eye_right_hover {
+        0% {
+            transform: translate(174.482765px, 144.137932px) scale(1, 1);
+            animation-timing-function: cubic-bezier(0.42, 0, 0.58, 1);
+        }
+        20% {
+            transform: translate(174.482765px, 144.137932px) scale(1, 0.291966);
+            animation-timing-function: cubic-bezier(0.42, 0, 0.58, 1);
+        }
+        40% {
+            transform: translate(174.482765px, 144.137932px) scale(1, 1);
+            animation-timing-function: cubic-bezier(0.42, 0, 0.58, 1);
+        }
+        60% {
+            transform: translate(174.482765px, 144.137932px) scale(1, 0.291966);
+            animation-timing-function: cubic-bezier(0.42, 0, 0.58, 1);
+        }
+        100% {
+            transform: translate(174.482765px, 144.137932px) scale(1, 1);
+        }
+    }
+
     @keyframes avatar_eye_left_blink {
         0% {
             transform: translate(98.6207px, 144.137956px) scale(1, 1);
