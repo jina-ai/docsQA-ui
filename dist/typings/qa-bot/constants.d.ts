@@ -10,5 +10,6 @@ export declare const DEFAULT_PREFERENCE: {
         unknownError: string;
         networkError: string;
         serverError: string;
+        tip: string;
     };
 };

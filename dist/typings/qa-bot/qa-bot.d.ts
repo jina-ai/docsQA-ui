@@ -32,6 +32,7 @@ export declare class QaBot extends LitElement {
     };
     poweredByIconSrc?: string;
     open?: boolean;
+    showTip?: boolean;
     get busy(): boolean;
     protected typing: boolean;
     protected closing: boolean;
@@ -60,6 +61,7 @@ export declare class QaBot extends LitElement {
             unknownError: string;
             networkError: string;
             serverError: string;
+            tip: string;
         };
     };
     debugEnabled?: boolean;
@@ -68,7 +70,7 @@ export declare class QaBot extends LitElement {
         [k in ANSWER_RENDER_TEMPLATE]: AnswerRenderer;
     };
     patches: PatchFunction[];
-    protected __everScrolledToBottom: boolean;
+    protected __everTouchedContent: boolean;
     private __syncOptionsRoutine;
     private __onScreenResizeRoutine;
     private __inferThemeRoutine;
