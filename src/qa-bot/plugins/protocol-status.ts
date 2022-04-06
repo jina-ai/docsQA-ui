@@ -12,6 +12,7 @@ export function mangleAnswerByStatus(this: DocQAAnswer, qaPair: QAPair) {
 
     switch (qaPair.STATUS) {
 
+        case DOCQA_ANSWER_STATUS.UNKNOWN:
         case DOCQA_ANSWER_STATUS.ANSWERED: {
             qaPair.useTemplate = ANSWER_RENDER_TEMPLATE.TEXT_WITH_LINK;
             const match = get(this.matches, '[0]');
