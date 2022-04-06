@@ -26,10 +26,10 @@ export interface JinaServerEnvelope<T = DocumentArray> {
     }>;
 }
 export declare enum DOCQA_ANSWER_STATUS {
-    UNKNOWN = -1,
-    ANSWERED = 0,
-    NOT_CONFIDENT = 1,
-    NOT_ANSWERED = 2
+    UNKNOWN = 0,
+    ANSWERED = 1,
+    NOT_CONFIDENT = 2,
+    NOT_ANSWERED = 3
 }
 export interface DocQAAnswer {
     STATUS: DOCQA_ANSWER_STATUS;
