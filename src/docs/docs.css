@@ -251,6 +251,10 @@ p > code {
     width: 65%;
     height: 2em;
 }
+.config-form-item textarea {
+    width: 65%;
+    resize: none;
+}
 
 .radio-btn + .radio-btn {
     margin-left: 1em;
