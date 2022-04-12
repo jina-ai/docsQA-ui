@@ -72,9 +72,9 @@ For most docs projects, you could add the code snippet to `_template/page.html`.
 
 <section id="configuration">
     <div id="vue-app" class="columns">
-        <form class="config-form" action="">
+        <div class="config-form">
             <div class="config-form-item">
-                <label>Name</label><input v-model="model.name" />
+                <label>Name</label><input v-model="model.name"/>
             </div>
             <div class="config-form-item">
                 <label>Description</label><input v-model="model.description" @input="onUpdate('text')" />
@@ -129,7 +129,7 @@ For most docs projects, you could add the code snippet to `_template/page.html`.
                 <input class="radio-btn" type="radio" :value="undefined" name="tip" v-model="model.showTip" /><span class="radio-label">No</span>
             </div>
             <div v-if="model.showTip" class="config-form-item">
-                <label>Tip Text</label><input v-model="model.tipText" placeholder="Hi there 👋 Ask our docs!" @change="onUpdate('text', true)"></input>
+                <label>Tip Text</label><textarea v-model="model.tipText" rows="3" placeholder="Hi there 👋&#10;Ask our docs!" @change="onUpdate('text', true)"></textarea>
             </div>
             <div class="config-form-item">
                 <label>Target</label>
@@ -146,7 +146,7 @@ For most docs projects, you could add the code snippet to `_template/page.html`.
                 <textarea rows="5" v-model="model.greeting.questions" @change="onUpdate('text', true)" placeholder="What is Jina?&#10;Does Jina support Kubernetes?&#10;What are the basic concepts in Jina?"></textarea>
                 </div>
             </div>
-        </form>
+        </div>
         <div class="config-preview">
             <nav class="tabs">
                 <button :class="['tab-item', activeTab === 'preview' ? 'active' : '']" title="preview" @click="onClickTab('preview')">Preview</button>
@@ -256,9 +256,9 @@ For most docs projects, you could add the code snippet to `_template/page.html`.
                 },
                 insertInnerText() {
                     if (window.qabot) {
-                        const slots = window.qabot.querySelectorAll('[textContent]')
+                        const slots = window.qabot.querySelectorAll('[textContent]');
                         slots.forEach((slot) => {
-                            slot.innerText = slot.getAttribute('textContent')
+                            slot.innerHTML = slot.getAttribute('textContent');
                             slot.removeAttribute('textContent');
                         })
                     }
@@ -267,7 +267,7 @@ For most docs projects, you could add the code snippet to `_template/page.html`.
                     switch (type) {
                         case 'text':
                             if (isSlot) {
-                                this.insertInnerText()
+                                this.insertInnerText();
                             }
                             window.qabot.loadPreferences();
                             break;

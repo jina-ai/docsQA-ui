@@ -54,6 +54,11 @@
       height: 2em;
     }
 
+    .config-form-item textarea {
+      width: 65%;
+      resize: none;
+    }
+
     .config-form select {
       min-width: 30%;
       height: 2.125em;
@@ -128,7 +133,7 @@
 <body>
   <p>Configuration</p>
   <div id="app">
-    <form class="config-form">
+    <div class="config-form">
       <div class="config-form-item">
         <label>Name</label><input v-model="model.name" />
       </div>
@@ -181,7 +186,7 @@
         <input class="radio-btn" type="radio" :value="undefined" name="tip" v-model="model.showTip" />No
       </div>
       <div v-if="model.showTip" class="config-form-item">
-        <label>Tip Text</label><input v-model="model.tipText" @change="onUpdate('text')"></input>
+        <label>Tip Text</label><textarea v-model="model.tipText" rows="3" @change="onUpdate('text')"></textarea>
       </div>
       <div class="config-form-item">
         <label>Target</label>
@@ -196,7 +201,7 @@
           <label class="inner-label">Questions</label><textarea rows="3" v-model="model.greeting.questions" @change="onUpdate('text')"></textarea>
         </div>
       </div>
-    </form>
+    </div>
     <div class="config-preview">
       <nav class="tabs">
         <button :class="['tab-item', activeTab === 'preview' ? 'active' : '']" title="preview" @click="onClickTab('preview')">Preview</button>
@@ -301,12 +306,9 @@
                 this.source = `<qa-bot${this.model.token ? `\ntoken="${this.model.token}"` : ''}${this.model.avatarUrl ? `\navatar-src="${this.model.avatarUrl}"` : ''}${this.model.bgImageUrl ? `\nheader-background-src="${this.model.bgImageUrl}"` : ''}${this.model.bgColor ? `\nbg-color="${this.model.bgColor}"` : ''}${this.model.fgColor ? `\nfg-color="${this.model.fgColor}"` : ''}${this.model.theme ? `\ntheme="${this.model.theme}"` : ''}${this.model.site ? `\nsite="${this.model.site}"` : ''}${this.model.target ? `\ntarget="${this.model.target}"` : ''}${this.model.orientation ? `\norientation="${this.model.orientation}"` : ''}${this.model.name ? `\ntitle="${this.model.name}"` : ''}${this.model.description ? `\ndescription="${this.model.description}"` : ''}${this.model.open ? '\nopen' : ''} ${this.model.showTip ? '\nshow-tip' : ''}>\n${this.model.greeting.title || this.model.greeting.questions ? template : ''}\n</qa-bot>`;
               }
             },
-            onUpdate(type, isSlot = false) {
+            onUpdate(type) {
                 switch (type) {
                     case 'text':
-                        if (isSlot) {
-                            this.insertInnerText();
-                        }
                         window.qabot.loadPreferences();
                         break;
                     case 'color':
