@@ -802,6 +802,7 @@ export class QaBot extends LitElement {
                 this.preferences.questions = Array.from(dds)
                     .filter((x) => Boolean(x.textContent?.trim()))
                     .map((x) => x.textContent!.trim());
+
             }
         }
 
