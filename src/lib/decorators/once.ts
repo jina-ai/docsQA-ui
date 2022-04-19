@@ -1,6 +1,8 @@
 let i = 1;
 
 export function runOnce() {
+    const runOnceSymbol = Symbol(`RUN_ONCE:${i++}`);
+
     return function runOnceDecorator(_target: any, _propName: string | symbol, propDesc: PropertyDescriptor) {
         const func: Function = propDesc.value;
 
@@ -9,8 +11,6 @@ export function runOnce() {
         }
 
         function newFunc(this: any, ...argv: any[]) {
-            const runOnceSymbol = Symbol(`RUN_ONCE:${i++}`);
-
             const conf = this[runOnceSymbol];
             if (conf) {
                 if (conf.hasOwnProperty('thrown')) {
