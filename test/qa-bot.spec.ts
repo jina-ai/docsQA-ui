@@ -1,13 +1,19 @@
 import { html } from 'lit';
-import { fixture, expect, elementUpdated } from '@open-wc/testing';
+import { fixture, expect, elementUpdated, fixtureCleanup } from '@open-wc/testing';
 
 import { QaBot } from '../src/qa-bot/qa-bot.js';
 import '../qabot.js';
 
 describe('QaBot', () => {
   let element: QaBot;
+
   beforeEach(async () => {
     element = await fixture(html`<qa-bot></qa-bot>`);
+  });
+
+  afterEach(async () => {
+    localStorage.clear();
+    fixtureCleanup();
   });
 
   it('renders its container', () => {
@@ -32,7 +38,7 @@ describe('QaBot', () => {
     expect(card).not.to.have.attr('visible');
   });
 
-  it('opens bot', async () => {
+  it('sets bot opened', async () => {
     const widget = element.shadowRoot?.querySelector('.qabot.widget');
     const card = element.shadowRoot?.querySelector('.qabot.card');
     element.open = true;
@@ -129,6 +135,29 @@ it('renders tip', async () => {
     expect(tipElem).to.have.text(text);
   });
 
+  it('hides tip after open', async () => {
+    element.server = 'https://jina-ai-jina.docsqa.jina.ai';
+    const tipElem = element.shadowRoot?.querySelector('.tip');
+    expect(window.getComputedStyle(tipElem as HTMLElement).display).to.equal('none');
+    element.showTip = true;
+    await elementUpdated(element);
+    expect(window.getComputedStyle(tipElem as HTMLElement).display).not.to.equal('none');
+
+    element.openCard();
+    await element.closeCard();
+    await elementUpdated(element);
+    expect(window.getComputedStyle(tipElem as HTMLElement).display).to.equal('none');
+  });
+
+  it('hides tip on mobile', async () => {
+    element.smallViewPort = true;
+    const tipElem = element.shadowRoot?.querySelector('.tip');
+    expect(window.getComputedStyle(tipElem as HTMLElement).display).to.equal('none');
+    element.showTip = true;
+    await elementUpdated(element);
+    expect(window.getComputedStyle(tipElem as HTMLElement).display).to.equal('none');
+  });
+
   it('sets greetings', async () => {
     const dl = document.createElement('dl');
     dl.setAttribute('slot', 'greetings');
@@ -154,4 +183,186 @@ it('renders tip', async () => {
         expect(item).to.have.text(questions[index]);
     });
   });
+
+  it('asks question', async () => {
+    element.server = 'https://jina-ai-jina.docsqa.jina.ai';
+    element.toggleOpen();
+    await elementUpdated(element);
+
+    const inputElem = element.shadowRoot?.querySelector('.qabot__control textarea') as HTMLTextAreaElement;
+    const submitElem = element.shadowRoot?.querySelector('.qabot__control button') as HTMLButtonElement;
+    const question = 'What\'s jina';
+    inputElem!.value = question;
+    submitElem.click();
+    await elementUpdated(element);
+    const questionElem = element.shadowRoot?.querySelector('.qa-pair .question');
+    const answerElem = element.shadowRoot?.querySelector('.qa-pair .answer');
+    expect(questionElem).to.be.displayed;
+    expect(answerElem).to.be.displayed;
+    expect(questionElem).to.have.trimmed.text(question);
+  });
+
+  it('clicks default question', async () => {
+    element.server = 'https://jina-ai-jina.docsqa.jina.ai';
+    element.toggleOpen();
+    await elementUpdated(element);
+
+    const defaultQuestionElem = element.shadowRoot?.querySelector('.question button') as HTMLButtonElement;
+    defaultQuestionElem.click();
+    await elementUpdated(element);
+    const questionElem = element.shadowRoot?.querySelector('.qa-pair .question');
+    const answerElem = element.shadowRoot?.querySelector('.qa-pair .answer');
+    expect(questionElem).to.be.displayed;
+    expect(answerElem).to.be.displayed;
+    expect(questionElem).to.have.trimmed.text(defaultQuestionElem.innerText);
+  });
+
+  it('infers parent background color', async () => {
+    const bgColor = 'rgb(227, 89, 89)';
+    const parentNode = document.createElement('div');
+    parentNode.style.backgroundColor = bgColor;
+
+    const elem = await fixture(html`<qa-bot></qa-bot>`, { parentNode });
+    const widgetStyles = window.getComputedStyle(elem.shadowRoot?.querySelector('.qabot.widget') as HTMLElement);
+    expect(widgetStyles.backgroundColor).to.equal(bgColor);
+  });
+
+  it('infers css variables', async () => {
+    const bgColor = 'rgb(227, 89, 89)';
+    const fgColor = 'rgb(246, 238, 238)';
+    const parentNode = document.createElement('div');
+    parentNode.style.setProperty('--color-background-primary', bgColor);
+    parentNode.style.setProperty('--color-brand-primary', fgColor);
+
+    const elem = await fixture(html`<qa-bot></qa-bot>`, { parentNode });
+    const widgetStyles = window.getComputedStyle(elem.shadowRoot?.querySelector('.qabot.widget') as HTMLElement);
+    const card = elem.shadowRoot?.querySelector('.qabot.card');
+    const headerStyles = window.getComputedStyle(card?.querySelector('.card__header') as HTMLElement);
+    const questionStyles = window.getComputedStyle(card?.querySelector('.question') as HTMLElement);
+    expect(widgetStyles.backgroundColor).to.equal(bgColor);
+    expect(headerStyles.backgroundColor).to.equal(fgColor);
+    expect(questionStyles.color).to.equal(fgColor);
+  });
+
+  it('infers theme color', async () => {
+    const fgColor = 'rgb(227, 89, 89)';
+    const meta = document.createElement('meta');
+    meta.setAttribute('name', 'theme-color');
+    meta.setAttribute('content', fgColor);
+    document.head.appendChild(meta);
+
+    const elem = await fixture(html`<qa-bot></qa-bot>`);
+    const card = elem.shadowRoot?.querySelector('.qabot.card');
+    const headerStyles = window.getComputedStyle(card?.querySelector('.card__header') as HTMLElement);
+    const questionStyles = window.getComputedStyle(card?.querySelector('.question') as HTMLElement);
+    expect(headerStyles.backgroundColor).to.equal(fgColor);
+    expect(questionStyles.color).to.equal(fgColor);
+  });
+
+  it('infers header color', async () => {
+    const fgColor = 'rgb(227, 89, 89)';
+    const header = document.createElement('header');
+    header.style.backgroundColor = fgColor;
+    document.body.appendChild(header);
+
+    const elem = await fixture(html`<qa-bot></qa-bot>`);
+    const card = elem.shadowRoot?.querySelector('.qabot.card');
+    const headerStyles = window.getComputedStyle(card?.querySelector('.card__header') as HTMLElement);
+    const questionStyles = window.getComputedStyle(card?.querySelector('.question') as HTMLElement);
+    expect(headerStyles.backgroundColor).to.equal(fgColor);
+    expect(questionStyles.color).to.equal(fgColor);
+  });
+
+  it('loads local question and answer', async () => {
+    const qaPair = [{
+        ts: Date.now(),
+        useTemplate: 'text',
+        answer: {
+            text: 'this is an answer',
+        },
+        question: 'this is a question',
+        STATUS: 1
+    }];
+    localStorage.setItem('qabot:channel:default', JSON.stringify(qaPair));
+
+    element.server = 'https://jina-ai-jina.docsqa.jina.ai';
+    element.toggleOpen();
+    await elementUpdated(element);
+    const questionElem = element.shadowRoot?.querySelector('.qa-pair .question');
+    const answerElem = element.shadowRoot?.querySelector('.qa-pair .answer');
+    expect(questionElem).to.be.displayed;
+    expect(answerElem).to.be.displayed;
+    expect(questionElem).to.have.trimmed.text(qaPair[0].question);
+  });
+
+  it('loads local answer with text and link template', async () => {
+    const qaPair = [{
+        ts: Date.now(),
+        useTemplate: 'text-with-link',
+        answer: {
+            text: 'this is an answer',
+            uri: 'http://doc.jina.ai',
+        },
+        question: 'this is a question',
+        STATUS: 1
+    }];
+    localStorage.setItem('qabot:channel:default', JSON.stringify(qaPair));
+
+    element.server = 'https://jina-ai-jina.docsqa.jina.ai';
+    element.toggleOpen();
+    await elementUpdated(element);
+    const answerElem = element.shadowRoot?.querySelector('.qa-pair .answer');
+    expect(answerElem).to.be.displayed;
+    expect(answerElem?.querySelector('.talktext a')).to.be.displayed;
+  });
+
+  it('loads local answer with text and multiple links template', async () => {
+    const qaPair = [{
+        ts: Date.now(),
+        useTemplate: 'text-with-multiple-links',
+        answer: {
+            matches: [
+                {
+                    text: 'this is an answer1',
+                    uri: 'http://doc.jina.ai',
+                },
+                {
+                    text: 'this is an answer2',
+                    uri: 'http://doc.jina.ai',
+                }
+            ]
+        },
+        question: 'this is a question',
+        STATUS: 1
+    }];
+    localStorage.setItem('qabot:channel:default', JSON.stringify(qaPair));
+
+    element.server = 'https://jina-ai-jina.docsqa.jina.ai';
+    element.toggleOpen();
+    await elementUpdated(element);
+    const answerElem = element.shadowRoot?.querySelector('.qa-pair .answer');
+    expect(answerElem).to.be.displayed;
+    expect(answerElem?.querySelectorAll('.talktext a').length).to.equal(qaPair[0].answer.matches.length);
+  });
+
+  it('loads local answer with error template', async () => {
+    const qaPair = [{
+        ts: Date.now(),
+        useTemplate: 'error',
+        answer: {
+            text: 'this is an answer',
+        },
+        question: 'this is a question',
+        STATUS: 1
+    }];
+    localStorage.setItem('qabot:channel:default', JSON.stringify(qaPair));
+
+    element.server = 'https://jina-ai-jina.docsqa.jina.ai';
+    element.toggleOpen();
+    await elementUpdated(element);
+    const answerElem = element.shadowRoot?.querySelector('.qa-pair .answer');
+    expect(answerElem).to.be.displayed;
+    expect(answerElem?.querySelector('.talktext p')).to.have.trimmed.text(`😵‍💫 Sorry! Something somehow went wrong.\n ⛑ ️Please ping me later. 🙇‍♂️`);
+  });
+
 });
