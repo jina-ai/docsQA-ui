@@ -45,6 +45,12 @@ import DEFAULT_PATCHES, { PatchFunction } from './patches';
  * @attr powered-by-icon-src - Image url for `powered-by` footer.
  */
 export class QaBot extends LitElement {
+    static override styles = [
+        resetCSS,
+        customScrollbarCSS,
+        masterStyle
+    ];
+
     @property({ attribute: 'avatar-src', type: String, reflect: true })
     botAvatar?: string;
 
@@ -292,12 +298,6 @@ export class QaBot extends LitElement {
             this.lastBottomLineDetector = undefined;
         }
     }
-
-    static override styles = [
-        resetCSS,
-        customScrollbarCSS,
-        masterStyle
-    ];
 
     override update(changedProps: PropertyValues) {
         if (
