@@ -6,7 +6,6 @@ export function renderError(this: QaBot, qa: QAPair) {
 
     let errorTextKey = 'unknownError';
     const errorText = `${qa.error}`;
-    console.log(errorText);
     if (errorText.includes('Failed to fetch')) {
         errorTextKey = 'networkError';
         if ((qa.error as any)?.status >= 500) {
@@ -15,7 +14,6 @@ export function renderError(this: QaBot, qa: QAPair) {
     } else if (errorText.includes('UpstreamError')) {
         errorTextKey = 'serverError';
     }
-    console.log(errorText, errorTextKey);
     if (qa.error) {
         console.warn(qa.error);
     }
