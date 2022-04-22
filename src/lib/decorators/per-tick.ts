@@ -49,8 +49,9 @@ export function perTick() {
 
 let j = 1;
 export function perNextTick() {
+    const perNextTickSymbol = Symbol(`PER_NEXT_TICK:${j++}`);
+
     return function perNextTickDecorator(_target: any, _propName: string | symbol, propDesc: PropertyDescriptor) {
-        const perNextTickSymbol = Symbol(`PER_NEXT_TICK:${j++}`);
         const func: Function = propDesc.value;
 
         if (typeof func !== 'function') {

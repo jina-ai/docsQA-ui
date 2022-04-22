@@ -45,6 +45,12 @@ import DEFAULT_PATCHES, { PatchFunction } from './patches';
  * @attr powered-by-icon-src - Image url for `powered-by` footer.
  */
 export class QaBot extends LitElement {
+    static override styles = [
+        resetCSS,
+        customScrollbarCSS,
+        masterStyle
+    ];
+
     @property({ attribute: 'avatar-src', type: String, reflect: true })
     botAvatar?: string;
 
@@ -187,9 +193,16 @@ export class QaBot extends LitElement {
         this.__inferThemeRoutine = async (_mutations) => {
             this.reInferTheme();
         };
-        this.themeMightChangeObserver = new MutationObserver(() => {
-            this.inferTheme();
-            this.requestUpdate();
+        this.themeMightChangeObserver = new MutationObserver(async () => {
+            this.reInferTheme();
+            const bodyCss = window.getComputedStyle(document.body);
+            const transitionDuration = parseFloat(bodyCss.transitionDuration) || 0;
+            const transitionDelay = parseFloat(bodyCss.transitionDelay) || 0;
+            const sum = transitionDuration + transitionDelay;
+            if (sum) {
+                await delay(sum * 1001);
+                this.reInferTheme();
+            }
         });
 
         customTextFragmentsPolyfill();
@@ -286,17 +299,14 @@ export class QaBot extends LitElement {
         }
     }
 
-    static override styles = [
-        resetCSS,
-        customScrollbarCSS,
-        masterStyle
-    ];
-
     override update(changedProps: PropertyValues) {
         if (
             (changedProps.has('server') && this.server) ||
             (changedProps.has('token') && this.token)
         ) {
+            if (this.qaControl) {
+                this.removeController(this.qaControl);
+            }
             if (this.server) {
                 this.qaControl = new JinaQABotController(this, this.server, this.channel);
             } else {
@@ -397,7 +407,6 @@ export class QaBot extends LitElement {
     @perNextTick()
     @throttle()
     async reInferTheme() {
-        await delay(200);
         this.inferTheme();
         this.requestUpdate();
     }
@@ -1005,6 +1014,7 @@ export class QaBot extends LitElement {
     private __setUpThemeMightChangeObserver() {
         this.themeMightChangeObserver.observe(this, { attributes: true, attributeFilter: ['style'] });
         this.themeMightChangeObserver.observe(document.body, { attributes: true });
+        this.themeMightChangeObserver.observe(document, { attributes: true });
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', this.__inferThemeRoutine);
     }
     private __suspendThemeMightChangeObserver() {

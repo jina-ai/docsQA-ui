@@ -8,7 +8,7 @@ export function serialOperation(id: symbol = DEFAULT_SERIAL_SYMBOL) {
     return function serialOperationDecorator(_target: any, _propName: string | symbol, propDesc: PropertyDescriptor) {
         const func: Function = propDesc.value;
 
-        if (typeof func !== 'function') {
+        if (typeof func !== 'function' || typeof id !== 'symbol') {
             throw new Error('Invalid use of serial operation decorator');
         }
 
@@ -18,6 +18,42 @@ export function serialOperation(id: symbol = DEFAULT_SERIAL_SYMBOL) {
             const deferred = Defer<unknown>();
 
             this[id] = deferred.promise;
+            await lastPromise?.then(NOOP, NOOP);
+
+            let result: unknown;
+            try {
+                result = await func.apply(this, argv);
+
+                deferred.resolve(result);
+            } catch (err) {
+                deferred.reject(err);
+            }
+
+            return deferred.promise;
+        }
+
+        // eslint-disable-next-line no-param-reassign
+        propDesc.value = serialOperationAwareFunction;
+
+        return propDesc;
+    };
+}
+
+const collector: any = {};
+export function globalSerialOperation(id: symbol = DEFAULT_SERIAL_SYMBOL) {
+    return function serialOperationDecorator(_target: any, _propName: string | symbol, propDesc: PropertyDescriptor) {
+        const func: Function = propDesc.value;
+
+        if (typeof func !== 'function' || typeof id !== 'symbol') {
+            throw new Error('Invalid use of global serial operation decorator');
+        }
+
+        async function serialOperationAwareFunction(this: any, ...argv: any[]) {
+            const lastPromise = collector[id] as Promise<unknown> | undefined;
+
+            const deferred = Defer<unknown>();
+
+            collector[id] = deferred.promise;
             await lastPromise?.then(NOOP, NOOP);
 
             let result: unknown;

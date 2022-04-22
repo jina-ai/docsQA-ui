@@ -17,21 +17,19 @@ export function debounce(waitMs: number = 1000) {
                 };
             }
             const conf = this[debounceSymbol];
-            if (conf.lastRunAt + waitMs >= Date.now()) {
+            if ((conf.lastRunAt + waitMs) >= Date.now()) {
                 return conf.resultPromise;
             }
             conf.lastRunAt = Date.now();
             conf.resultPromise = new Promise((resolve, reject) => {
-                setTimeout(() => {
-                    try {
-                        const r = func.apply(this, argv);
-                        resolve(r);
+                try {
+                    const r = func.apply(this, argv);
+                    resolve(r);
 
-                        return r;
-                    } catch (err) {
-                        reject(err);
-                    }
-                }, waitMs);
+                    return r;
+                } catch (err) {
+                    reject(err);
+                }
             });
 
             return conf.resultPromise;
