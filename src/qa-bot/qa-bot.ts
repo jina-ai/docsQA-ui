@@ -148,6 +148,9 @@ export class QaBot extends LitElement {
     @queryAssignedElements({ slot: 'greetings' })
     protected slotGreetings?: Array<HTMLElement>;
 
+    @queryAssignedElements({ slot: 'unknownAnswer' })
+    protected slotUnknownAnswer?: Array<HTMLElement>;
+
     @queryAssignedElements({ slot: 'texts' })
     protected slotTexts?: Array<HTMLElement>;
 
@@ -844,6 +847,19 @@ export class QaBot extends LitElement {
                 }
             }
         }
+
+        if (this.slotUnknownAnswer?.length) {
+            const textElem = this.__loadFromSlot(this.slotUnknownAnswer, 'span');
+            const textContent = textElem?.textContent?.trim();
+            if (textContent) {
+                this.preferences.unknownAnswer.text = textContent;
+            }
+            const urlElem = this.__loadFromSlot(this.slotUnknownAnswer, 'a');
+            const url = urlElem?.textContent?.trim();
+            if (url) {
+                this.preferences.unknownAnswer.url = url;
+            }
+        }
     }
 
     protected inferTheme() {
@@ -1093,6 +1109,7 @@ export class QaBot extends LitElement {
             <slot name="description"></slot>
             <slot name="texts"></slot>
             <slot name="greetings"></slot>
+            <slot name="unknownAnswer"></slot>
             <slot></slot>
         </div>
         <button title="${this.preferences.name}"

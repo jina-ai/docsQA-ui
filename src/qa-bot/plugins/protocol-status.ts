@@ -1,5 +1,6 @@
 import get from 'lodash-es/get';
 import { DocQAAnswer, ANSWER_RENDER_TEMPLATE, DOCQA_ANSWER_STATUS, QAPair } from './shared';
+import { DEFAULT_PREFERENCE } from '../constants';
 
 
 export function mangleAnswerByStatus(this: DocQAAnswer, qaPair: QAPair) {
@@ -50,8 +51,8 @@ export function mangleAnswerByStatus(this: DocQAAnswer, qaPair: QAPair) {
         }
 
         case DOCQA_ANSWER_STATUS.NOT_ANSWERED: {
-            qaPair.useTemplate = ANSWER_RENDER_TEMPLATE.TEXT;
-            qaPair.answer.text = `😵‍💫 I'm sorry but I don't know the answer.`;
+            qaPair.useTemplate = ANSWER_RENDER_TEMPLATE.UNKNOWN_ANSWER_TEXT;
+            qaPair.answer.text = DEFAULT_PREFERENCE.unknownAnswer.text;
 
             break;
         }

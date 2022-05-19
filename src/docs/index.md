@@ -127,6 +127,15 @@ title: <qa-bot> ⌲ Home
             <div v-if="model.showTip" class="config-form-item">
                 <label>Tip Text</label><textarea v-model="model.tipText" rows="3" placeholder="Hi there 👋&#10;Ask our docs!" @change="onUpdate('text', true)"></textarea>
             </div>
+            <div class="config-form-item multi-rows">
+                <label>Unknown Answer</label>
+                <div class="inline-block">
+                <label class="inner-label">Text</label>
+                <input v-model="model.unknownAnswer.text" @change="onUpdate('text', true)" placeholder="Set message for unknown answer" /><br />
+                <label class="inner-label">URL</label>
+                <input v-model="model.unknownAnswer.url" @change="onUpdate('text', true)" placeholder="The url where to report the issue, like Github issue url/slack url" />
+                </div>
+            </div>
             <div class="config-form-item">
                 <label>Target</label>
                 <select v-model="model.target">
@@ -169,6 +178,10 @@ title: <qa-bot> ⌲ Home
                             <dd v-for="(question, index) in questions" :key="'q_' + index" :textContent="question">{{question}}</dd>
                         </dl>
                         <span slot="texts" for="tip" :textContent="model.tipText">{{model.tipText}}</span>
+                        <span slot="unknownAnswer">
+                            <span :textContent="model.unknownAnswer.text">{{model.unknownAnswer.text}}</span>
+                            <a :textContent="model.unknownAnswer.url">{{model.unknownAnswer.url}}</a>
+                        </span>
                 </qa-bot>
             </div>
             <div id="source" class="source-container" v-show="activeTab === 'source'">
@@ -205,6 +218,10 @@ title: <qa-bot> ⌲ Home
                         open: undefined,
                         showTip: undefined,
                         tipText: '',
+                        unknownAnswer: {
+                            text: '',
+                            url: ''
+                        },
                         target: '_blank',
                         greetingTitle: 'Welcome to DocsQA! Please ask any question:',
                         greeting: {
@@ -290,8 +307,8 @@ title: <qa-bot> ⌲ Home
                     navigator.clipboard.writeText(copyText.value);
                 },
                 onRefresh() {
-                    const template = ` <template>\n  <dl>\n   <dt>${this.model.greeting.title}</dt>${this.questions.map(item => `\n   <dd>${item}</dd>`).join('')}\n  </dl>${this.model.showTip ? `\n   <span slot="texts" for="tip">${this.model.tipText}</span>` : ''}\n </template>`;
-                    this.source = `<qa-bot${this.model.token ? `\ntoken="${this.model.token}"` : ''}${this.model.avatarUrl ? `\navatar-src="${this.model.avatarUrl}"` : ''}${this.model.bgImageUrl ? `\nheader-background-src="${this.model.bgImageUrl}"` : ''}${this.model.bgColor ? `\nbg-color="${this.model.bgColor}"` : ''}${this.model.fgColor ? `\nfg-color="${this.model.fgColor}"` : ''}${this.model.theme ? `\ntheme="${this.model.theme}"` : ''}${this.model.site ? `\nsite="${this.model.site}"` : ''}${this.model.target ? `\ntarget="${this.model.target}"` : ''}${this.model.orientation ? `\norientation="${this.model.orientation}"` : ''}${this.model.name ? `\ntitle="${this.model.name}"` : ''}${this.model.description ? `\ndescription="${this.model.description}"` : ''}${this.model.open ? '\nopen' : ''} ${this.model.showTip ? '\nshow-tip' : ''}>\n${this.model.greeting.title || this.model.greeting.questions || this.model.tipText ? template : ''}\n</qa-bot>`;
+                    const template = ` <template>${this.model.greeting.title || this.model.greeting.questions ? `\n  <dl>\n   <dt>${this.model.greeting.title}</dt>${this.questions.map(item => `\n   <dd>${item}</dd>`).join('')}\n  </dl>` : ''}${this.model.showTip ? `\n  <span slot="texts" for="tip">${this.model.tipText}</span>` : ''}${this.model.unknownAnswer.text || this.model.unknownAnswer.url ? `\n  <span slot="unknownAnswer">${this.model.unknownAnswer.text ? `\n   <span>${this.model.unknownAnswer.text}</span>` : ''}${this.model.unknownAnswer.url ? `\n   <a>${this.model.unknownAnswer.url}</a>` : ''}\n  </span>` : ''}\n </template>`;
+                    this.source = `<qa-bot${this.model.token ? `\ntoken="${this.model.token}"` : ''}${this.model.avatarUrl ? `\navatar-src="${this.model.avatarUrl}"` : ''}${this.model.bgImageUrl ? `\nheader-background-src="${this.model.bgImageUrl}"` : ''}${this.model.bgColor ? `\nbg-color="${this.model.bgColor}"` : ''}${this.model.fgColor ? `\nfg-color="${this.model.fgColor}"` : ''}${this.model.theme ? `\ntheme="${this.model.theme}"` : ''}${this.model.site ? `\nsite="${this.model.site}"` : ''}${this.model.target ? `\ntarget="${this.model.target}"` : ''}${this.model.orientation ? `\norientation="${this.model.orientation}"` : ''}${this.model.name ? `\ntitle="${this.model.name}"` : ''}${this.model.description ? `\ndescription="${this.model.description}"` : ''}${this.model.open ? '\nopen' : ''} ${this.model.showTip ? '\nshow-tip' : ''}>\n${this.model.greeting.title || this.model.greeting.questions || this.model.tipText || this.model.unknownAnswer.text || this.model.unknownAnswer.url ? template : ''}\n</qa-bot>`;
                 }
             },
         });
