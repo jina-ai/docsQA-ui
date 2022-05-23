@@ -17,6 +17,6 @@ export const DEFAULT_PREFERENCE = {
         tip: `Hi there 👋 \nAsk our docs!`,
         unknownAnswerText: `😵‍💫 I'm sorry but I don't know the answer.`,
         unknownAnswerLink: 'Report',
-        unknownAnswerUrl: 'https://github.com/issues',
+        unknownAnswerUrl: '',
     },
 };
