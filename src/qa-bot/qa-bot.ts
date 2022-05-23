@@ -770,7 +770,7 @@ export class QaBot extends LitElement {
 
             const tgt = children.length === 1 ? children[0] : (root as HTMLElement);
 
-            if (!tgt.textContent) {
+            if (!tgt.textContent || tgt.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
                 continue;
             }
 
@@ -783,8 +783,10 @@ export class QaBot extends LitElement {
         if (this.title) {
             this.preferences.name = this.title;
         }
-        if (this.slotName?.length) {
-            const elem = this.__loadFromSlot(this.slotName);
+        if (this.slotName?.length || this.slotDefault?.length) {
+            const elem = this.__loadFromSlot(this.slotName) ||
+            this.__loadFromSlot(this.slotDefault, '[slot="name"]');
+
             const text = elem?.textContent?.trim();
             if (text) {
                 this.preferences.name = text;
@@ -794,8 +796,10 @@ export class QaBot extends LitElement {
         if (this.description !== undefined) {
             this.preferences.description = this.description;
         }
-        if (this.slotDescription?.length) {
-            const elem = this.__loadFromSlot(this.slotDescription);
+        if (this.slotDescription?.length || this.slotDefault?.length) {
+            const elem = this.__loadFromSlot(this.slotDescription) ||
+            this.__loadFromSlot(this.slotDefault, '[slot="description"]');
+
             const text = elem?.textContent?.trim();
             if (text) {
                 this.preferences.description = text;
@@ -803,6 +807,7 @@ export class QaBot extends LitElement {
         }
         if (this.slotGreetings?.length || this.slotDefault?.length) {
             const elem = this.__loadFromSlot(this.slotGreetings, 'dl') || this.__loadFromSlot(this.slotDefault, 'dl');
+
             const dt = elem?.querySelector('dt');
             const dds = elem?.querySelectorAll('dd');
 
@@ -818,8 +823,10 @@ export class QaBot extends LitElement {
             }
         }
 
-        if (this.slotTexts?.length) {
-            const elem = this.__loadFromSlot(this.slotTexts);
+        if (this.slotTexts?.length || this.slotDefault?.length) {
+            const elem = this.__loadFromSlot(this.slotTexts) ||
+            this.__loadFromSlot(this.slotDefault, '[slot="texts"]');
+
             const inputElems = elem?.querySelectorAll('[for]') as (NodeListOf<HTMLElement> | undefined);
             if (inputElems?.length) {
                 for (const elem of Array.from(inputElems)) {
@@ -848,13 +855,17 @@ export class QaBot extends LitElement {
             }
         }
 
-        if (this.slotUnknownAnswer?.length) {
-            const textElem = this.__loadFromSlot(this.slotUnknownAnswer, 'span');
+        if (this.slotUnknownAnswer?.length || this.slotDefault?.length) {
+            const textElem = this.__loadFromSlot(this.slotUnknownAnswer, 'span') ||
+            this.__loadFromSlot(this.slotDefault, '[slot="unknownAnswer"] span');
+
             const textContent = textElem?.textContent?.trim();
             if (textContent) {
                 this.preferences.unknownAnswer.text = textContent;
             }
-            const urlElem = this.__loadFromSlot(this.slotUnknownAnswer, 'a');
+            const urlElem = this.__loadFromSlot(this.slotUnknownAnswer, 'a') ||
+            this.__loadFromSlot(this.slotDefault, '[slot="unknownAnswer"] a');
+
             const url = urlElem?.textContent?.trim();
             if (url) {
                 this.preferences.unknownAnswer.url = url;
