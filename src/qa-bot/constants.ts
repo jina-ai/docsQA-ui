@@ -15,10 +15,8 @@ export const DEFAULT_PREFERENCE = {
         networkError: `😶‍🌫️ Sorry! I'm experiencing some technical issues on networking. \n🌐 Please ping me later. 🙇‍♂️`,
         serverError: `🥶 Sorry! My brain is freezing, I mean my server is down.\n 🐛Please ping me later. 🙇‍♂️`,
         tip: `Hi there 👋 \nAsk our docs!`,
+        unknownAnswerText: `😵‍💫 I'm sorry but I don't know the answer.`,
+        unknownAnswerLink: 'Report',
+        unknownAnswerUrl: 'https://github.com/issues',
     },
-    unknownAnswer: {
-        text: `😵‍💫 I'm sorry but I don't know the answer.`,
-        link: 'Link',
-        url: '',
-    }
 };

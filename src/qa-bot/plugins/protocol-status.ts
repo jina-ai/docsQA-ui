@@ -52,7 +52,7 @@ export function mangleAnswerByStatus(this: DocQAAnswer, qaPair: QAPair) {
 
         case DOCQA_ANSWER_STATUS.NOT_ANSWERED: {
             qaPair.useTemplate = ANSWER_RENDER_TEMPLATE.UNKNOWN_ANSWER_TEXT;
-            qaPair.answer.text = DEFAULT_PREFERENCE.unknownAnswer.text;
+            qaPair.answer.text = DEFAULT_PREFERENCE.texts.unknownAnswerText;
 
             break;
         }

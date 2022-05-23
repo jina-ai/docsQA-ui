@@ -183,10 +183,10 @@ For most docs projects, you could add the code snippet to `_template/page.html`.
                             <dt :textContent="model.greeting.title">{{model.greeting.title}}</dt>
                             <dd v-for="(question, index) in questions" :key="'q_' + index" :textContent="question">{{question}}</dd>
                         </dl>
-                         <span slot="texts" for="tip" :textContent="model.tipText">{{model.tipText}}</span>
-                         <span slot="unknownAnswer">
-                            <span :textContent="model.unknownAnswer.text">{{model.unknownAnswer.text}}</span>
-                            <a :textContent="model.unknownAnswer.url">{{model.unknownAnswer.url}}</a>
+                        <span slot="texts">
+                            <span for="tip" :textContent="model.tipText">{{model.tipText}}</span>
+                            <span for="unknownAnswerText" :textContent="model.unknownAnswer.text">{{model.unknownAnswer.text}}</span>
+                            <span for="unknownAnswerUrl" :textContent="model.unknownAnswer.url">{{model.unknownAnswer.url}}</span>
                         </span>
                 </qa-bot>
             </div>
@@ -313,8 +313,9 @@ For most docs projects, you could add the code snippet to `_template/page.html`.
                     navigator.clipboard.writeText(copyText.value);
                 },
                 onRefresh() {
-                    const template = ` <template>${this.model.greeting.title || this.model.greeting.questions ? `\n  <dl>\n   <dt>${this.model.greeting.title}</dt>${this.questions.map(item => `\n   <dd>${item}</dd>`).join('')}\n  </dl>` : ''}${this.model.showTip ? `\n  <span slot="texts" for="tip">${this.model.tipText}</span>` : ''}${this.model.unknownAnswer.text || this.model.unknownAnswer.url ? `\n  <span slot="unknownAnswer">${this.model.unknownAnswer.text ? `\n   <span>${this.model.unknownAnswer.text}</span>` : ''}${this.model.unknownAnswer.url ? `\n   <a>${this.model.unknownAnswer.url}</a>` : ''}\n  </span>` : ''}\n </template>`;
-                    this.source = `<qa-bot${this.model.token ? `\ntoken="${this.model.token}"` : ''}${this.model.avatarUrl ? `\navatar-src="${this.model.avatarUrl}"` : ''}${this.model.bgImageUrl ? `\nheader-background-src="${this.model.bgImageUrl}"` : ''}${this.model.bgColor ? `\nbg-color="${this.model.bgColor}"` : ''}${this.model.fgColor ? `\nfg-color="${this.model.fgColor}"` : ''}${this.model.theme ? `\ntheme="${this.model.theme}"` : ''}${this.model.site ? `\nsite="${this.model.site}"` : ''}${this.model.target ? `\ntarget="${this.model.target}"` : ''}${this.model.orientation ? `\norientation="${this.model.orientation}"` : ''}${this.model.name ? `\ntitle="${this.model.name}"` : ''}${this.model.description ? `\ndescription="${this.model.description}"` : ''}${this.model.open ? '\nopen' : ''} ${this.model.showTip ? '\nshow-tip' : ''}>\n${this.model.greeting.title || this.model.greeting.questions || this.model.tipText || this.model.unknownAnswer.text || this.model.unknownAnswer.url ? template : ''}\n</qa-bot>`;
+                    const template = `\n <template>${this.model.greeting.title || this.model.greeting.questions ? `\n  <dl>\n   <dt>${this.model.greeting.title}</dt>${this.questions.map(item => `\n   <dd>${item}</dd>`).join('')}\n  </dl>` : ''}\n </template>`;
+                    const textsTemplate = `\n <template slot="texts">${this.model.showTip ? `\n   <span for="tip">${this.model.tipText}</span>` : ''}${this.model.unknownAnswer.text ? `\n   <span for="unknownAnswerText">${this.model.unknownAnswer.text}</span>` : ''}${this.model.unknownAnswer.url ? `\n   <span for="unknownAnswerUrl">${this.model.unknownAnswer.url}</span>` : ''}\n </template>`;
+                    this.source = `<qa-bot${this.model.token ? `\ntoken="${this.model.token}"` : ''}${this.model.avatarUrl ? `\navatar-src="${this.model.avatarUrl}"` : ''}${this.model.bgImageUrl ? `\nheader-background-src="${this.model.bgImageUrl}"` : ''}${this.model.bgColor ? `\nbg-color="${this.model.bgColor}"` : ''}${this.model.fgColor ? `\nfg-color="${this.model.fgColor}"` : ''}${this.model.theme ? `\ntheme="${this.model.theme}"` : ''}${this.model.site ? `\nsite="${this.model.site}"` : ''}${this.model.target ? `\ntarget="${this.model.target}"` : ''}${this.model.orientation ? `\norientation="${this.model.orientation}"` : ''}${this.model.name ? `\ntitle="${this.model.name}"` : ''}${this.model.description ? `\ndescription="${this.model.description}"` : ''}${this.model.open ? '\nopen' : ''} ${this.model.showTip ? '\nshow-tip' : ''}>${this.model.greeting.title || this.model.greeting.questions ? template : ''}${this.model.tipText || this.model.unknownAnswer.text || this.model.unknownAnswer.url ? textsTemplate: ''}\n</qa-bot>`;
                 }
             },
         });

@@ -148,9 +148,6 @@ export class QaBot extends LitElement {
     @queryAssignedElements({ slot: 'greetings' })
     protected slotGreetings?: Array<HTMLElement>;
 
-    @queryAssignedElements({ slot: 'unknownAnswer' })
-    protected slotUnknownAnswer?: Array<HTMLElement>;
-
     @queryAssignedElements({ slot: 'texts' })
     protected slotTexts?: Array<HTMLElement>;
 
@@ -770,7 +767,7 @@ export class QaBot extends LitElement {
 
             const tgt = children.length === 1 ? children[0] : (root as HTMLElement);
 
-            if (!tgt.textContent || tgt.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
+            if (!tgt.textContent) {
                 continue;
             }
 
@@ -784,8 +781,7 @@ export class QaBot extends LitElement {
             this.preferences.name = this.title;
         }
         if (this.slotName?.length || this.slotDefault?.length) {
-            const elem = this.__loadFromSlot(this.slotName) ||
-            this.__loadFromSlot(this.slotDefault, '[slot="name"]');
+            const elem = this.__loadFromSlot(this.slotName);
 
             const text = elem?.textContent?.trim();
             if (text) {
@@ -797,8 +793,7 @@ export class QaBot extends LitElement {
             this.preferences.description = this.description;
         }
         if (this.slotDescription?.length || this.slotDefault?.length) {
-            const elem = this.__loadFromSlot(this.slotDescription) ||
-            this.__loadFromSlot(this.slotDefault, '[slot="description"]');
+            const elem = this.__loadFromSlot(this.slotDescription);
 
             const text = elem?.textContent?.trim();
             if (text) {
@@ -824,10 +819,10 @@ export class QaBot extends LitElement {
         }
 
         if (this.slotTexts?.length || this.slotDefault?.length) {
-            const elem = this.__loadFromSlot(this.slotTexts) ||
-            this.__loadFromSlot(this.slotDefault, '[slot="texts"]');
+            const elem = this.__loadFromSlot(this.slotTexts);
 
             const inputElems = elem?.querySelectorAll('[for]') as (NodeListOf<HTMLElement> | undefined);
+
             if (inputElems?.length) {
                 for (const elem of Array.from(inputElems)) {
                     const key = elem.getAttribute('for');
@@ -852,23 +847,6 @@ export class QaBot extends LitElement {
                 } else if (elem.textContent) {
                     (this.preferences.texts as any)[key] = elem.textContent;
                 }
-            }
-        }
-
-        if (this.slotUnknownAnswer?.length || this.slotDefault?.length) {
-            const textElem = this.__loadFromSlot(this.slotUnknownAnswer, 'span') ||
-            this.__loadFromSlot(this.slotDefault, '[slot="unknownAnswer"] span');
-
-            const textContent = textElem?.textContent?.trim();
-            if (textContent) {
-                this.preferences.unknownAnswer.text = textContent;
-            }
-            const urlElem = this.__loadFromSlot(this.slotUnknownAnswer, 'a') ||
-            this.__loadFromSlot(this.slotDefault, '[slot="unknownAnswer"] a');
-
-            const url = urlElem?.textContent?.trim();
-            if (url) {
-                this.preferences.unknownAnswer.url = url;
             }
         }
     }
@@ -1120,7 +1098,6 @@ export class QaBot extends LitElement {
             <slot name="description"></slot>
             <slot name="texts"></slot>
             <slot name="greetings"></slot>
-            <slot name="unknownAnswer"></slot>
             <slot></slot>
         </div>
         <button title="${this.preferences.name}"
