@@ -780,8 +780,9 @@ export class QaBot extends LitElement {
         if (this.title) {
             this.preferences.name = this.title;
         }
-        if (this.slotName?.length) {
+        if (this.slotName?.length || this.slotDefault?.length) {
             const elem = this.__loadFromSlot(this.slotName);
+
             const text = elem?.textContent?.trim();
             if (text) {
                 this.preferences.name = text;
@@ -791,8 +792,9 @@ export class QaBot extends LitElement {
         if (this.description !== undefined) {
             this.preferences.description = this.description;
         }
-        if (this.slotDescription?.length) {
+        if (this.slotDescription?.length || this.slotDefault?.length) {
             const elem = this.__loadFromSlot(this.slotDescription);
+
             const text = elem?.textContent?.trim();
             if (text) {
                 this.preferences.description = text;
@@ -800,6 +802,7 @@ export class QaBot extends LitElement {
         }
         if (this.slotGreetings?.length || this.slotDefault?.length) {
             const elem = this.__loadFromSlot(this.slotGreetings, 'dl') || this.__loadFromSlot(this.slotDefault, 'dl');
+
             const dt = elem?.querySelector('dt');
             const dds = elem?.querySelectorAll('dd');
 
@@ -815,9 +818,11 @@ export class QaBot extends LitElement {
             }
         }
 
-        if (this.slotTexts?.length) {
+        if (this.slotTexts?.length || this.slotDefault?.length) {
             const elem = this.__loadFromSlot(this.slotTexts);
+
             const inputElems = elem?.querySelectorAll('[for]') as (NodeListOf<HTMLElement> | undefined);
+
             if (inputElems?.length) {
                 for (const elem of Array.from(inputElems)) {
                     const key = elem.getAttribute('for');
