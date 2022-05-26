@@ -241,6 +241,7 @@ export class JinaQABotController implements ReactiveController {
             }
 
             const r = await this.rpc.sendFeedback({
+                requestId: qaPair.requestId,
                 question: qaPair.question,
                 answer: answerText,
                 answer_uri: overrideURI || qaPair.answer?.uri,
