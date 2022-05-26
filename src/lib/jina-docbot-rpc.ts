@@ -80,6 +80,7 @@ export class JinaDocBotRPC extends HTTPService {
     }
 
     sendFeedback(options: {
+        requestId?: string;
         question?: string;
         answer?: string;
         answer_uri?: string;
