@@ -287,11 +287,11 @@ export class JinaQABotController implements ReactiveController {
     }
 
     @serialOperation()
-    async sendBlockingFeedback(qaPair: QAPair, feedback: 'up' | 'down' | 'none', overrideURI?: string) {
+    async sendBlockingFeedback(qaPair: QAPair, feedback: 'up' | 'down' | 'none', overrideURI?: string, etc?: object) {
         this.ready = false;
         try {
             this.host.requestUpdate();
-            await this.sendFeedback(qaPair, feedback, overrideURI);
+            await this.sendFeedback(qaPair, feedback, overrideURI, etc);
         } finally {
             this.ready = true;
             this.host.requestUpdate();

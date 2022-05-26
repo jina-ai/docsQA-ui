@@ -576,7 +576,8 @@ export class QaBot extends LitElement {
             qaPair,
             feedback,
             qaPair.answer?.uri ?
-                new URL(this.makeReferenceLink(qaPair.answer.uri), window.location.href).toString() : undefined
+                new URL(this.makeReferenceLink(qaPair.answer.uri), window.location.href).toString() : undefined,
+            { questionType: 'feedback' }
         );
 
         await this.scrollDialogToBottom();

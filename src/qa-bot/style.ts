@@ -646,12 +646,8 @@ export const masterStyle = css`
         margin: 1em;
     }
 
-    .qa-pair .answer:hover .feedback-tooltip .thumbs {
-        display: flex
-    }
-
     .feedback-tooltip .thumbs {
-        display: none;
+        display: flex;
         flex-direction: row;
         margin-left: 0.25em;
         align-items: center;
