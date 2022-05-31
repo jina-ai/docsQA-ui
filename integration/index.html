@@ -64,6 +64,8 @@ You can select <code>light</code> or <code>dark</code> to intentionally set the 
 <p>By default the chat box is badge only. If you want add a tip beside it, check the <code>yes</code> option.</p>
 <h3>Tip text</h3>
 <p>By default the tip text is &quot;Hi there 👋 Ask our docs!&quot;. If you want override it, input some new text.</p>
+<h3>Unknown Answer</h3>
+<p>By default the unknown answer message is &quot;😵‍💫 I'm sorry but I don't know the answer.&quot;. If you want to override it, input the new text, and you can also add a URL to link the user to one specific page, like GitHub issue page.</p>
 <h3>Target</h3>
 <p>By default the reference links open to <code>_self</code>. You can override this behavior by selecting other options.
 Just like a normal <code>&lt;a&gt;</code> tag, for example <code>target=&quot;_blank&quot;</code> will open the reference links in a new tab.</p>
@@ -77,9 +79,9 @@ These were intended to be customized by the users to fit their own needs.</p>
 For most docs projects, you could add the code snippet to <code>_template/page.html</code>.</p>
 <section id="configuration">
     <div id="vue-app" class="columns">
-        <form class="config-form" action="">
+        <div class="config-form">
             <div class="config-form-item">
-                <label>Name</label><input v-model="model.name" />
+                <label>Name</label><input v-model="model.name"/>
             </div>
             <div class="config-form-item">
                 <label>Description</label><input v-model="model.description" @input="onUpdate('text')" />
@@ -134,7 +136,16 @@ For most docs projects, you could add the code snippet to <code>_template/page.h
                 <input class="radio-btn" type="radio" :value="undefined" name="tip" v-model="model.showTip" /><span class="radio-label">No</span>
             </div>
             <div v-if="model.showTip" class="config-form-item">
-                <label>Tip Text</label><input v-model="model.tipText" placeholder="Hi there 👋 Ask our docs!" @change="onUpdate('text', true)"></input>
+                <label>Tip Text</label><textarea v-model="model.tipText" rows="3" placeholder="Hi there 👋&#10;Ask our docs!" @change="onUpdate('text', true)"></textarea>
+            </div>
+            <div class="config-form-item multi-rows">
+                <label>Unknown Answer</label>
+                <div class="inline-block">
+                <label class="inner-label">Text</label>
+                <input v-model="model.unknownAnswer.text" @change="onUpdate('text', true)" placeholder="Set message for unknown answer" /><br />
+                <label class="inner-label">URL</label>
+                <input v-model="model.unknownAnswer.url" @change="onUpdate('text', true)" placeholder="The url where to report the issue, like Github issue url/slack url" />
+                </div>
             </div>
             <div class="config-form-item">
                 <label>Target</label>
@@ -151,7 +162,7 @@ For most docs projects, you could add the code snippet to <code>_template/page.h
                 <textarea rows="5" v-model="model.greeting.questions" @change="onUpdate('text', true)" placeholder="What is Jina?&#10;Does Jina support Kubernetes?&#10;What are the basic concepts in Jina?"></textarea>
                 </div>
             </div>
-        </form>
+        </div>
         <div class="config-preview">
             <nav class="tabs">
                 <button :class="['tab-item', activeTab === 'preview' ? 'active' : '']" title="preview" @click="onClickTab('preview')">Preview</button>
@@ -177,7 +188,11 @@ For most docs projects, you could add the code snippet to <code>_template/page.h
                             <dt :textContent="model.greeting.title"></dt>
                             <dd v-for="(question, index) in questions" :key="'q_' + index" :textContent="question"></dd>
                         </dl>
-                         <span slot="texts" for="tip" :textContent="model.tipText"></span>
+                        <span slot="texts">
+                            <span for="tip" :textContent="model.tipText"></span>
+                            <span for="unknownAnswerText" :textContent="model.unknownAnswer.text"></span>
+                            <span for="unknownAnswerUrl" :textContent="model.unknownAnswer.url"></span>
+                        </span>
                 </qa-bot>
             </div>
             <div id="source" class="source-container" v-show="activeTab === 'source'">
@@ -214,6 +229,10 @@ For most docs projects, you could add the code snippet to <code>_template/page.h
                         open: undefined,
                         showTip: undefined,
                         tipText: '',
+                        unknownAnswer: {
+                            text: '',
+                            url: ''
+                        },
                         target: undefined,
                         greetingTitle: 'Welcome to DocsQA! Please ask any question:',
                         greeting: {
@@ -261,9 +280,9 @@ For most docs projects, you could add the code snippet to <code>_template/page.h
                 },
                 insertInnerText() {
                     if (window.qabot) {
-                        const slots = window.qabot.querySelectorAll('[textContent]')
+                        const slots = window.qabot.querySelectorAll('[textContent]');
                         slots.forEach((slot) => {
-                            slot.innerText = slot.getAttribute('textContent')
+                            slot.innerHTML = slot.getAttribute('textContent');
                             slot.removeAttribute('textContent');
                         })
                     }
@@ -272,7 +291,7 @@ For most docs projects, you could add the code snippet to <code>_template/page.h
                     switch (type) {
                         case 'text':
                             if (isSlot) {
-                                this.insertInnerText()
+                                this.insertInnerText();
                             }
                             window.qabot.loadPreferences();
                             break;
@@ -299,8 +318,9 @@ For most docs projects, you could add the code snippet to <code>_template/page.h
                     navigator.clipboard.writeText(copyText.value);
                 },
                 onRefresh() {
-                    const template = ` <template>\n  <dl>\n   <dt>${this.model.greeting.title}</dt>${this.questions.map(item => `\n   <dd>${item}</dd>`).join('')}\n  </dl>${this.model.showTip ? `\n   <span slot="texts" for="tip">${this.model.tipText}</span>` : ''}\n </template>`;
-                    this.source = `<qa-bot${this.model.token ? `\ntoken="${this.model.token}"` : ''}${this.model.avatarUrl ? `\navatar-src="${this.model.avatarUrl}"` : ''}${this.model.bgImageUrl ? `\nheader-background-src="${this.model.bgImageUrl}"` : ''}${this.model.bgColor ? `\nbg-color="${this.model.bgColor}"` : ''}${this.model.fgColor ? `\nfg-color="${this.model.fgColor}"` : ''}${this.model.theme ? `\ntheme="${this.model.theme}"` : ''}${this.model.site ? `\nsite="${this.model.site}"` : ''}${this.model.target ? `\ntarget="${this.model.target}"` : ''}${this.model.orientation ? `\norientation="${this.model.orientation}"` : ''}${this.model.name ? `\ntitle="${this.model.name}"` : ''}${this.model.description ? `\ndescription="${this.model.description}"` : ''}${this.model.open ? '\nopen' : ''} ${this.model.showTip ? '\nshow-tip' : ''}>\n${this.model.greeting.title || this.model.greeting.questions || this.model.tipText ? template : ''}\n</qa-bot>`;
+                    const template = `\n <template>${this.model.greeting.title || this.model.greeting.questions ? `\n  <dl>\n   <dt>${this.model.greeting.title}</dt>${this.questions.map(item => `\n   <dd>${item}</dd>`).join('')}\n  </dl>` : ''}\n </template>`;
+                    const textsTemplate = `\n <template slot="texts">${this.model.showTip ? `\n   <span for="tip">${this.model.tipText}</span>` : ''}${this.model.unknownAnswer.text ? `\n   <span for="unknownAnswerText">${this.model.unknownAnswer.text}</span>` : ''}${this.model.unknownAnswer.url ? `\n   <span for="unknownAnswerUrl">${this.model.unknownAnswer.url}</span>` : ''}\n </template>`;
+                    this.source = `<qa-bot${this.model.token ? `\ntoken="${this.model.token}"` : ''}${this.model.avatarUrl ? `\navatar-src="${this.model.avatarUrl}"` : ''}${this.model.bgImageUrl ? `\nheader-background-src="${this.model.bgImageUrl}"` : ''}${this.model.bgColor ? `\nbg-color="${this.model.bgColor}"` : ''}${this.model.fgColor ? `\nfg-color="${this.model.fgColor}"` : ''}${this.model.theme ? `\ntheme="${this.model.theme}"` : ''}${this.model.site ? `\nsite="${this.model.site}"` : ''}${this.model.target ? `\ntarget="${this.model.target}"` : ''}${this.model.orientation ? `\norientation="${this.model.orientation}"` : ''}${this.model.name ? `\ntitle="${this.model.name}"` : ''}${this.model.description ? `\ndescription="${this.model.description}"` : ''}${this.model.open ? '\nopen' : ''} ${this.model.showTip ? '\nshow-tip' : ''}>${this.model.greeting.title || this.model.greeting.questions ? template : ''}${this.model.tipText || this.model.unknownAnswer.text || this.model.unknownAnswer.url ? textsTemplate: ''}\n</qa-bot>`;
                 }
             },
         });

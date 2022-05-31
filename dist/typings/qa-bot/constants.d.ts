@@ -11,5 +11,8 @@ export declare const DEFAULT_PREFERENCE: {
         networkError: string;
         serverError: string;
         tip: string;
+        unknownAnswerText: string;
+        unknownAnswerLink: string;
+        unknownAnswerUrl: string;
     };
 };

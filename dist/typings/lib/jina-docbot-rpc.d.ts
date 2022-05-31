@@ -50,6 +50,7 @@ export declare class JinaDocBotRPC extends HTTPService {
         config: import("./http-service").HTTPServiceRequestOptions;
     }>;
     sendFeedback(options: {
+        requestId?: string;
         question?: string;
         answer?: string;
         answer_uri?: string;

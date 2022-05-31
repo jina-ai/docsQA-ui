@@ -6,6 +6,7 @@ import { AnswerRenderer } from './answer-renderers';
 import { xorDecryptB64EncodedUtf8, xorEncryptStringUtf8B64 } from '../lib/crypto';
 import { PatchFunction } from './patches';
 export declare class QaBot extends LitElement {
+    static styles: import("lit").CSSResult[];
     botAvatar?: string;
     title: string;
     description?: string;
@@ -62,6 +63,9 @@ export declare class QaBot extends LitElement {
             networkError: string;
             serverError: string;
             tip: string;
+            unknownAnswerText: string;
+            unknownAnswerLink: string;
+            unknownAnswerUrl: string;
         };
     };
     debugEnabled?: boolean;
@@ -81,7 +85,6 @@ export declare class QaBot extends LitElement {
     protected debouncedScrollToBottom(): void;
     connectedCallback(): void;
     disconnectedCallback(): void;
-    static styles: import("lit").CSSResult[];
     update(changedProps: PropertyValues): void;
     protected autoScrollTo(): Promise<void>;
     updated(): void;
