@@ -537,7 +537,7 @@ export class QaBot extends LitElement {
             return;
         }
 
-        const rPromise = this.qaControl.askQuestion(questionInput);
+        const rPromise = this.qaControl.askQuestion(questionInput, etc);
 
         this.scrollDialogToBottom();
 

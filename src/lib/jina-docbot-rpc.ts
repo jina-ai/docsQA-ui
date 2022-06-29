@@ -54,11 +54,11 @@ export class JinaDocBotRPC extends HTTPService {
         super(serverUri);
     }
 
-    async askQuestion(text: string) {
+    async askQuestion(text: string, etc?: object) {
         const result = await this.postJson<
             JinaServerEnvelope<DocumentArray> &
             DocQAAnswer
-        >('/search', { data: [{ text }], parameters: { client_id: this.clientId } });
+        >('/search', { data: [{ text }], parameters: { ...etc, client_id: this.clientId } });
 
         const status = get(result.data, 'header.status');
 
