@@ -173,7 +173,7 @@ export class JinaQABotController implements ReactiveController {
     }
 
     @serialOperation()
-    async askQuestion(text: string) {
+    async askQuestion(text: string, etc?: object) {
         const qaPair: QAPair = {
             question: text,
             answer: undefined,
@@ -187,7 +187,7 @@ export class JinaQABotController implements ReactiveController {
         try {
             this.ready = false;
             this.host.requestUpdate();
-            const r = await this.rpc.askQuestion(mangledText);
+            const r = await this.rpc.askQuestion(mangledText, etc);
 
             const result = r.data;
 
