@@ -43,7 +43,7 @@ export declare class UpstreamError extends Error {
 export declare class JinaDocBotRPC extends HTTPService {
     protected clientId: string;
     constructor(serverUri: string, clientId: string);
-    askQuestion(text: string): Promise<Response & {
+    askQuestion(text: string, etc?: object): Promise<Response & {
         data: JinaServerEnvelope<DocumentArray<Document>> & DocQAAnswer;
     } & {
         serial: number;
