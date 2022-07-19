@@ -1,0 +1,13 @@
+resolved #<issue_number>
+
+## Desired (input &) outcomes
+<!---How would you verify this issue is solved--->
+
+- [ ] ...
+- [ ] ...
+ 
+## [Optional] Subtasks
+<!---Decomposing the complex issue into subtasks can help you build it step-by-step--->
+- [ ] ...
+- [ ] ...
+
