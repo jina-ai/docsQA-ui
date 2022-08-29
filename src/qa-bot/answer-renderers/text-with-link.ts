@@ -5,8 +5,8 @@ import type { QaBot } from '../qa-bot';
 export function renderTextWithLink(this: QaBot, qa: QAPair) {
     // Note that `\ufeff` and `&#xfeff;` stands for zero-width white space.
     // This is to prevent highlighting the answer text itself. If the chat bot is on the same page with the source.
-    let answerText = qa.answer?.text || '';
-    answerText = `${answerText.substring(0, answerText.length - 1)}\ufeff${answerText[answerText.length - 1] || ''}`;
+    const answerText = qa.answer?.text || '';
+    // answerText = `${answerText.substring(0, answerText.length - 1)}\ufeff${answerText[answerText.length - 1] || ''}`;
 
     const textVec = html`<p style="white-space: pre-line">${answerText}</p>`;
 
